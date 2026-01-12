@@ -15,7 +15,7 @@ class Scenario(ABC):
         pass
 
     @abstractmethod
-    def generate(self, rng: SeededRandom, run_id: int) -> Dict[str, Any]:
+    def generate(self, rng: SeededRandom, run_id: int, **kwargs) -> Dict[str, Any]:
         """
         Generate a single sample deterministically.
         

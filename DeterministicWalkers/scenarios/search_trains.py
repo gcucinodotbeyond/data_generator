@@ -52,7 +52,9 @@ class SearchTrains(Scenario):
     def name(self) -> str:
         return "search_trains"
 
-    def generate(self, rng: SeededRandom, run_id: int) -> Dict[str, Any]:
+    def generate(self, rng: SeededRandom, run_id: int, **kwargs) -> Dict[str, Any]:
+        predataset = kwargs.get("predataset", True) # Default to True if not specified (though generator should match)
+
         # 1. Establish Context (Where is the kiosk?)
         origin = rng.choice(STATIONS_MAJOR)
         
@@ -101,15 +103,19 @@ class SearchTrains(Scenario):
         # 6. Construct System Prompt Context
         # The kiosk needs to know where it is and what time it is.
         ctx_time = f"{rng.randint(6, 22):02d}:{rng.randint(0, 59):02d}"
-        system_prompt = (
-            f"Sei Talìa, l'assistente virtuale di Trenitalia.\n"
-            f"<ctx>\n"
-            f"stazione: {origin}\n"
-            f"data: 2024-05-01\n" # Fixed date for reproducibility or derived from seed? Fixed is safer for now.
-            f"ora: {ctx_time}\n"
-            f"</ctx>\n"
-            f"Oggi è mercoledì."
-        )
+        
+        if predataset:
+             system_prompt = "{{SYSTEM_PROMPT}}"
+        else:
+            system_prompt = (
+                f"Sei Talìa, l'assistente virtuale di Trenitalia.\n"
+                f"<ctx>\n"
+                f"stazione: {origin}\n"
+                f"data: 2024-05-01\n" # Fixed date for reproducibility or derived from seed? Fixed is safer for now.
+                f"ora: {ctx_time}\n"
+                f"</ctx>\n"
+                f"Oggi è mercoledì."
+            )
 
         return {
             "messages": [
@@ -125,7 +131,10 @@ class SearchTrains(Scenario):
                     "origin": origin,
                     "destination": destination,
                     "passengers": passengers,
-                    "template": template
+                    "template": template,
+                    "ctx_time": ctx_time,
+                    "date": "2024-05-01"
                 }
             }
         }
+

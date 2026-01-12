@@ -12,9 +12,10 @@ class Generator:
     Manages the registration of scenarios and the generation loop.
     """
     
-    def __init__(self, output_dir: str, seed: int = 42):
+    def __init__(self, output_dir: str, seed: int = 42, predataset: bool = True):
         self.output_dir = Path(output_dir)
         self.global_seed = seed
+        self.predataset = predataset
         self.scenarios: Dict[str, Type[Scenario]] = {}
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -61,7 +62,7 @@ class Generator:
                 rng = SeededRandom(sample_seed)
                 
                 try:
-                    sample = scenario.generate(rng, i)
+                    sample = scenario.generate(rng, i, predataset=self.predataset)
                     f.write(json.dumps(sample, ensure_ascii=False) + '\n')
                 except Exception as e:
                     print(f"Error generating sample {i} for {scenario_name}: {e}")
