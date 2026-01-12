@@ -36,3 +36,7 @@ class SeededRandom:
     def sample(self, population: Sequence[T], k: int) -> List[T]:
         """Return a k length list of unique elements chosen from the population sequence."""
         return self._rng.sample(population, k)
+
+    def shuffle(self, x: List[T]) -> None:
+        """Shuffle list x in place, and return None."""
+        self._rng.shuffle(x)
