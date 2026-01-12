@@ -22,20 +22,48 @@ def hydrate_line(line_idx: int, line_content: str, template: str, remove_meta: b
         # Hydrate!
         meta_params = data.get("_meta", {}).get("params", {})
         
-        # Prepare context variables
-        # We need to make sure the template keys match these variables
-        context = {
-            "origin": meta_params.get("origin", "UNKNOWN"),
-            "ctx_time": meta_params.get("ctx_time", "12:00"),
-            "date": meta_params.get("date", "2024-05-01")
-        }
+        # Prepare dynamic context
+        p = meta_params # shorthand
+        
+        # Defaults
+        origin = p.get("origin", "UNKNOWN")
+        ctx_time = p.get("ctx_time", "12:00")
+        date = p.get("date", "2024-05-01")
+        ui_state = p.get("ui_state", '{"state":"idle","can":{"next":false,"prev":false,"back":false}}')
+        trains_array = p.get("trains_array", "[]")
 
-        try:
-            hydrated_prompt = template.format(**context)
-            system_message["content"] = hydrated_prompt
-        except KeyError as e:
-            print(f"Warning: Missing key {e} in metadata for line {line_idx}")
-            return line_content
+        # Construct block
+        # Matches format:
+        # <ctx>
+        # data: 2024-05-01
+        # ora: 12:00
+        # stazione: Roma Termini
+        # </ctx>
+        # 
+        # <ui>
+        # ...
+        # </ui>
+        # 
+        # <trains>
+        # ...
+        # </trains>
+        
+        dyn_context_str = (
+            f"<ctx>\n"
+            f"data: {date}\n"
+            f"ora: {ctx_time}\n"
+            f"stazione: {origin}\n"
+            f"</ctx>\n\n"
+            f"<ui>\n"
+            f"{ui_state}\n"
+            f"</ui>\n\n"
+            f"<trains>\n"
+            f"{trains_array}\n"
+            f"</trains>"
+        )
+
+        hydrated_prompt = template.replace("{{DYN_CONTEXT}}", dyn_context_str)
+        system_message["content"] = hydrated_prompt
     
     # Keep _meta by default unless requested to remove
     if remove_meta:

@@ -133,7 +133,9 @@ class SearchTrains(Scenario):
                     "passengers": passengers,
                     "template": template,
                     "ctx_time": ctx_time,
-                    "date": "2024-05-01"
+                    "date": "2024-05-01",
+                    "ui_state": '{"state":"idle","can":{"next":false,"prev":false,"back":false}}',
+                    "trains_array": "[]"
                 }
             }
         }
