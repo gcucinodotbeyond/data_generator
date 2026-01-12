@@ -118,6 +118,7 @@ class SearchTrains(Scenario):
             )
 
         return {
+            "tools": "{{TOOL_DEFINITION}}",
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_text},

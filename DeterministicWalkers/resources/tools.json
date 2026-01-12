@@ -1,0 +1,106 @@
+{
+    "tools": [
+        {
+            "type": "function",
+            "function": {
+                "name": "search_trains",
+                "description": "Cerca treni disponibili tra due stazioni",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "origin": {
+                            "type": "string",
+                            "description": "Stazione di partenza"
+                        },
+                        "destination": {
+                            "type": "string",
+                            "description": "Stazione di arrivo"
+                        },
+                        "date": {
+                            "type": "string",
+                            "description": "Data (DD/MM/YYYY, 'today', 'tomorrow')",
+                            "default": "today"
+                        },
+                        "time": {
+                            "type": "string",
+                            "description": "Orario (HH:MM, 'now', 'morning', 'afternoon', 'evening')",
+                            "default": "now"
+                        },
+                        "passengers": {
+                            "type": "integer",
+                            "description": "Numero passeggeri",
+                            "default": 1
+                        }
+                    },
+                    "required": [
+                        "origin",
+                        "destination"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "purchase_ticket",
+                "description": "Acquista biglietto per un treno",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "train_id": {
+                            "type": "string",
+                            "description": "ID del treno"
+                        },
+                        "class": {
+                            "type": "string",
+                            "description": "Classe di viaggio",
+                            "default": "STANDARD"
+                        },
+                        "seat": {
+                            "type": "string",
+                            "description": "Numero posto (es. '4B')"
+                        },
+                        "carriage": {
+                            "type": "integer",
+                            "description": "Numero carrozza"
+                        }
+                    },
+                    "required": [
+                        "train_id",
+                        "class"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "ui_control",
+                "description": "Controlla navigazione interfaccia",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "type": "string",
+                            "enum": [
+                                "next",
+                                "prev",
+                                "back",
+                                "status",
+                                "show_changes"
+                            ],
+                            "description": "Azione di navigazione"
+                        },
+                        "train_position": {
+                            "type": "integer",
+                            "description": "Posizione treno per show_changes"
+                        }
+                    },
+                    "required": [
+                        "action"
+                    ]
+                }
+            }
+        }
+    ]
+}
