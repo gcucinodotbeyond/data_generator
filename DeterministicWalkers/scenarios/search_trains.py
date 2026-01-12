@@ -79,31 +79,57 @@ class SearchTrains(Scenario):
             user_text += f" di {time_period}"
             
         # 5. Construct Expected Tool Call
-        # We assume the system resolves relative dates (oggi/domani) to actual params if possible,
-        # but for search_trains tool, it often accepts 'today', 'tomorrow' strings or just dates.
-        # Let's align with the previous system's behavior or standard API.
-        # Looking at previous templates: keys are origin, destination, date, time, passengers.
+        # 5. Construct Expected Tool Call
+        # We define context time early as it may influence tool params or train generation
+        ctx_time = f"{rng.randint(6, 22):02d}:{rng.randint(0, 59):02d}"
+
+        # args dictionary
+        tool_call_args = {
+            "origin": origin,
+            "destination": destination,
+            "passengers": passengers,
+            "date": "today" if "oggi" in user_text else ("tomorrow" if "domani" in user_text else "today"),
+            "time": "now" # Default to now for search
+        }
         
-        tool_call = {
-            "name": "search_trains",
-            "arguments": {
-                "origin": origin,
-                "destination": destination,
-                "passengers": passengers,
-                # Simple logic: if user didn't specify, we might infer or leave null. 
-                # For deterministic ground truth, we populate what is known.
-                "date": "today" if "oggi" in user_text else ("tomorrow" if "domani" in user_text else None),
-                "time": None # Simplified for now
+        tool_call_id = "call_001"
+        tool_call_obj = {
+            "id": tool_call_id,
+            "type": "function",
+            "function": {
+                "name": "search_trains",
+                "arguments": json.dumps(tool_call_args)
             }
         }
         
-        # Remove None values to clean up arguments
-        tool_call["arguments"] = {k: v for k, v in tool_call["arguments"].items() if v is not None}
+        # 6. Construct Tool Response & Follow-up
+        # Generate mock trains result for the tool output
+        num_results = rng.randint(2, 4)
+        mock_trains = []
+        base_h = int(ctx_time.split(":")[0])
+        for i in range(num_results):
+             dep_h = (base_h + 1 + i) % 24
+             mock_trains.append({
+                 "train_id": f"FR{rng.randint(9000, 9999)}",
+                 "departure_time": f"{dep_h:02d}:30",
+                 "arrival_time": f"{(dep_h+2)%24:02d}:30", 
+                 "price": 45.0 + (i * 10),
+                 "type": "Frecciarossa"
+             })
+             
+        tool_msg = {
+            "role": "tool",
+            "content": json.dumps({"trains": mock_trains}),
+            "tool_call_id": tool_call_id,
+            "name": "search_trains"
+        }
         
-        # 6. Construct System Prompt Context
-        # The kiosk needs to know where it is and what time it is.
-        ctx_time = f"{rng.randint(6, 22):02d}:{rng.randint(0, 59):02d}"
-        
+        asst_msg_final = {
+            "role": "assistant",
+            "content": f"😊 Ho trovato {num_results} soluzioni per {destination}. La prima parte alle {mock_trains[0]['departure_time']}."
+        }
+
+        # 7. Construct System Prompt Context
         if predataset:
              system_prompt = "{{SYSTEM_PROMPT}}"
         else:
@@ -111,7 +137,7 @@ class SearchTrains(Scenario):
                 f"Sei Talìa, l'assistente virtuale di Trenitalia.\n"
                 f"<ctx>\n"
                 f"stazione: {origin}\n"
-                f"data: 2024-05-01\n" # Fixed date for reproducibility or derived from seed? Fixed is safer for now.
+                f"data: 2024-05-01\n" 
                 f"ora: {ctx_time}\n"
                 f"</ctx>\n"
                 f"Oggi è mercoledì."
@@ -122,22 +148,29 @@ class SearchTrains(Scenario):
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_text},
-                {"role": "assistant", "tool_calls": [tool_call]}
+                {"role": "assistant", "tool_calls": [tool_call_obj], "content": None},
+                tool_msg,
+                asst_msg_final
             ],
             "_meta": {
                 "scenario": self.name,
                 "seed": rng.seed,
                 "run_id": run_id,
-                "params": {
-                    "origin": origin,
-                    "destination": destination,
-                    "passengers": passengers,
-                    "template": template,
-                    "ctx_time": ctx_time,
-                    "date": "2024-05-01",
-                    "ui_state": '{"state":"idle","can":{"next":false,"prev":false,"back":false}}',
-                    "trains_array": "[]"
-                }
+                "contexts": [
+                    {
+                        "slice_length": 2,
+                        "params": {
+                            "origin": origin,
+                            "destination": destination,
+                            "passengers": passengers,
+                            "template": template,
+                            "ctx_time": ctx_time,
+                            "date": "2024-05-01",
+                            "ui_state": '{"state":"idle","can":{"next":false,"prev":false,"back":false}}',
+                            "trains_array": "[]"
+                        }
+                    }
+                ]
             }
         }
 

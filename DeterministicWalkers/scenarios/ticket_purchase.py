@@ -144,13 +144,32 @@ class TicketPurchase(Scenario):
             "class": class_str
         }
         
-        # Optional: Add seat selection if First Class (recipe hint: "Manca seat for AV")
-        # For this iteration, I'll stick to the base request first, maybe add seat later or rarely.
-        # Let's keep it simple as per "Golden sample 1" or "2".
+        tool_call_id = "call_001"
+        tool_call_obj = {
+            "id": tool_call_id,
+            "type": "function",
+            "function": {
+                "name": "purchase_ticket",
+                "arguments": json.dumps(tool_call_args)
+            }
+        }
         
-        tool_call = {
-            "name": "purchase_ticket",
-            "arguments": tool_call_args
+        # Tool Response (Ticket)
+        tool_msg = {
+            "role": "tool",
+            "content": json.dumps({
+                "confirmation_code": f"TICKET-{rng.randint(10000,99999)}",
+                "train_id": target_train["id"],
+                "seat": f"{rng.randint(1,10)}A",
+                "price": target_train["price"]
+            }),
+            "tool_call_id": tool_call_id,
+            "name": "purchase_ticket"
+        }
+        
+        asst_msg_final = {
+            "role": "assistant",
+            "content": "😊 Il tuo biglietto è stato acquistato! Buon viaggio."
         }
         
         # 5. System Prompt Generation
@@ -178,19 +197,26 @@ class TicketPurchase(Scenario):
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_text},
-                {"role": "assistant", "tool_calls": [tool_call]}
+                {"role": "assistant", "tool_calls": [tool_call_obj], "content": None},
+                tool_msg,
+                asst_msg_final
             ],
             "_meta": {
                 "scenario": self.name,
                 "seed": rng.seed,
                 "run_id": run_id,
-                "params": {
-                    "origin": origin,
-                    "destination": destination,
-                    "ctx_time": ctx_time,
-                    "date": "2025-12-23", # Fixed date as per recipe examples often use Dec
-                    "ui_state": '{"state":"results","can":{"next":false,"prev":false,"back":true}}',
-                    "trains_array": json.dumps(trains)
-                }
+                "contexts": [
+                    {
+                        "slice_length": 2,
+                        "params": {
+                            "origin": origin,
+                            "destination": destination,
+                            "ctx_time": ctx_time,
+                            "date": "2025-12-23", 
+                            "ui_state": '{"state":"results","can":{"next":false,"prev":false,"back":true}}',
+                            "trains_array": json.dumps(trains)
+                        }
+                    }
+                ]
             }
         }

@@ -44,39 +44,43 @@ class LongTicketPurchase(Scenario):
         # State 1: Idle
         sys_prompt = "{{SYSTEM_PROMPT}}"
         
+        # --- PHASE 1: SEARCH ---
+        tool_id_1 = "call_001"
         user_msg_1 = {"role": "user", "content": f"Voglio andare a {dest}"}
         
-        # Fake Search Tool Call
-        # In a real engine, we'd run the tool. Here we mock.
-        tool_call_1 = {
-             "name": "search_trains",
-             "arguments": {"origin": origin, "destination": dest}
+        tool_call_1_obj = {
+            "id": tool_id_1,
+            "type": "function",
+            "function": {
+                 "name": "search_trains",
+                 "arguments": json.dumps({"origin": origin, "destination": dest, "date": "today"})
+            }
         }
-        asst_msg_1 = {"role": "assistant", "tool_calls": [tool_call_1]}
+        asst_msg_1 = {"role": "assistant", "tool_calls": [tool_call_1_obj], "content": None}
         
-        # Fake Tool Output (Trains List A - maybe messy/many)
-        # We'll just define the final train list for simplicity of the prompt context in Turn 2
-        # But to be realistic, let's say the first list was big.
-        
+        # Mock Tool Output
         tool_msg_1 = {
             "role": "tool", 
-            "content": '{"trains": [{"id":"many..."}]}', # Placeholder content, generator doesn't simulate full tool output logic yet aside from final state context
-            "tool_call_id": "call_1" # Fake ID logic
+            "content": json.dumps({"trains": [{"id": "FR1000", "dep": "08:00"}, {"id": "FR1001", "dep": "10:15"}]}),
+            "tool_call_id": tool_id_1,
+            "name": "search_trains"
         }
         
-        asst_reply_1 = {"role": "assistant", "content": "Ho trovato molte soluzioni. Preferisci un orario specifico?"}
+        asst_reply_1 = {"role": "assistant", "content": "Ho trovato diverse soluzioni. Preferisci un orario specifico?"}
         
         # --- PHASE 2: REFINE ---
+        tool_id_2 = "call_002"
         user_msg_2 = {"role": "user", "content": "Solo dopo le 10"}
         
-        # Let's assume the assistant does a UI filter or internal logic. 
-        # For this dataset, maybe no tool call, just updating the View?
-        # Or maybe re-search. Let's say re-search.
-        tool_call_2 = {
-             "name": "search_trains",
-             "arguments": {"origin": origin, "destination": dest, "time": "10:00"}
+        tool_call_2_obj = {
+            "id": tool_id_2,
+            "type": "function",
+            "function": {
+                 "name": "search_trains",
+                 "arguments": json.dumps({"origin": origin, "destination": dest, "date": "today", "time": "10:00"})
+            }
         }
-        asst_msg_2 = {"role": "assistant", "tool_calls": [tool_call_2]}
+        asst_msg_2 = {"role": "assistant", "tool_calls": [tool_call_2_obj], "content": None}
         
         # --- PHASE 3: PURCHASE ---
         # Now we present the final list (Context for Turn 3)
@@ -88,39 +92,49 @@ class LongTicketPurchase(Scenario):
         tool_msg_2 = {
              "role": "tool",
              "content": json.dumps({"trains": trains_final}),
-             "tool_call_id": "call_2"
+             "tool_call_id": tool_id_2,
+             "name": "search_trains"
         }
         
         asst_reply_2 = {"role": "assistant", "content": "Ecco i treni dopo le 10. Il primo parte alle 10:15."}
         
         user_msg_3 = {"role": "user", "content": "Prendo il primo"}
         
-        tool_call_3 = {
-             "name": "purchase_ticket",
-             "arguments": {"train_id": "FR9999", "class": "Seconda Classe"}
+        tool_id_3 = "call_003"
+        tool_call_3_obj = {
+             "id": tool_id_3,
+             "type": "function",
+             "function": {
+                "name": "purchase_ticket",
+                "arguments": json.dumps({"train_id": "FR9999", "class": "Seconda Classe"})
+             }
         }
-        asst_msg_3 = {"role": "assistant", "tool_calls": [tool_call_3]}
+        asst_msg_3 = {"role": "assistant", "tool_calls": [tool_call_3_obj], "content": None}
+        
+        tool_msg_3 = {
+            "role": "tool",
+            "content": json.dumps({"status": "success", "code": "ABC12345"}),
+            "tool_call_id": tool_id_3,
+            "name": "purchase_ticket"
+        }
+        
+        asst_reply_3 = {"role": "assistant", "content": "Ottimo, biglietto acquistato!"}
 
         # --- CONSTRUCT FULL HISTORY ---
         messages = [
             {"role": "system", "content": sys_prompt},
             user_msg_1,
             asst_msg_1,
-            # For simplicity in pure generation without a simulator, we often omit the tool output messages in the history 
-            # if we are just training the model to make the CALL.
-            # BUT, for multi-turn chat, we should ideally have them. 
-            # However, the recipe "02_ticket_purchase" focuses on single turn "State -> User -> Tool".
-            # The slicing script cuts everything BEFORE the target user message usually? 
-            # Wait, the slicing script takes `messages[:msg_len]`. 
-            # So if we want to train on Turn 3, we need the history [Sys, U1, A1, U2, A2, U3] -> A3.
-            
-            # Let's put minimal history.
+            tool_msg_1,
             asst_reply_1,
             user_msg_2,
             asst_msg_2,
+            tool_msg_2,
             asst_reply_2, 
             user_msg_3,
-            asst_msg_3
+            asst_msg_3,
+            tool_msg_3,
+            asst_reply_3
         ]
         
         # --- DEFINE CONTEXTS FOR SLICING ---
@@ -143,10 +157,10 @@ class LongTicketPurchase(Scenario):
         }
         
         # 2. Refine (User says "Solo dopo le 10")
-        # History: Sys, U1, A1, Reply1, U2.
+        # History: Sys, U1, A1, Tool1, Reply1, U2.
         
         ctx_2 = {
-            "slice_length": 5, # [Sys, U1, A1, Reply1, U2] -> Predict A2
+            "slice_length": 6, # [Sys, U1, A1, Tool1, Reply1, U2] -> Predict A2
             "params": {
                 "origin": origin,
                 "ctx_time": "09:01",
@@ -156,15 +170,15 @@ class LongTicketPurchase(Scenario):
         }
         
         # 3. Purchase (User says "Prendo il primo")
-        # List: Sys, U1, A1, Reply1, U2, A2, Reply2, U3
-        # Length: 8
+        # List: Sys, U1, A1, T1, R1, U2, A2, T2, R2, U3
+        # Length: 10
         ctx_3 = {
-            "slice_length": 8,
+            "slice_length": 10,
             "params": {
                 "origin": origin,
                 "ctx_time": "09:02",
                 "ui_state": '{"state":"results"}', 
-                "trains_array": json.dumps(trains_final) # The specifi list for this purchase
+                "trains_array": json.dumps(trains_final) # The specific list for this purchase
             }
         }
         

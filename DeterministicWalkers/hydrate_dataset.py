@@ -26,7 +26,17 @@ def hydrate_line(line_idx: int, line_content: str, template: str, remove_meta: b
 
     if system_message["content"] == "{{SYSTEM_PROMPT}}":
         # Hydrate!
-        meta_params = data.get("_meta", {}).get("params", {})
+        if "contexts" in data.get("_meta", {}):
+            # New structure: take the first context for the base hydration
+            # (Slicing will handle the rest later, or we iterate if this script handled slicing)
+            # Assuming we just hydrate the first System Prompt of the file.
+            try:
+                meta_params = data["_meta"]["contexts"][0]["params"]
+            except (IndexError, KeyError):
+                meta_params = {}
+        else:
+             # Legacy structure
+            meta_params = data.get("_meta", {}).get("params", {})
         
         # Prepare dynamic context
         p = meta_params # shorthand

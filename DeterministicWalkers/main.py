@@ -9,6 +9,7 @@ from core.generator import Generator
 from scenarios.search_trains import SearchTrains
 from scenarios.ticket_purchase import TicketPurchase
 from scenarios.long_ticket_purchase import LongTicketPurchase
+from scenarios.ui_navigation import UiNavigation
 
 def main():
     parser = argparse.ArgumentParser(description="Deterministic Data Generator")
@@ -60,6 +61,7 @@ def main():
     gen.register_scenario(SearchTrains)
     gen.register_scenario(TicketPurchase)
     gen.register_scenario(LongTicketPurchase)
+    gen.register_scenario(UiNavigation)
     
     # Run
     gen.generate_all(count_per_scenario=args.count)
