@@ -11,6 +11,7 @@ RESOURCE_PATH = CURRENT_DIR.parent / "resources" / "stations.json"
 try:
     with open(RESOURCE_PATH, 'r', encoding='utf-8') as f:
         STATIONS_DATA = json.load(f)
+    print(f"Loaded {len(STATIONS_DATA)} regions from stations.json")
     STATIONS_ALL = []
     for category in STATIONS_DATA.values():
         STATIONS_ALL.extend(category)
@@ -18,6 +19,7 @@ try:
     STATIONS_ALL = sorted(list(set(STATIONS_ALL)))
     STATIONS_MAJOR = STATIONS_DATA.get("major", STATIONS_ALL[:20])
 except FileNotFoundError:
+    print("Fallback stations")
     STATIONS_ALL = ["Roma Termini", "Milano Centrale", "Napoli Centrale", "Torino Porta Nuova", "Firenze SMN"]
     STATIONS_MAJOR = STATIONS_ALL
 
@@ -41,11 +43,9 @@ class TicketPurchase(Scenario):
         ctx_time = f"{base_hour:02d}:{rng.choice([0, 15, 30, 45]):02d}"
         
         # 2. Generate Search Results (Trains) according to recipe schema
-        # Schema: [{"pos":1,"id":"...","dep":"...","arr":"...","type":"...","stops":0,"price":"..."}]
         num_results = rng.randint(2, 4)
         trains = []
         
-        # Train types with some properties
         TRAIN_TYPES = [
             {"type": "Frecciarossa", "speed_mult": 1.0, "base_price": 50, "prefix": "FR"},
             {"type": "Intercity", "speed_mult": 1.5, "base_price": 30, "prefix": "IC"},
@@ -53,8 +53,6 @@ class TicketPurchase(Scenario):
         ]
         
         current_min_from_midnight = base_hour * 60 + int(ctx_time.split(":")[1])
-        
-        # Start first train shortly after context time
         start_offset = 15 
         
         for i in range(num_results):
@@ -74,22 +72,17 @@ class TicketPurchase(Scenario):
             arr_m = arr_min_abs % 60
             arr_time = f"{arr_h:02d}:{arr_m:02d}"
             
-            # ID
             train_id = f"{t_type['prefix']}{rng.randint(1000, 9999)}"
-            
-            # Price
             price_val = t_type["base_price"] + rng.randint(-5, 20)
             if price_val < 5: price_val = 5
             price_str = f"{price_val}.00"
-            
-            # Stops
             stops = 0 if t_type["type"] == "Frecciarossa" else rng.randint(1, 10)
             
             trains.append({
                 "pos": i + 1,
                 "id": train_id,
-                "dep": dep_time, # Schema uses 'dep'
-                "arr": arr_time, # Schema uses 'arr'
+                "dep": dep_time, 
+                "arr": arr_time, 
                 "type": t_type["type"],
                 "stops": stops,
                 "price": price_str
@@ -98,11 +91,6 @@ class TicketPurchase(Scenario):
         # 3. Choose Target & construct User Message
         target_idx = rng.randint(0, num_results - 1)
         target_train = trains[target_idx]
-        
-        # Intent: Class selection (80% Seconda, 20% Prima)
-        # However, for Regionale, usually only Seconda exists or is standard.
-        # Recipe says: "80% Seconda Classe, 20% Prima Classe"
-        # We'll apply this. If user asks for First, we assume it exists.
         
         is_first_class = False
         if target_train["type"] != "Regionale":
@@ -116,7 +104,6 @@ class TicketPurchase(Scenario):
         strategy = rng.choice(strategies)
         
         user_text = ""
-        
         if strategy == "ordinal":
             ordinals = ["il primo", "il secondo", "il terzo", "il quarto"]
             obj = ordinals[target_idx] if target_idx < len(ordinals) else "quello"
@@ -126,19 +113,50 @@ class TicketPurchase(Scenario):
         elif strategy == "type_time":
             user_text = f"Il {target_train['type']} delle {target_train['dep']}"
         elif strategy == "minimal":
-             user_text = f"Il {target_train['type']}" # Risk if multiple same type, but acceptable/realistic ambiguity
+             user_text = f"Il {target_train['type']}"
              
-        # Add class intent to text
         if is_first_class:
             user_text += " in prima classe"
-        elif rng.random() < 0.3: # Sometimes explicitly say second class
+        elif rng.random() < 0.3: 
             user_text += " in seconda classe"
             
         if rng.random() < 0.2:
             user_text += ", per favore"
+            
+        # --- PACE VARIATION ---
+        # 30% chance for Seat Selection Flow (Multi-turn)
+        # Flow: User -> Asst (Ask Seat) -> User (Answer) -> Asst (Purchase)
+        
+        add_seat_selection = rng.random() < 0.3
+        
+        messages = []
+        if predataset:
+             system_prompt = "{{SYSTEM_PROMPT}}"
+        else:
+            system_prompt = (f"Sei Talìa... <ctx>stazione: {origin}</ctx>")
 
-        # 4. Construct Tool Call
-        # Recipe: purchase_ticket(train_id="...", class="...")
+        messages.append({"role": "system", "content": system_prompt})
+        
+        # Turn 1: User Intent
+        messages.append({"role": "user", "content": self.rephrase(rng, user_text)})
+        
+        if add_seat_selection:
+            # Assistant asks clarifying question
+            # We skip tool call here, just text
+            messages.append({
+                "role": "assistant",
+                "content": "Preferisci finestrino o corridoio?" 
+            })
+            
+            # User answers
+            seat_pref = rng.choice(["Finestrino", "Corridoio", "Indifferente"])
+            user_seat_msg = f"{seat_pref}, grazie"
+            messages.append({"role": "user", "content": self.rephrase(rng, user_seat_msg)})
+        
+        # Purchase Tool Call
+        # We don't actually pass seat_pref to tool because schema doesn't support it standardly? 
+        # Or maybe add as extra arg if we want flexible schema? 
+        # Safe bet: Standard args.
         tool_call_args = {
             "train_id": target_train["id"],
             "class": class_str
@@ -154,7 +172,10 @@ class TicketPurchase(Scenario):
             }
         }
         
-        # Tool Response (Ticket)
+        # Assistant Tool Call Msg
+        messages.append({"role": "assistant", "tool_calls": [tool_call_obj], "content": None})
+        
+        # Tool Response
         tool_msg = {
             "role": "tool",
             "content": json.dumps({
@@ -166,48 +187,24 @@ class TicketPurchase(Scenario):
             "tool_call_id": tool_call_id,
             "name": "purchase_ticket"
         }
+        messages.append(tool_msg)
         
-        asst_msg_final = {
+        # Final Reply
+        messages.append({
             "role": "assistant",
             "content": "😊 Il tuo biglietto è stato acquistato! Buon viaggio."
-        }
-        
-        # 5. System Prompt Generation
-        if predataset:
-             system_prompt = "{{SYSTEM_PROMPT}}"
-        else:
-            # Fallback for raw generation
-             system_prompt = (
-                f"Sei Talìa...\n"
-                f"<ctx>\n"
-                f"stazione: {origin}\n"
-                f"data: 2025-12-23\n"
-                f"ora: {ctx_time}\n"
-                f"</ctx>\n\n"
-                f"<ui>\n"
-                f'{{"state":"results","can":{{"next":false,"prev":false,"back":true}}}}\n'
-                f"</ui>\n\n"
-                f"<trains>\n"
-                f"{json.dumps(trains)}\n"
-                f"</trains>"
-            )
+        })
 
         return {
             "tools": "{{TOOL_DEFINITION}}",
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_text},
-                {"role": "assistant", "tool_calls": [tool_call_obj], "content": None},
-                tool_msg,
-                asst_msg_final
-            ],
+            "messages": messages,
             "_meta": {
                 "scenario": self.name,
                 "seed": rng.seed,
                 "run_id": run_id,
                 "contexts": [
                     {
-                        "slice_length": 2,
+                        "slice_length": len(messages) - 3, # Just before purchase tool call
                         "params": {
                             "origin": origin,
                             "destination": destination,

@@ -87,6 +87,7 @@ TRANSITIONS_TO_SEARCH = [
     "Grazie delle info. Ora vediamo i treni per {dest}",
     "Chiaro. Andiamo a {dest}"
 ]
+# We will enhance these with corpus at runtime
 
 TRANSITIONS_TO_QA = [
     "Un'altra cosa... {question}",
@@ -134,9 +135,56 @@ class MultiTurn(Scenario):
         system_content = "{{SYSTEM_PROMPT}}" # Will be hydrated
         messages.append({"role": "system", "content": system_content})
         
-        # --- PREPARE SEARCH DATA ---
+        # Input: origin, destination already picked
+        
+        # --- PREPARE SEARCH QUERY & CONTEXT TIME ---
+        # We pick the search query EARLY so we can align the 'time_str' (ctx_time) with it.
+        corpus_queries = self.corpus.get("search_queries", [])
+        
+        # Defaults
+        user_search_msg_template = f"Vorrei andare a {destination}"
+        base_hour = rng.randint(8, 20)
+        
+        if corpus_queries and rng.random() < 0.8:
+            user_search_msg_template = rng.choice(corpus_queries)
+            
+            # Constraints
+            if "{period_morning}" in user_search_msg_template:
+                base_hour = rng.randint(6, 11)
+                user_search_msg_template = user_search_msg_template.replace("{period_morning}", rng.choice(["stamattina", "questa mattina"]))
+            elif "{period_afternoon}" in user_search_msg_template:
+                base_hour = rng.randint(12, 17)
+                user_search_msg_template = user_search_msg_template.replace("{period_afternoon}", rng.choice(["oggi pomeriggio", "questo pomeriggio"]))
+            elif "{period_evening}" in user_search_msg_template:
+                base_hour = rng.randint(16, 21)
+                user_search_msg_template = user_search_msg_template.replace("{period_evening}", rng.choice(["stasera", "questa sera"]))
+        
+        # Finalize Context Time
+        time_str = f"{base_hour:02d}:00"
+        
+        # Hydrate the search template fully (for later use)
+        # We need to handle dest, time_request, and relative dates NOW
+        user_search_msg = user_search_msg_template.replace("{destination}", destination).replace("{origin}", origin)
+        
+        # Relative dates
+        replacements = {
+            "{relative_date_morning}": "domani mattina",
+            "{relative_date_afternoon}": "domani pomeriggio",
+            "{relative_date_evening}": "domani sera",
+            "{relative_date}": rng.choice(["domani", "dopodomani"]),
+            "{relative_today}": "oggi"
+        }
+        for k, v in replacements.items():
+            user_search_msg = user_search_msg.replace(k, v)
+            
+        # Time Request
+        if "{time_request}" in user_search_msg:
+             req_h = (base_hour + rng.randint(1, 4)) % 24
+             req_m = rng.choice([0, 15, 30])
+             user_search_msg = user_search_msg.replace("{time_request}", f"{req_h:02d}:{req_m:02d}")
+
+        # --- PREPARE SEARCH DATA (Assistant Response) ---
         date_str = "2025-12-25" # Mock
-        time_str = f"{rng.randint(8, 20):02d}:00"
         
         tool_call_id = "call_search_01"
         search_args = {
@@ -199,8 +247,13 @@ class MultiTurn(Scenario):
                 messages.append({"role": "assistant", "content": a})
             
             # --- Transition to Search ---
-            trans_template = rng.choice(TRANSITIONS_TO_SEARCH)
-            user_search_msg = trans_template.format(dest=destination)
+            # We already prepared user_search_msg. We might add a transition prefix.
+            if rng.random() < 0.6:
+                 prefix = rng.choice(["Grazie! ", "Ok. ", "Capito. ", ""]) 
+                 user_search_msg_final = f"{prefix}{user_search_msg}"
+            else:
+                 trans_template = rng.choice(TRANSITIONS_TO_SEARCH)
+                 user_search_msg_final = trans_template.format(dest=destination)
             
             contexts.append({
                 "slice_length": len(messages) + 1, # Predict Assistant (Tool Call)
@@ -212,7 +265,7 @@ class MultiTurn(Scenario):
                 }
             })
             
-            messages.append({"role": "user", "content": user_search_msg})
+            messages.append({"role": "user", "content": user_search_msg_final})
             messages.append({"role": "assistant", "tool_calls": [search_block["tool_call"]], "content": None})
             messages.append(search_block["tool_result"])
             messages.append({"role": "assistant", "content": search_block["assistant_reply"]})
@@ -221,7 +274,8 @@ class MultiTurn(Scenario):
             # Pattern: Search First -> QA
             
             # --- Search Phase ---
-            user_search_msg = f"Vorrei andare a {destination}"
+            # Use pre-calculated user_search_msg
+            pass # already ready
             
             contexts.append({
                 "slice_length": len(messages) + 1,

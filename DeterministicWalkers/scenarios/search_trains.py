@@ -69,19 +69,102 @@ class SearchTrains(Scenario):
         time_period = rng.choice(TIME_PERIODS) if rng.random() > 0.5 else None
         
         # 4. Construct User Message
-        template = rng.choice(USER_TEMPLATES)
-        user_text = template.format(destination=destination)
+        # Use Corpus if available
+        corpus_templates = self.corpus.get("search_queries", [])
+        if corpus_templates and rng.random() < 0.8: # 80% chance to use corpus
+            template = rng.choice(corpus_templates)
+        else:
+            template = rng.choice(USER_TEMPLATES)
+            
+        # Define context time based on constraints in the template
+        base_hour = rng.randint(6, 22) # Default
         
-        # Add varied time/date info to user text strictly deterministically
-        if rng.random() < 0.3:
-            user_text += f" {date_request}"
-        if time_period and rng.random() < 0.3:
-            user_text += f" di {time_period}"
+        # Prepare hydration arguments
+        format_args = {"destination": destination}
+        
+        # --- Handle Relative Time Constraints ---
+        # If the user says "stamattina", context should be morning. 
+        if "{period_morning}" in template:
+            base_hour = rng.randint(6, 11)
+            format_args["period_morning"] = rng.choice(["stamattina", "questa mattina"])
+            
+        elif "{period_afternoon}" in template:
+             base_hour = rng.randint(12, 17)
+             format_args["period_afternoon"] = rng.choice(["oggi pomeriggio", "questo pomeriggio"])
+             
+        elif "{period_evening}" in template:
+             # If user says "stasera", it could be 17:00 (planning for later) or 20:00 (now). 
+             # Let's say context is late afternoon/evening.
+             base_hour = rng.randint(16, 21)
+             format_args["period_evening"] = rng.choice(["stasera", "questa sera"])
+             
+        # Future relative dates don't constrain context time much, but we need to fill the placeholder
+        if "{relative_date_morning}" in template:
+            format_args["relative_date_morning"] = "domani mattina"
+        if "{relative_date_afternoon}" in template:
+            format_args["relative_date_afternoon"] = "domani pomeriggio"
+        if "{relative_date_evening}" in template:
+            format_args["relative_date_evening"] = "domani sera"
+        if "{relative_date}" in template:
+            format_args["relative_date"] = rng.choice(["domani", "dopodomani"])
+        if "{relative_today}" in template:
+            format_args["relative_today"] = "oggi"
+            
+        # Commit to ctx_time
+        ctx_time = f"{base_hour:02d}:{rng.randint(0, 59):02d}"
+        
+        try:
+            # Generate time_request if needed (found in template)
+            if "{time_request}" in template:
+                req_h = (base_hour + rng.randint(1, 4)) % 24
+                req_m = rng.choice([0, 15, 30, 45])
+                req_time = f"{req_h:02d}:{req_m:02d}"
+                format_args["time_request"] = req_time
+            
+            # Use safe replace for format_args to avoid KeyError for missing keys? 
+            # Actually .format() raises KeyError if a key is missing in args but present in string.
+            # But we are checking "if {key} in template" mostly. 
+            # However, simpler to catch-all.
+            
+            # To be robust, we can use a SafeDict or just ensure we covered all our custom keys.
+            # We covered: time_request, period_*, relative_*. destination is always there.
+            
+            # Perform hydration
+            # We can't use format(**args) safely if we missed one.
+            # Let's do partial replacement manually or just ensure we have them.
+            # Our logic covers the known keys.
+            
+            # Note: template might have {destination} or not (if corpus vs custom).
+            # normalize_corpus ensured standard keys.
+            
+            user_text = template
+            for k, v in format_args.items():
+                place = "{" + k + "}"
+                user_text = user_text.replace(place, str(v))
+                
+        except Exception:
+            # Fallback on safe hardcoded
+            user_text = f"Vorrei andare a {destination}"
+        
+        # Add varied time/date info to user text ONLY if the template didn't specify time
+        # We check the ORIGINAL template for placeholders
+        time_placeholders = [
+            "{time_request}", "{period_morning}", "{period_afternoon}", "{period_evening}",
+            "{relative_date}", "{relative_date_morning}", "{relative_date_afternoon}", 
+            "{relative_date_evening}", "{relative_today}"
+        ]
+        has_time_info = any(p in template for p in time_placeholders)
+        
+        if not has_time_info:
+            if rng.random() < 0.3:
+                user_text += f" {date_request}"
+            if time_period and rng.random() < 0.3:
+                user_text += f" di {time_period}"
             
         # 5. Construct Expected Tool Call
         # 5. Construct Expected Tool Call
         # We define context time early as it may influence tool params or train generation
-        ctx_time = f"{rng.randint(6, 22):02d}:{rng.randint(0, 59):02d}"
+        # ctx_time is already defined above
 
         # args dictionary
         tool_call_args = {
@@ -147,7 +230,7 @@ class SearchTrains(Scenario):
             "tools": "{{TOOL_DEFINITION}}",
             "messages": [
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_text},
+                {"role": "user", "content": self.rephrase(rng, user_text)},
                 {"role": "assistant", "tool_calls": [tool_call_obj], "content": None},
                 tool_msg,
                 asst_msg_final

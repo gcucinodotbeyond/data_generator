@@ -12,16 +12,20 @@ class Generator:
     Manages the registration of scenarios and the generation loop.
     """
     
-    def __init__(self, output_dir: str, seed: int = 42, predataset: bool = True):
+    def __init__(self, output_dir: str, seed: int = 42, predataset: bool = True, paraphraser: Any = None):
         self.output_dir = Path(output_dir)
         self.global_seed = seed
         self.predataset = predataset
+        self.paraphraser = paraphraser
         self.scenarios: Dict[str, Type[Scenario]] = {}
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def register_scenario(self, scenario_cls: Type[Scenario]):
         """Register a scenario class."""
         # Instantiate to get the name property
+        # We instantiate with None just to get the name property, 
+        # actual instantiation happens in generate_scenario with real deps if needed?
+        # Actually generate_scenario instantiates again.
         temp_instance = scenario_cls()
         self.scenarios[temp_instance.name] = scenario_cls
 
@@ -47,7 +51,7 @@ class Generator:
             raise ValueError(f"Unknown scenario: {scenario_name}")
             
         scenario_cls = self.scenarios[scenario_name]
-        scenario = scenario_cls() # Instantiate the scenario
+        scenario = scenario_cls(paraphraser=self.paraphraser) # Instantiate the scenario
         
         output_file = self.output_dir / f"{scenario_name}.jsonl"
         print(f"Generating {count} samples for '{scenario_name}' to {output_file}...")
