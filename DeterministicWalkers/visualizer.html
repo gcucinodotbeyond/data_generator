@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Visualizer</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #3b82f6;
+            --user-msg-bg: #3b82f6;
+            --assistant-msg-bg: #334155;
+            --tool-msg-bg: #475569;
+            --border-color: #334155;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .upload-section {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .upload-btn {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .upload-btn:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .drop-zone {
+            padding: 1.5rem;
+            border: 2px dashed var(--border-color);
+            border-radius: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--accent-color);
+            color: var(--text-primary);
+        }
+
+        .drop-zone.active {
+            border-color: var(--accent-color);
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .conversation-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .file-group {
+            margin-bottom: 1rem;
+        }
+
+        .file-header {
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            background-color: rgba(0, 0, 0, 0.2);
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .conversation-item {
+            padding: 0.75rem 1rem;
+            margin: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .conversation-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .conversation-item.active {
+            background-color: rgba(59, 130, 246, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .item-scenario {
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-id {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-color: var(--bg-color);
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 1rem;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-header {
+            font-size: 0.75rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .message-content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* User Message */
+        .user {
+            align-self: flex-end;
+            background-color: var(--user-msg-bg);
+            border-bottom-right-radius: 0.2rem;
+        }
+
+        /* Assistant Message */
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-msg-bg);
+            border-bottom-left-radius: 0.2rem;
+        }
+
+        /* System Message */
+        .system {
+            align-self: center;
+            background-color: rgba(255, 255, 255, 0.05);
+            max-width: 90%;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        /* Tool Message */
+        .tool {
+            align-self: flex-start;
+            background-color: var(--tool-msg-bg);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            border-left: 4px solid #10b981;
+        }
+
+        /* Function Call */
+        .function-call {
+            background-color: #2e1065;
+            border: 1px solid #8b5cf6;
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+        }
+
+        /* Metadata Panel */
+        .metadata-panel {
+            width: 300px;
+            background-color: var(--sidebar-bg);
+            border-left: 1px solid var(--border-color);
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .meta-section {
+            margin-bottom: 2rem;
+        }
+
+        .meta-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .json-block {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            color: #d1d5db;
+        }
+
+        .empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar for Files/Conversations -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1 class="title">Dataset Visualizer</h1>
+        </div>
+
+        <div class="upload-section">
+            <div id="folderBtn" class="upload-btn">📂 Select Data Folder</div>
+            <div id="dropZone" class="drop-zone">
+                or drop files here
+            </div>
+            <input type="file" id="fileInput" accept=".jsonl,.json" style="display: none;" multiple>
+            <input type="file" id="folderInput" webkitdirectory directory style="display: none;">
+        </div>
+
+        <div id="conversationList" class="conversation-list">
+            <!-- List items will be injected here -->
+        </div>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="main-content">
+        <div id="chatContainer" class="chat-container">
+            <div class="empty-state">
+                <div style="font-size: 3rem;">👋</div>
+                <h2>Select a conversation to view</h2>
+                <p>Load the <code>DeterministicWalkers/data</code> folder to start</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Metadata Panel -->
+    <div class="metadata-panel" id="metadataPanel" style="display: none;">
+        <div class="meta-section">
+            <div class="meta-title">Metadata</div>
+            <div id="metaContent" class="json-block"></div>
+        </div>
+        <div class="meta-section">
+            <div class="meta-title">Contexts</div>
+            <div id="contextContent" class="json-block"></div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const folderInput = document.getElementById('folderInput');
+        const folderBtn = document.getElementById('folderBtn');
+        const conversationList = document.getElementById('conversationList');
+        const chatContainer = document.getElementById('chatContainer');
+        const metadataPanel = document.getElementById('metadataPanel');
+        const metaContent = document.getElementById('metaContent');
+        const contextContent = document.getElementById('contextContent');
+
+        // State
+        let allFilesData = {}; // filename -> [conversations]
+
+        // Drag & Drop Handlers
+        dropZone.addEventListener('click', () => fileInput.click());
+        folderBtn.addEventListener('click', () => folderInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('active');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('active');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('active');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        if (window.PRELOADED_DATA) {
+            allFilesData = window.PRELOADED_DATA;
+            renderSidebar();
+            // Automatically select the first conversation of the first file if available
+            const firstFile = Object.keys(allFilesData).sort()[0];
+            if (firstFile && allFilesData[firstFile].length > 0) {
+                // Trigger selection logic manually since we don't have a click event
+                // But renderSidebar creates the elements, we can just call selectConversation logic if we extract it or just let user click.
+                // Let's just render sidebar, user can click. Or maybe expand the first one.
+            }
+        }
+
+        folderInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(fileList) {
+            Array.from(fileList).forEach(file => {
+                if (file.name.endsWith('.jsonl') || file.name.endsWith('.json')) {
+                    readFile(file);
+                }
+            });
+        }
+
+        function readFile(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                const conversations = parseJSONL(text);
+                if (conversations.length > 0) {
+                    allFilesData[file.name] = conversations;
+                    renderSidebar();
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function parseJSONL(text) {
+            const lines = text.trim().split('\n');
+            const parsed = [];
+            lines.forEach((line, index) => {
+                try {
+                    if (!line.trim()) return;
+                    const cleanLine = line.replace(/^\d+:\s*/, '');
+                    parsed.push(JSON.parse(cleanLine));
+                } catch (e) {
+                    console.error(`Error parsing line ${index}:`, e);
+                }
+            });
+            return parsed;
+        }
+
+        function renderSidebar() {
+            conversationList.innerHTML = '';
+
+            Object.keys(allFilesData).sort().forEach(filename => {
+                const fileGroup = document.createElement('div');
+                fileGroup.className = 'file-group';
+
+                const header = document.createElement('div');
+                header.className = 'file-header';
+                header.innerHTML = `<span>${filename}</span> <span>${allFilesData[filename].length}</span>`;
+
+                // Toggle visibility logic could go here
+
+                fileGroup.appendChild(header);
+
+                allFilesData[filename].forEach((conv, index) => {
+                    const el = document.createElement('div');
+                    el.className = 'conversation-item';
+
+                    const meta = conv._meta || {};
+                    const scenario = meta.scenario || filename.replace('.jsonl', '');
+                    const runId = meta.run_id !== undefined ? `Run #${meta.run_id}` : `ID #${index}`;
+
+                    el.innerHTML = `
+                        <div class="item-row">
+                            <span class="item-scenario">${scenario}</span>
+                            <span class="badge" style="font-size:0.6rem;">${conv.messages.length} msgs</span>
+                        </div>
+                        <div class="item-id">${runId}</div>
+                    `;
+
+                    el.addEventListener('click', () => {
+                        // clear active class from all
+                        document.querySelectorAll('.conversation-item').forEach(i => i.classList.remove('active'));
+                        el.classList.add('active');
+                        renderChat(conv);
+                        renderMetadata(conv);
+                    });
+                    fileGroup.appendChild(el);
+                });
+
+                conversationList.appendChild(fileGroup);
+            });
+        }
+
+        function renderChat(conv) {
+            chatContainer.innerHTML = '';
+
+            conv.messages.forEach(msg => {
+                const wrapper = document.createElement('div');
+                wrapper.className = `message ${msg.role}`;
+
+                let header = `<div class="message-header">${msg.role}</div>`;
+                let content = '';
+
+                // Handle text content
+                if (msg.content) {
+                    if (typeof msg.content === 'string' && (msg.content.startsWith('{') || msg.content.startsWith('['))) {
+                        try {
+                            const pretty = JSON.stringify(JSON.parse(msg.content), null, 2);
+                            content += `<div class="json-block">${escapeHtml(pretty)}</div>`;
+                        } catch {
+                            content += `<div class="message-content">${escapeHtml(msg.content)}</div>`;
+                        }
+                    } else {
+                        content += `<div class="message-content">${escapeHtml(msg.content)}</div>`;
+                    }
+                }
+
+                // Handle Tool Calls
+                if (msg.tool_calls) {
+                    content += msg.tool_calls.map(call => {
+                        return `
+                            <div class="function-call">
+                                <div style="color: #c4b5fd; margin-bottom: 0.25rem;">🛠️ ${escapeHtml(call.function.name)}</div>
+                                <div style="color: #a78bfa;">${escapeHtml(call.function.arguments)}</div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                wrapper.innerHTML = header + content;
+                chatContainer.appendChild(wrapper);
+            });
+        }
+
+        function renderMetadata(conv) {
+            metadataPanel.style.display = 'block';
+
+            const { _meta, ...rest } = conv;
+            const { contexts, ...metaRest } = _meta || {};
+
+            metaContent.textContent = _meta ? JSON.stringify(metaRest, null, 2) : "No metadata";
+            contextContent.textContent = contexts ? JSON.stringify(contexts, null, 2) : "No context data";
+        }
+
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return text;
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+
+
+
+
+
+
+
+
+<script id="preloaded-data">window.PRELOADED_DATA = {"greeting_to_purchase.jsonl": [{"tools": "{{TOOL_DEFINITION}}", "messages": [{"role": "system", "content": "{{SYSTEM_PROMPT}}"}, {"role": "user", "content": "Hey"}, {"role": "assistant", "content": "😊 Hey! Ti ascolto, cosa ti serve?"}, {"role": "user", "content": "Fantastico! Allora vediamo i treni per Padova domani mattina alle 15:30"}, {"role": "assistant", "tool_calls": [{"id": "call_001", "type": "function", "function": {"name": "search_trains", "arguments": "{\"origin\": \"Genova Piazza Principe\", \"destination\": \"Padova\", \"date\": \"today\", \"time\": \"14:27\", \"passengers\": 1}"}}], "content": null}, {"role": "tool", "content": "{\"trains\": [{\"pos\": 1, \"id\": \"FR7542\", \"dep\": \"14:43\", \"arr\": \"16:53\", \"type\": \"Frecciarossa\", \"stops\": 0, \"price\": 57.36}, {\"pos\": 2, \"id\": \"RV6800\", \"dep\": \"15:18\", \"arr\": \"18:44\", \"type\": \"Regionale Veloce\", \"stops\": 8, \"price\": 11.08}, {\"pos\": 3, \"id\": \"IC1791\", \"dep\": \"15:39\", \"arr\": \"18:25\", \"type\": \"Intercity\", \"stops\": 5, \"price\": 21.36}]}", "tool_call_id": "call_001", "name": "search_trains"}, {"role": "assistant", "content": "😊 Ho trovato varie soluzioni per Padova. La prima parte alle 14:43."}, {"role": "user", "content": "Ok grazie, c'è tanta confusione qui..."}, {"role": "assistant", "content": "😊 Benissimo!"}, {"role": "user", "content": "Voglio comprare il secondo in prima classe"}, {"role": "assistant", "tool_calls": [{"id": "call_002", "type": "function", "function": {"name": "purchase_ticket", "arguments": "{\"train_id\": \"RV6800\", \"class\": \"Prima Classe\"}"}}], "content": null}, {"role": "tool", "content": "{\"confirmation_code\": \"B7460E\", \"train_id\": \"RV6800\", \"seat\": \"10C\", \"carriage\": 1, \"class\": \"Prima Classe\", \"price\": 50.0}", "tool_call_id": "call_002", "name": "purchase_ticket"}, {"role": "assistant", "content": "😊 Il tuo biglietto è stato acquistato! Buon viaggio."}, {"role": "assistant", "content": "🎉 Buon viaggio!"}], "_meta": {"scenario": "greeting_to_purchase", "seed": 1468270716, "run_id": 0, "contexts": [{"slice_length": 2, "params": {"origin": "Genova Piazza Principe", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "09:30", "date": "2025-12-27"}}, {"slice_length": 4, "params": {"origin": "Genova Piazza Principe", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "14:27", "date": "2025-12-27"}}, {"slice_length": 8, "params": {"origin": "Genova Piazza Principe", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[{\"pos\": 1, \"id\": \"FR7542\", \"dep\": \"14:43\", \"arr\": \"16:53\", \"type\": \"Frecciarossa\", \"stops\": 0, \"price\": 57.36}, {\"pos\": 2, \"id\": \"RV6800\", \"dep\": \"15:18\", \"arr\": \"18:44\", \"type\": \"Regionale Veloce\", \"stops\": 8, \"price\": 11.08}, {\"pos\": 3, \"id\": \"IC1791\", \"dep\": \"15:39\", \"arr\": \"18:25\", \"type\": \"Intercity\", \"stops\": 5, \"price\": 21.36}]", "date": "2025-12-27"}}, {"slice_length": 10, "params": {"origin": "Genova Piazza Principe", "ui_state": "{\"state\":\"results\"}", "trains_array": "[{\"pos\": 1, \"id\": \"FR7542\", \"dep\": \"14:43\", \"arr\": \"16:53\", \"type\": \"Frecciarossa\", \"stops\": 0, \"price\": 57.36}, {\"pos\": 2, \"id\": \"RV6800\", \"dep\": \"15:18\", \"arr\": \"18:44\", \"type\": \"Regionale Veloce\", \"stops\": 8, \"price\": 11.08}, {\"pos\": 3, \"id\": \"IC1791\", \"dep\": \"15:39\", \"arr\": \"18:25\", \"type\": \"Intercity\", \"stops\": 5, \"price\": 21.36}]", "date": "2025-12-27"}}]}}], "long_ticket_purchase.jsonl": [{"tools": "{{TOOL_DEFINITION}}", "messages": [{"role": "system", "content": "{{SYSTEM_PROMPT}}"}, {"role": "user", "content": "Per L'Aquila, oggi alle 12:30"}, {"role": "assistant", "tool_calls": [{"id": "call_001", "type": "function", "function": {"name": "search_trains", "arguments": "{\"origin\": \"Roma Termini\", \"destination\": \"L'Aquila\", \"date\": \"today\", \"time\": \"10:01\", \"passengers\": 1}"}}], "content": null}, {"role": "tool", "content": "{\"trains\": [{\"pos\": 1, \"id\": \"FA3345\", \"dep\": \"10:29\", \"arr\": \"12:26\", \"type\": \"Frecciargento\", \"stops\": 2, \"price\": 36.67}, {\"pos\": 2, \"id\": \"FA3969\", \"dep\": \"11:10\", \"arr\": \"13:10\", \"type\": \"Frecciargento\", \"stops\": 2, \"price\": 36.82}, {\"pos\": 3, \"id\": \"RV4259\", \"dep\": \"11:26\", \"arr\": \"15:31\", \"type\": \"Regionale Veloce\", \"stops\": 8, \"price\": 12.55}]}", "tool_call_id": "call_001", "name": "search_trains"}, {"role": "assistant", "content": "😊 Ho trovato varie soluzioni per L'Aquila. La prima parte alle 10:29."}, {"role": "user", "content": "Buonasera, devo andare a Foggia oggi"}, {"role": "assistant", "tool_calls": [{"id": "call_002", "type": "function", "function": {"name": "search_trains", "arguments": "{\"origin\": \"Roma Termini\", \"destination\": \"Foggia\", \"date\": \"today\", \"time\": \"14:40\", \"passengers\": 1}"}}], "content": null}, {"role": "tool", "content": "{\"trains\": [{\"pos\": 1, \"id\": \"RV3372\", \"dep\": \"15:01\", \"arr\": \"18:44\", \"type\": \"Regionale Veloce\", \"stops\": 8, \"price\": 11.34}, {\"pos\": 2, \"id\": \"FR1012\", \"dep\": \"15:19\", \"arr\": \"17:04\", \"type\": \"Frecciarossa\", \"stops\": 0, \"price\": 44.19}, {\"pos\": 3, \"id\": \"FA7798\", \"dep\": \"16:08\", \"arr\": \"18:06\", \"type\": \"Frecciargento\", \"stops\": 2, \"price\": 33.75}]}", "tool_call_id": "call_002", "name": "search_trains"}, {"role": "assistant", "content": "😊 Ho trovato varie soluzioni per Foggia. La prima parte alle 15:01."}, {"role": "user", "content": "Quello delle 15:01 va benissimo! Almeno arrivo in tempo per l'aperitivo prima dell'inaugurazione. Ma spero non ci siano altri intoppi..."}, {"role": "assistant", "tool_calls": [{"id": "call_003", "type": "function", "function": {"name": "purchase_ticket", "arguments": "{\"train_id\": \"RV3372\", \"class\": \"Prima Classe\"}"}}], "content": null}, {"role": "tool", "content": "{\"confirmation_code\": \"D8C983\", \"train_id\": \"RV3372\", \"seat\": \"5D\", \"carriage\": 7, \"class\": \"Prima Classe\", \"price\": 50.0}", "tool_call_id": "call_003", "name": "purchase_ticket"}, {"role": "assistant", "content": "😊 Il tuo biglietto è stato acquistato! Buon viaggio."}], "_meta": {"scenario": "long_ticket_purchase", "run_id": 0, "contexts": [{"slice_length": 2, "params": {"origin": "Roma Termini", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "10:01", "date": "2025-12-15"}}, {"slice_length": 6, "params": {"origin": "Roma Termini", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "14:40", "date": "2025-12-15"}}, {"slice_length": 10, "params": {"origin": "Roma Termini", "ui_state": "{\"state\":\"results\"}", "trains_array": "[{\"pos\": 1, \"id\": \"RV3372\", \"dep\": \"15:01\", \"arr\": \"18:44\", \"type\": \"Regionale Veloce\", \"stops\": 8, \"price\": 11.34}, {\"pos\": 2, \"id\": \"FR1012\", \"dep\": \"15:19\", \"arr\": \"17:04\", \"type\": \"Frecciarossa\", \"stops\": 0, \"price\": 44.19}, {\"pos\": 3, \"id\": \"FA7798\", \"dep\": \"16:08\", \"arr\": \"18:06\", \"type\": \"Frecciargento\", \"stops\": 2, \"price\": 33.75}]", "date": "2025-12-15"}}]}}], "multi_turn.jsonl": [{"tools": "{{TOOL_DEFINITION}}", "messages": [{"role": "system", "content": "{{SYSTEM_PROMPT}}"}, {"role": "user", "content": "Ciao!"}, {"role": "assistant", "content": "😊 Ciao! Come posso aiutarti oggi?"}, {"role": "user", "content": "Buongiorno, mi serve un treno per Reggio Emilia AV oggi."}, {"role": "assistant", "tool_calls": [{"id": "call_001", "type": "function", "function": {"name": "search_trains", "arguments": "{\"origin\": \"Palermo Centrale\", \"destination\": \"Reggio Emilia AV\", \"date\": \"today\", \"time\": \"11:40\", \"passengers\": 1}"}}], "content": null}, {"role": "tool", "content": "{\"trains\": [{\"pos\": 1, \"id\": \"FR2359\", \"dep\": \"12:16\", \"arr\": \"14:07\", \"type\": \"Frecciarossa\", \"stops\": 0, \"price\": 58.45}, {\"pos\": 2, \"id\": \"FA6288\", \"dep\": \"12:37\", \"arr\": \"15:05\", \"type\": \"Frecciargento\", \"stops\": 2, \"price\": 45.3}, {\"pos\": 3, \"id\": \"RV9829\", \"dep\": \"13:17\", \"arr\": \"16:55\", \"type\": \"Regionale Veloce\", \"stops\": 8, \"price\": 14.01}]}", "tool_call_id": "call_001", "name": "search_trains"}, {"role": "assistant", "content": "😊 Ho trovato varie soluzioni per Reggio Emilia AV. La prima parte alle 12:16."}], "_meta": {"scenario": "multi_turn", "seed": 398918782, "run_id": 0, "contexts": [{"slice_length": 2, "params": {"origin": "Palermo Centrale", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "11:59", "date": "2025-12-31"}}, {"slice_length": 4, "params": {"origin": "Palermo Centrale", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "11:40", "date": "2025-12-31"}}]}}], "qa.jsonl": [{"tools": "{{TOOL_DEFINITION}}", "messages": [{"role": "system", "content": "{{SYSTEM_PROMPT}}"}, {"role": "user", "content": "Posso ottenere il rimborso del buono sconto se non uso il biglietto?"}, {"role": "assistant", "content": "😔 No, il valore del buono sconto non è rimborsabile né indennizzabile in nessun caso. 🙂 Tuttavia, se hai diritto al rimborso del biglietto, potrai recuperare la parte che hai effettivamente pagato, sia che si tratti di rinuncia al viaggio per tue esigenze, sia per problemi imputabili a Trenitalia o per ordine dell'autorità pubblica."}, {"role": "user", "content": "Come devo mostrare il supplemento bicicletta se l'ho acquistato online?"}, {"role": "assistant", "content": "🤔 Se hai acquistato il supplemento online, devi mostrarlo su dispositivo elettronico (smartphone, tablet, pc) che visualizzi correttamente il PDF o QR Code. 😊 In alternativa, puoi mostrare il biglietto dall'Area Riservata 'I miei viaggi' sul sito o app Trenitalia, oppure stamparlo su carta."}], "_meta": {"scenario": "qa", "seed": 21299453, "run_id": 0, "contexts": [{"slice_length": 2, "params": {"origin": "Genova Brignole", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "07:34", "date": "2025-12-21"}}, {"slice_length": 4, "params": {"origin": "Genova Brignole", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "07:34", "date": "2025-12-21"}}]}}], "refusal.jsonl": [{"tools": "{{TOOL_DEFINITION}}", "messages": [{"role": "system", "content": "{{SYSTEM_PROMPT}}"}, {"role": "user", "content": "Miglior smartphone del 2025?"}, {"role": "assistant", "content": "😔 Non me ne occupo. 😄 Viaggi in treno da organizzare?"}, {"role": "user", "content": "Cosa ne pensi di Bitcoin?"}, {"role": "assistant", "content": "😔 Non me ne occupo. 😄 Viaggi in treno da organizzare?"}], "_meta": {"scenario": "refusal", "seed": 198968093, "run_id": 0, "contexts": [{"slice_length": 2, "params": {"origin": "Bologna Centrale", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "19:09", "date": "2025-12-21"}}, {"slice_length": 4, "params": {"origin": "Bologna Centrale", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "19:09", "date": "2025-12-21"}}]}}], "rude.jsonl": [{"tools": "{{TOOL_DEFINITION}}", "messages": [{"role": "system", "content": "{{SYSTEM_PROMPT}}"}, {"role": "user", "content": "Perfetto, devo correre! A che binario parte?"}, {"role": "assistant", "content": "😔 Scusa se non sono stato d'aiuto. Proviamo a ricominciare?"}], "_meta": {"scenario": "rude", "seed": 72876507, "run_id": 0, "contexts": [{"slice_length": 2, "params": {"origin": "Genova Brignole", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "09:04", "date": "2026-01-11"}}]}}], "search_fail.jsonl": [{"tools": "{{TOOL_DEFINITION}}", "messages": [{"role": "system", "content": "{{SYSTEM_PROMPT}}"}, {"role": "user", "content": "Vabbè, senti... devo andare a Siracusa oggi. C'è qualcosa o no?"}, {"role": "assistant", "tool_calls": [{"id": "call_search_0", "type": "function", "function": {"name": "search_trains", "arguments": "{\"origin\": \"Bologna Centrale\", \"destination\": \"Siracusa\", \"date\": \"today\", \"time\": \"18:50\", \"passengers\": 1}"}}], "content": null}, {"role": "tool", "content": "{\"trains\": []}", "tool_call_id": "call_search_0", "name": "search_trains"}, {"role": "assistant", "content": "😕 Nessun treno disponibile al momento."}], "_meta": {"scenario": "search_fail", "seed": 450888860, "run_id": 0, "contexts": [{"slice_length": 2, "params": {"origin": "Bologna Centrale", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "18:50", "date": "2025-12-26"}}]}}], "search_trains.jsonl": [{"tools": "{{TOOL_DEFINITION}}", "messages": [{"role": "system", "content": "{{SYSTEM_PROMPT}}"}, {"role": "user", "content": "Buonasera, devo andare a Rovigo domani mattina presto."}, {"role": "assistant", "tool_calls": [{"id": "call_001", "type": "function", "function": {"name": "search_trains", "arguments": "{\"origin\": \"Genova Brignole\", \"destination\": \"Rovigo\", \"date\": \"today\", \"time\": \"08:24\", \"passengers\": 1}"}}], "content": null}, {"role": "tool", "content": "{\"trains\": [{\"pos\": 1, \"id\": \"IC7281\", \"dep\": \"08:45\", \"arr\": \"11:51\", \"type\": \"Intercity\", \"stops\": 5, \"price\": 20.17}, {\"pos\": 2, \"id\": \"RV1735\", \"dep\": \"09:00\", \"arr\": \"12:31\", \"type\": \"Regionale Veloce\", \"stops\": 8, \"price\": 13.56}, {\"pos\": 3, \"id\": \"FR9963\", \"dep\": \"09:28\", \"arr\": \"11:29\", \"type\": \"Frecciarossa\", \"stops\": 0, \"price\": 53.08}]}", "tool_call_id": "call_001", "name": "search_trains"}, {"role": "assistant", "content": "😊 Ho trovato varie soluzioni per Rovigo. La prima parte alle 08:45."}], "_meta": {"scenario": "search_trains", "seed": 630392209, "run_id": 0, "contexts": [{"slice_length": 2, "params": {"origin": "Genova Brignole", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "08:24", "date": "2025-12-04"}}]}}], "ticket_purchase.jsonl": [{"tools": "{{TOOL_DEFINITION}}", "messages": [{"role": "system", "content": "{{SYSTEM_PROMPT}}"}, {"role": "user", "content": "Buongiorno, vorrei andare a Rimini. Quali treni ci sono?"}, {"role": "assistant", "tool_calls": [{"id": "call_001", "type": "function", "function": {"name": "search_trains", "arguments": "{\"origin\": \"Palermo Centrale\", \"destination\": \"Rimini\", \"date\": \"today\", \"time\": \"08:59\", \"passengers\": 1}"}}], "content": null}, {"role": "tool", "content": "{\"trains\": [{\"pos\": 1, \"id\": \"R1457\", \"dep\": \"09:16\", \"arr\": \"14:03\", \"type\": \"Regionale\", \"stops\": 15, \"price\": 6.48}, {\"pos\": 2, \"id\": \"FR9842\", \"dep\": \"09:50\", \"arr\": \"11:46\", \"type\": \"Frecciarossa\", \"stops\": 0, \"price\": 48.84}, {\"pos\": 3, \"id\": \"RV3896\", \"dep\": \"10:44\", \"arr\": \"14:21\", \"type\": \"Regionale Veloce\", \"stops\": 8, \"price\": 10.08}]}", "tool_call_id": "call_001", "name": "search_trains"}, {"role": "assistant", "content": "😊 Ho trovato varie soluzioni per Rimini. La prima parte alle 09:16."}, {"role": "user", "content": "Il Frecciarossa delle 09:50 va bene, prendiamo quello in seconda classe"}, {"role": "assistant", "tool_calls": [{"id": "call_002", "type": "function", "function": {"name": "purchase_ticket", "arguments": "{\"train_id\": \"FR9842\", \"class\": \"Seconda Classe\"}"}}], "content": null}, {"role": "tool", "content": "{\"confirmation_code\": \"48B8A8\", \"train_id\": \"FR9842\", \"seat\": \"13D\", \"carriage\": 1, \"class\": \"Seconda Classe\", \"price\": 50.0}", "tool_call_id": "call_002", "name": "purchase_ticket"}, {"role": "assistant", "content": "😊 Il tuo biglietto è stato acquistato! Buon viaggio."}], "_meta": {"scenario": "ticket_purchase", "seed": 842401385, "run_id": 0, "contexts": [{"slice_length": 2, "params": {"origin": "Palermo Centrale", "ui_state": "{\"state\":\"idle\"}", "trains_array": "[]", "ctx_time": "08:59", "date": "2025-12-02"}}, {"slice_length": 6, "params": {"origin": "Palermo Centrale", "ui_state": "{\"state\":\"results\"}", "trains_array": "[{\"pos\": 1, \"id\": \"R1457\", \"dep\": \"09:16\", \"arr\": \"14:03\", \"type\": \"Regionale\", \"stops\": 15, \"price\": 6.48}, {\"pos\": 2, \"id\": \"FR9842\", \"dep\": \"09:50\", \"arr\": \"11:46\", \"type\": \"Frecciarossa\", \"stops\": 0, \"price\": 48.84}, {\"pos\": 3, \"id\": \"RV3896\", \"dep\": \"10:44\", \"arr\": \"14:21\", \"type\": \"Regionale Veloce\", \"stops\": 8, \"price\": 10.08}]", "date": "2025-12-02"}}]}}], "ui_navigation.jsonl": [{"tools": "{{TOOL_DEFINITION}}", "messages": [{"role": "system", "content": "{{SYSTEM_PROMPT}}"}, {"role": "user", "content": "Precedenti"}, {"role": "assistant", "tool_calls": [{"id": "call_001", "type": "function", "function": {"name": "ui_control", "arguments": "{\"action\": \"prev\"}"}}], "content": null}, {"role": "tool", "content": "{\"success\": true, \"action\": \"prev\"}", "tool_call_id": "call_001", "name": "ui_control"}, {"role": "assistant", "content": "😊 Fatto."}], "_meta": {"scenario": "ui_navigation", "seed": 636028312, "run_id": 0, "contexts": [{"slice_length": 2, "params": {"origin": "Milano Centrale", "ui_state": "{\"state\":\"results\"}", "trains_array": "[]", "ctx_time": "10:09", "date": "2026-01-24"}}]}}]};</script>
+</body>
+
+</html>

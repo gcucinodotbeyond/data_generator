@@ -3,73 +3,67 @@ from pathlib import Path
 from typing import Any, Dict, List
 from core.scenario import Scenario
 from core.random import SeededRandom
-
-# --- Data Constants ---
-CURRENT_DIR = Path(__file__).parent
-RESOURCE_PATH = CURRENT_DIR.parent / "resources" / "stations.json"
-QA_RESOURCE_PATH = CURRENT_DIR.parent / "resources" / "qa_pairs.json"
-
-try:
-    with open(RESOURCE_PATH, 'r', encoding='utf-8') as f:
-        STATIONS_DATA = json.load(f)
-    STATIONS_ALL = []
-    for category in STATIONS_DATA.values():
-        STATIONS_ALL.extend(category)
-    STATIONS_MAJOR = STATIONS_DATA.get("major", STATIONS_ALL[:20])
-except FileNotFoundError:
-    STATIONS_ALL = ["Roma Termini", "Milano Centrale"]
-    STATIONS_MAJOR = STATIONS_ALL
-
-try:
-    with open(QA_RESOURCE_PATH, 'r', encoding='utf-8') as f:
-        QA_PAIRS = json.load(f)
-except FileNotFoundError:
-    QA_PAIRS = [
-        ("Quali sono i livelli CartaFRECCIA?", "Ci sono 4 livelli: Base, Argento, Oro, Platino."),
-        ("Cos'è il FRECCIAClub?", "È un circuito di sale esclusive per i clienti fidelizzati.")
-    ]
+from scenarios.base_scenario import (
+    StationManager,
+    TimeManager,
+    MessageBuilder,
+    ContextBuilder,
+    QAComponent
+)
 
 class QA(Scenario):
+    """
+    Scenario for Question-Answer interactions using a dedicated QA dataset.
+    """
+    _qa_pairs_cache = None
+
     @property
     def name(self) -> str:
         return "qa"
+        
+    def _load_qa_pairs(self) -> List[List[str]]:
+        if QA._qa_pairs_cache is None:
+            # Look in resources/qa_pairs.json
+            path = Path(__file__).parent.parent / "resources" / "qa_pairs.json"
+            if path.exists():
+                with open(path, "r", encoding="utf-8") as f:
+                    QA._qa_pairs_cache = json.load(f)
+            else:
+                QA._qa_pairs_cache = []
+        return QA._qa_pairs_cache
 
     def generate(self, rng: SeededRandom, run_id: int, **kwargs) -> Dict[str, Any]:
-        # 1. Setup Context
-        origin = rng.choice(STATIONS_MAJOR)
-        ctx_time = f"{rng.randint(6, 22):02d}:{rng.randint(0, 59):02d}"
+        # Setup
+        origin = StationManager.select_random(rng, major_only=True)
         
-        # 2. Pick Q&A Pair
-        q, a = rng.choice(QA_PAIRS)
+        # Build messages
+        msg_builder = MessageBuilder(predataset=kwargs.get("predataset", True))
+        ctx_builder = ContextBuilder(default_date=TimeManager.generate_date(rng))
         
-        # 3. Construct Messages
-        system_content = "{{SYSTEM_PROMPT}}"
+        msg_builder.add_system(origin)
         
-        # 4. Define Context (Only one, predicting the answer)
-        # Length = 2 (System + User)
-        ctx_qa = {
-            "slice_length": 2,
-            "params": {
-                "origin": origin,
-                "ctx_time": ctx_time,
-                "date": "2025-12-23",
-                "ui_state": '{"state":"idle","can":{"next":false,"prev":false,"back":false}}',
-                "trains_array": "[]"
-            }
-        }
+        # QA Logic
+        qa_pairs = self._load_qa_pairs()
         
-        messages = [
-            {"role": "system", "content": system_content},
-            {"role": "user", "content": q},
-            {"role": "assistant", "content": a}
-        ]
-
+        # If no QA pairs found, use fallback
+        if not qa_pairs:
+            qa_pairs = [("Come stai?", "Tutto bene, sono un assistente virtuale.")]
+            
+        qa_component = QAComponent(qa_pairs=qa_pairs)
+        
+        # Generate 1 to 3 QA turns
+        num_turns = rng.randint(1, 3)
+        ctx_time = TimeManager.generate_time(rng)
+        
+        qa_component.build(rng, msg_builder, ctx_builder, origin, ctx_time, num_exchanges=num_turns)
+        
         return {
             "tools": "{{TOOL_DEFINITION}}",
-            "messages": messages,
+            "messages": msg_builder.get_messages(),
             "_meta": {
                 "scenario": self.name,
+                "seed": rng.seed,
                 "run_id": run_id,
-                "contexts": [ctx_qa]
+                "contexts": ctx_builder.get_contexts()
             }
         }

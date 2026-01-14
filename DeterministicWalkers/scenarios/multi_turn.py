@@ -1,327 +1,101 @@
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 from core.scenario import Scenario
 from core.random import SeededRandom
-
-# --- Constants & Data ---
-CURRENT_DIR = Path(__file__).parent
-RESOURCE_PATH = CURRENT_DIR.parent / "resources" / "stations.json"
-
-try:
-    with open(RESOURCE_PATH, 'r', encoding='utf-8') as f:
-        STATIONS_DATA = json.load(f)
-    STATIONS_ALL = []
-    for category in STATIONS_DATA.values():
-        STATIONS_ALL.extend(category)
-    STATIONS_ALL = sorted(list(set(STATIONS_ALL)))
-    STATIONS_MAJOR = STATIONS_DATA.get("major", STATIONS_ALL[:20])
-except FileNotFoundError:
-    STATIONS_ALL = ["Roma Termini", "Milano Centrale", "Napoli Centrale", "Torino Porta Nuova", "Firenze SMN"]
-    STATIONS_MAJOR = STATIONS_ALL
-
-# Topics & Content (Golden Samples adapted)
-TOPICS = {
-    "luggage": {
-        "weight": 0.10,
-        "qa": [
-            ("Quanti bagagli posso portare?", "😊 Puoi portare gratuitamente un bagaglio a mano e uno di dimensioni standard (max 80x50x25 cm). 🙂 Se hai trolley e zaino sei tranquillo!"),
-            ("E se ho più bagagli?", "🙂 Per bagagli extra puoi usare il servizio Bagaglio Facile di Trenitalia o cercare spazi a fine carrozza."),
-            ("Ci sono limiti di peso?", "😊 Non ci sono limiti rigidi di peso, ma devi essere in grado di movimentare i tuoi bagagli da solo.")
-        ]
-    },
-    "accessibility": {
-        "weight": 0.05,
-        "qa": [
-            ("Viaggio in sedia a rotelle, ci sono posti?", "😊 Certamente! Tutti i Frecciarossa hanno aree dedicate. 🙂 Puoi prenotare l'assistenza gratuita tramite Sala Blu."),
-            ("Come prenoto l'assistenza?", "😊 Chiama la Sala Blu 12 ore prima o usa l'app Trenitalia. 🙂 L'assistenza salita/discesa è gratuita!"),
-            ("Il bagno è accessibile?", "😊 Sì, tutte le carrozze con posti disabili hanno toilette attrezzate e accessibili.")
-        ]
-    },
-    "pets": {
-        "weight": 0.05,
-        "qa": [
-            ("Posso portare il mio cane?", "😊 Certo! Cani piccoli gratis nel trasportino, grandi con biglietto al 50%. 🙂 Devono avere guinzaglio e museruola."),
-            ("Devo comprare un biglietto per il cane?", "😄 Sì, se è medio/grande paghi la metà del biglietto base. 🙂 Se piccolo e nel trasportino è gratis!"),
-            ("Dove faccio il biglietto cane?", "😊 Puoi aggiungerlo qui o online prima del pagamento selezionando l'opzione 'Animali'.")
-        ]
-    },
-    "services": {
-        "weight": 0.20,
-        "qa": [
-            ("C'è il WiFi a bordo?", "😊 Sì, WiFi gratuito su tutti i Frecciarossa! 🙂 In Prima Classe è ancora più veloce."),
-            ("C'è la carrozza ristorante?", "😄 Sì, trovi il Bar/Bistrot nella carrozza centrale con snack e bevande. 🙂"),
-            ("Ci sono prese per caricare il telefono?", "😊 Assolutamente! Ogni sedile ha la sua presa di corrente o USB.")
-        ]
-    },
-    "discounts": {
-        "weight": 0.10,
-        "qa": [
-            ("Ci sono sconti per bambini?", "😊 Sì! Sotto i 4 anni gratis, dai 4 ai 14 anni sconto 50% con 'Bimbi Gratis'."),
-            ("Come funziona CartaFRECCIA?", "😊 Accumuli punti per viaggi gratis e hai sconti dedicati. 🙂 L'iscrizione è gratuita!"),
-            ("Sconti per giovani?", "😄 Certo, offerta Young per under 30 con sconti fino al 70%! 🙂")
-        ]
-    },
-    "modifications": {
-        "weight": 0.10,
-        "qa": [
-            ("Posso cambiare il biglietto se cambio idea?", "😊 Dipende dalla tariffa! Base modificabile sempre, Economy una volta sola. 🙂 Super Economy non è modificabile."),
-            ("Se perdo il treno?", "😔 Se hai tariffa Base hai 1 ora di tempo per prendere il successivo (pagando sovrapprezzo). Altrimenti perdi il biglietto."),
-            ("Posso chiedere il rimborso?", "🙂 Sì, per tariffa Base con trattenuta del 20% prima della partenza.")
-        ]
-    },
-    "general": {
-        "weight": 0.40,
-        "qa": [
-            ("Quanto tempo prima devo arrivare?", "😊 Consigliamo almeno 15-20 minuti prima per trovare il binario con calma. 🙂"),
-            ("Dove trovo il mio binario?", "🤔 Controlla i tabelloni blu in stazione o l'app Trenitalia. Il binario esce 10 min prima."),
-            ("Il biglietto va convalidato?", "🙂 Per i Frecciarossa con posto prenotato no. Per i Regionali cartacei sì, alle macchinette verdi!")
-        ]
-    }
-}
-
-TRANSITIONS_TO_SEARCH = [
-    "Perfetto, grazie! Allora cerchiamo treni per {dest}",
-    "Ottimo! Cerco un treno per {dest}",
-    "Capito. Mi serve un biglietto per {dest}",
-    "Grazie delle info. Ora vediamo i treni per {dest}",
-    "Chiaro. Andiamo a {dest}"
-]
-# We will enhance these with corpus at runtime
-
-TRANSITIONS_TO_QA = [
-    "Un'altra cosa... {question}",
-    "A proposito, {question}",
-    "Già che ci sono, {question}",
-    "Aspetta, {question}",
-    "Ah, {question}"
-]
+from scenarios.base_scenario import (
+    StationManager,
+    TimeManager,
+    MessageBuilder,
+    ContextBuilder,
+    SearchComponent,
+    QAComponent,
+    RefusalComponent,
+    GreetingComponent
+)
 
 class MultiTurn(Scenario):
+    """
+    Randomly composes different components to create varied multi-turn dialogues.
+    """
+    _qa_pairs_cache = None
+
     @property
     def name(self) -> str:
         return "multi_turn"
+        
+    def _load_qa_pairs(self) -> List[List[str]]:
+        if MultiTurn._qa_pairs_cache is None:
+            path = Path(__file__).parent.parent / "resources" / "qa_pairs.json"
+            if path.exists():
+                with open(path, "r", encoding="utf-8") as f:
+                    MultiTurn._qa_pairs_cache = json.load(f)
+            else:
+                MultiTurn._qa_pairs_cache = []
+        return MultiTurn._qa_pairs_cache
 
     def generate(self, rng: SeededRandom, run_id: int, **kwargs) -> Dict[str, Any]:
-        # 1. Setup
-        origin = rng.choice(STATIONS_MAJOR)
-        possible_dests = [s for s in STATIONS_ALL if s != origin]
-        destination = rng.choice(possible_dests)
+        # Setup
+        origin = StationManager.select_random(rng, major_only=True)
+        destination = StationManager.select_different(rng, origin, major_only=False)
         
-        # Select Pattern: 50% QA First, 50% Search First
-        pattern = "qa_first" if rng.random() < 0.5 else "search_first"
+        msg_builder = MessageBuilder(predataset=kwargs.get("predataset", True))
+        ctx_builder = ContextBuilder(default_date=TimeManager.generate_date(rng))
         
-        # Select Topic based on weights
-        topic_keys = list(TOPICS.keys())
-        topic_weights = [TOPICS[k]["weight"] for k in topic_keys]
-        # Weighted choice logic
-        r = rng.random()
-        cumulative = 0
-        selected_topic_key = "general"
-        for i, w in enumerate(topic_weights):
-            cumulative += w
-            if r <= cumulative:
-                selected_topic_key = topic_keys[i]
-                break
+        msg_builder.add_system(origin)
+        ctx_time = TimeManager.generate_time(rng)
         
-        topic_data = TOPICS[selected_topic_key]
-        qa_pairs = list(topic_data["qa"]) # Copy to avoid modifying original if we pop
-        rng.shuffle(qa_pairs)
+        # Randomly choose a sequence of components
+        # 0: QA only
+        # 1: Refusal -> Search
+        # 2: Search -> QA
+        # 3: Greeting -> Search
         
-        messages = []
-        contexts = []
+        scenario_type = rng.randint(0, 3)
         
-        # Initial Context (System)
-        system_content = "{{SYSTEM_PROMPT}}" # Will be hydrated
-        messages.append({"role": "system", "content": system_content})
-        
-        # Input: origin, destination already picked
-        
-        # --- PREPARE SEARCH QUERY & CONTEXT TIME ---
-        # We pick the search query EARLY so we can align the 'time_str' (ctx_time) with it.
-        corpus_queries = self.corpus.get("search_queries", [])
-        
-        # Defaults
-        user_search_msg_template = f"Vorrei andare a {destination}"
-        base_hour = rng.randint(8, 20)
-        
-        if corpus_queries and rng.random() < 0.8:
-            user_search_msg_template = rng.choice(corpus_queries)
+        if scenario_type == 0:
+            # QA
+            qa_pairs = self._load_qa_pairs()
+            qa_comp = QAComponent(qa_pairs=qa_pairs)
+            qa_comp.build(rng, msg_builder, ctx_builder, origin, ctx_time, num_exchanges=rng.randint(2, 4))
             
-            # Constraints
-            if "{period_morning}" in user_search_msg_template:
-                base_hour = rng.randint(6, 11)
-                user_search_msg_template = user_search_msg_template.replace("{period_morning}", rng.choice(["stamattina", "questa mattina"]))
-            elif "{period_afternoon}" in user_search_msg_template:
-                base_hour = rng.randint(12, 17)
-                user_search_msg_template = user_search_msg_template.replace("{period_afternoon}", rng.choice(["oggi pomeriggio", "questo pomeriggio"]))
-            elif "{period_evening}" in user_search_msg_template:
-                base_hour = rng.randint(16, 21)
-                user_search_msg_template = user_search_msg_template.replace("{period_evening}", rng.choice(["stasera", "questa sera"]))
-        
-        # Finalize Context Time
-        time_str = f"{base_hour:02d}:00"
-        
-        # Hydrate the search template fully (for later use)
-        # We need to handle dest, time_request, and relative dates NOW
-        user_search_msg = user_search_msg_template.replace("{destination}", destination).replace("{origin}", origin)
-        
-        # Relative dates
-        replacements = {
-            "{relative_date_morning}": "domani mattina",
-            "{relative_date_afternoon}": "domani pomeriggio",
-            "{relative_date_evening}": "domani sera",
-            "{relative_date}": rng.choice(["domani", "dopodomani"]),
-            "{relative_today}": "oggi"
-        }
-        for k, v in replacements.items():
-            user_search_msg = user_search_msg.replace(k, v)
+        elif scenario_type == 1:
+            # Refusal -> Search
+            ref_comp = RefusalComponent(corpus=self.corpus)
+            ref_comp.build(rng, msg_builder, ctx_builder, origin, ctx_time, num_refusals=1)
             
-        # Time Request
-        if "{time_request}" in user_search_msg:
-             req_h = (base_hour + rng.randint(1, 4)) % 24
-             req_m = rng.choice([0, 15, 30])
-             user_search_msg = user_search_msg.replace("{time_request}", f"{req_h:02d}:{req_m:02d}")
+            # Follow up with search
+            search_comp = SearchComponent(origin, destination, self.corpus, self.rephrase)
+            search_comp.build(rng, run_id, msg_builder, ctx_builder, is_starter=True)
+            
+        elif scenario_type == 2:
+            # Search -> QA
+            search_comp = SearchComponent(origin, destination, self.corpus, self.rephrase)
+            ct, trains = search_comp.build(rng, run_id, msg_builder, ctx_builder, is_starter=True)
+            
+            # Update time from search result if needed
+            if ct: ctx_time = ct
+            
+            # QA about the result or general
+            qa_pairs = self._load_qa_pairs()
+            qa_comp = QAComponent(qa_pairs=qa_pairs)
+            qa_comp.build(rng, msg_builder, ctx_builder, origin, ctx_time, num_exchanges=1)
 
-        # --- PREPARE SEARCH DATA (Assistant Response) ---
-        date_str = "2025-12-25" # Mock
-        
-        tool_call_id = "call_search_01"
-        search_args = {
-            "origin": origin,
-            "destination": destination,
-            "date": "today",
-            "time": "now",
-            "passengers": 1
-        }
-        
-        trains = [
-            {"train_id": "FR9000", "departure_time": time_str, "arrival_time": "23:59", "train_type": "Frecciarossa", "price": [{"class_denomination": "Standard", "price": "50.00"}]}
-        ]
-        
-        trains_json = json.dumps({"trains": trains})
-        
-        search_block = {
-            "tool_call": {
-                "id": tool_call_id,
-                "type": "function",
-                "function": {
-                    "name": "search_trains",
-                    "arguments": json.dumps(search_args)
-                }
-            },
-            "tool_result": {
-                "role": "tool",
-                "content": trains_json,
-                "tool_call_id": tool_call_id,
-                "name": "search_trains"
-            },
-            "assistant_reply": f"😊 Ecco i treni per {destination}. Il primo parte alle {time_str}. 🙂"
-        }
-
-        # --- GENERATE FLOW ---
-        
-        if pattern == "qa_first":
-            # Flow: QA -> QA -> Search
-            # Decide how many QA pairs before search (1 or 2)
-            num_qa = rng.randint(1, 2)
+        elif scenario_type == 3:
+            # Greeting -> Search
+            greet_comp = GreetingComponent(corpus=self.corpus)
+            greet_comp.build(rng, msg_builder, ctx_builder, origin, ctx_time)
             
-            # --- QA Phase ---
-            for i in range(min(num_qa, len(qa_pairs))):
-                q, a = qa_pairs[i]
-                
-                # Turn 1 context (if i==0)
-                if i == 0:
-                     contexts.append({
-                        "slice_length": len(messages) + 1, # Predict Assistant answer
-                        "params": {
-                            "origin": origin,
-                            "ctx_time": time_str,
-                            "date": date_str,
-                            "ui_state": '{"state":"idle"}',
-                            "trains_array": "[]"
-                        }
-                    })
-                
-                messages.append({"role": "user", "content": q})
-                messages.append({"role": "assistant", "content": a})
+            search_comp = SearchComponent(origin, destination, self.corpus, self.rephrase)
+            search_comp.build(rng, run_id, msg_builder, ctx_builder, is_starter=True)
             
-            # --- Transition to Search ---
-            # We already prepared user_search_msg. We might add a transition prefix.
-            if rng.random() < 0.6:
-                 prefix = rng.choice(["Grazie! ", "Ok. ", "Capito. ", ""]) 
-                 user_search_msg_final = f"{prefix}{user_search_msg}"
-            else:
-                 trans_template = rng.choice(TRANSITIONS_TO_SEARCH)
-                 user_search_msg_final = trans_template.format(dest=destination)
-            
-            contexts.append({
-                "slice_length": len(messages) + 1, # Predict Assistant (Tool Call)
-                "params": {
-                    "origin": origin,
-                    "ctx_time": time_str,
-                    "ui_state": '{"state":"idle"}',
-                    "trains_array": "[]"
-                }
-            })
-            
-            messages.append({"role": "user", "content": user_search_msg_final})
-            messages.append({"role": "assistant", "tool_calls": [search_block["tool_call"]], "content": None})
-            messages.append(search_block["tool_result"])
-            messages.append({"role": "assistant", "content": search_block["assistant_reply"]})
-            
-        else:
-            # Pattern: Search First -> QA
-            
-            # --- Search Phase ---
-            # Use pre-calculated user_search_msg
-            pass # already ready
-            
-            contexts.append({
-                "slice_length": len(messages) + 1,
-                "params": {
-                    "origin": origin,
-                    "ctx_time": time_str,
-                    "date": date_str,
-                    "ui_state": '{"state":"idle"}',
-                    "trains_array": "[]"
-                }
-            })
-            
-            messages.append({"role": "user", "content": user_search_msg})
-            messages.append({"role": "assistant", "tool_calls": [search_block["tool_call"]], "content": None})
-            messages.append(search_block["tool_result"])
-            messages.append({"role": "assistant", "content": search_block["assistant_reply"]})
-            
-            # --- QA Phase ---
-            num_qa = rng.randint(1, 2)
-            for i in range(min(num_qa, len(qa_pairs))):
-                q, a = qa_pairs[i]
-                
-                # Transition User Msg
-                trans_template = rng.choice(TRANSITIONS_TO_QA)
-                # Lowercase first letter of question for better flow integration
-                q_text = q[0].lower() + q[1:]
-                user_qa_msg = trans_template.format(question=q_text)
-                
-                contexts.append({
-                    "slice_length": len(messages) + 1,
-                    "params": {
-                        "origin": origin,
-                        "ui_state": '{"state":"results"}',
-                        "trains_array": json.dumps([{"id":"result1"}]) # Mock visible
-                    }
-                })
-                
-                messages.append({"role": "user", "content": user_qa_msg})
-                messages.append({"role": "assistant", "content": a})
-
         return {
             "tools": "{{TOOL_DEFINITION}}",
-            "messages": messages,
+            "messages": msg_builder.get_messages(),
             "_meta": {
                 "scenario": self.name,
+                "seed": rng.seed,
                 "run_id": run_id,
-                "contexts": contexts
+                "contexts": ctx_builder.get_contexts()
             }
         }

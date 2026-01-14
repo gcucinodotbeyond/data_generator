@@ -8,7 +8,6 @@ class Scenario(ABC):
     A Scenario defines the logic to generate a single conversation sample.
     """
     
-    
     def __init__(self, paraphraser: Any = None):
         self.paraphraser = paraphraser
 
@@ -39,26 +38,13 @@ class Scenario(ABC):
                         key = file_path.stem # e.g. "search_queries"
                         with open(file_path, 'r', encoding='utf-8') as f:
                             data = json.load(f)
-                            if isinstance(data, list):
-                                Scenario._corpus_cache[key] = data
-                            else:
-                                pass
+                            # Store data
+                            Scenario._corpus_cache[key] = data
                     except Exception as e:
                         print(f"Error loading corpus chunk {file_path}: {e}")
             else:
-                # Fallback to legacy single file
-                single_file = resources_dir / "corpus.json"
-                if single_file.exists():
-                    try:
-                        with open(single_file, 'r', encoding='utf-8') as f:
-                            Scenario._corpus_cache = json.load(f)
-                    except Exception as e:
-                        print(f"Error loading corpus {single_file}: {e}")
+                print(f"Warning: Corpus directory not found at {corpus_dir}")
             
-            # Ensure it's never None even if empty
-            if Scenario._corpus_cache is None:
-                 Scenario._corpus_cache = {}
-                 
         return Scenario._corpus_cache
 
     def rephrase(self, rng: SeededRandom, text: str, chance: float = 0.5) -> str:

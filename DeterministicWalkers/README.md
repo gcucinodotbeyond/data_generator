@@ -19,13 +19,20 @@ This system replaces opaque LLM-based generation with a 100% reproducible approa
 ```text
 DeterministicWalkers/
 ├── core/                   # Core engine (Base Scenario, SeededRandom)
-├── scenarios/              # Python scripts defining generation logic (e.g., search_trains.py)
+├── scenarios/              # Python scripts defining generation logic
+│   ├── base_scenario.py    # Shared Components (Search, Purchase, Navigation, etc.)
+│   ├── search_trains.py    # Simple Search Scenario
+│   ├── ticket_purchase.py  # Full Search -> Purchase Flow
+│   ├── multi_turn.py       # Complex Multi-turn Interaction
+│   └── ... (see Scenarios section)
 ├── resources/              # Static Assets & Configuration
-│   ├── corpus/             # Raw linguistic data (JSON files)
+│   ├── corpus/             # Clean, Flat-List corpus JSON files
 │   ├── stations.json       # Domain data (Stations list)
-│   ├── tools.json          # Tool definitions (OpenAI/Qwen format)
+│   ├── tools.json          # Tool definitions (function calling format)
+│   ├── qa_pairs.json       # Q&A pairs for QA scenario
 │   └── system_prompt.md    # Template for System Prompt
-├── tools/                  # Helper scripts (corpus extraction, etc.)
+├── tools/                  # Helper scripts
+│   └── corpus_builder.py   # Main script to extract/build corpus from source data
 ├── main.py                 # Generator Entry Point
 └── hydrate_dataset.py      # Context Injection Script
 ```
@@ -42,55 +49,65 @@ The first step generates the "Pre-Dataset". This contains the conversation flow,
 python main.py --count 100 --seed 42
 ```
 
-**Output**: A folder `predataset/` containing JSONL files (e.g., `search_trains.jsonl`).
+**Output**: A folder `data/predataset/` containing JSONL files.
 
 ### 2. Hydrate the Dataset
 The "Hydration" process takes the Pre-Dataset and injects the actual System Prompt, Tools, and Dynamic Context (simulated time, location, etc.).
 
 ```bash
-# Hydrate the dataset using the default system prompt template
-python hydrate_dataset.py predataset
+# Hydrate the dataset -> output to data/hydrated-dataset
+python hydrate_dataset.py data
 ```
 
-**Output**: A folder `hydrated-dataset/` containing the final, ready-to-train JSONL files.
+**Output**: A folder `data/hydrated-dataset/` containing the final, ready-to-train JSONL files.
 
 ---
 
 ## 🧠 Core Concepts
 
 ### The "Corpus" (`resources/corpus/`)
-The system relies on a **linguistic corpus** to provide natural variety. This is located in `resources/corpus/` and consists of JSON files categorized by intent (e.g., `search_queries.json`, `refusals.json`).
-
-> **⚠️ Note on Specificity**: The corpus data is often extracted from real usage logs or external datasets. It may contain **highly specific** temporal references (e.g., "Devo partire *stasera alle 20:30*").
-> 
-> If your system relies on a **Dynamic Context** (e.g., the virtual system time is 10:00 AM, but the user message says "stasera"), these specific entries might create inconsistencies. 
-> **Recommendation**: Review and clean `resources/corpus/` to ensure generic compatibility, or ensure your Scenarios logic can handle/override these specificities.
+The system relies on a **linguistic corpus** to provide natural variety. This is located in `resources/corpus/` and consists of simple JSON lists of strings (flat lists) categorized by intent (e.g., `search_queries.json`, `refusals.json`).
 
 ### Scenarios (`scenarios/*.py`)
-A **Scenario** is a Python class that inherits from `core.scenario.Scenario`. It defines:
-1.  **Logic**: How to construct the user intent (e.g., "Search for a train").
-2.  **Parameters**: Origin, Destination, Number of passengers.
-3.  **Template Selection**: It picks a phrase from the **Corpus** or a fallback template.
-4.  **Tool Construction**: It deterministically builds the expected JSON for tool calls and responses.
+A **Scenario** is a Python class that inherits from `core.scenario.Scenario`. It deterministically constructs conversations using shared **Components**.
+
+**Available Scenarios:**
+- **`search_trains`**: Standard train search conversation.
+- **`ticket_purchase`**: Full flow: Search -> Select -> Purchase.
+- **`long_ticket_purchase`**: Extended flow with optional Navigation and Refinement steps.
+- **`ui_navigation`**: Simulates user interacting with UI pagination (Next/Prev).
+- **`qa`**: Informational Q&A about train services.
+- **`refusal`**: Assistant politely refusing off-topic user queries (e.g. "What is Bitcoin?").
+- **`rude`**: Handling rude/urgent user messages with polite de-escalation.
+- **`search_fail`**: Simulating scenarios where no trains are found.
+- **`greeting_to_purchase`**: Natural flow starting from a greeting, moving to search, then purchase.
+- **`multi_turn`**: Complex composition of different components (Greeting, Refusal, Search, QA).
 
 ### Metadata (`_meta`)
-Every generated line contains a `_meta` field. This is the "DNA" of the sample.
+Every generated line contains a `_meta` field, essential for the hydration process.
 
 ```json
 "_meta": {
     "scenario": "search_trains",
     "seed": 123456,
+    "run_id": 1,
     "contexts": [
         {
+            "slice_length": 2, // Applies to messages[0:2]
             "params": {
                 "origin": "Milano Centrale",
-                "ctx_time": "14:30"
+                "ctx_time": "14:30",
+                "date": "2025-12-25" // Randomized Date
             }
         }
     ]
 }
 ```
-This metadata is used by `hydrate_dataset.py` to construct the `<ctx>` XML block in the system prompt.
+
+### New Features
+- **Date Randomization**: Interactions are simulated across random dates (Dec 2025 - Jan 2026).
+- **Sequential Tool IDs**: Tool calls within a single conversation are numbered sequentially (`call_001`, `call_002`, `call_003`).
+- **Smart Filtering**: The generator intelligently filters "Follow-up" phrases (like "Ah capito", "Allora") when starting a new conversation topic.
 
 ---
 
@@ -99,8 +116,8 @@ This metadata is used by `hydrate_dataset.py` to construct the `<ctx>` XML block
 ### Adding a New Scenario
 1.  Create `scenarios/my_new_scenario.py`.
 2.  Inherit from `core.scenario.Scenario`.
-3.  Implement `generate(self, rng, run_id)`.
-4.  Use `self.corpus.get("my_category")` to access data.
+3.  Use components like `SearchComponent` or `PurchaseComponent` from `scenarios.base_scenario`.
+4.  Implement `generate(self, rng, run_id)`.
 
 ### Updating the Corpus
-Simply add or edit JSON files in `resources/corpus/`. The `Scenario` class automatically loads them into `self.corpus` at runtime.
+Use `tools/corpus_builder.py` if you have raw data to ingest, or simply edit the JSON files in `resources/corpus/` manually.
