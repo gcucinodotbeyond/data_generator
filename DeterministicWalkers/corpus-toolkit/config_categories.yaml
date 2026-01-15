@@ -1,0 +1,329 @@
+# config_categories.yaml
+# Configurazione categorie per il corpus categorizer
+# Modifica questo file per personalizzare le categorie senza toccare il codice
+
+categories:
+  OPENING:
+    description: "Saluti iniziali e aperture di conversazione"
+    keywords:
+      - buongiorno
+      - salve
+      - ciao
+      - buonasera
+      - saluti
+      - hey
+    patterns:
+      - "^(buongiorno|salve|ciao|buonasera|saluti|hey)"
+      - "vorrei informazioni"
+    subcategories:
+      formal:
+        description: "Saluti formali"
+        indicators: [buongiorno, buonasera, salve, vorrei]
+      informal:
+        description: "Saluti informali"
+        indicators: [ciao, hey]
+      direct:
+        description: "Aperture dirette senza saluto"
+        indicators: []
+    examples:
+      - "Buongiorno, vorrei informazioni"
+      - "Ciao, mi serve un biglietto"
+      - "Devo andare a Milano"
+
+  INFORMATION_REQUEST:
+    description: "Richieste di informazioni su disponibilità, prezzi, orari"
+    keywords:
+      - quanto costa
+      - che orari
+      - ci sono
+      - disponibilità
+      - quando parte
+      - a che ora
+      - quali
+    patterns:
+      - "\\b(quanto|che|quali|ci sono|disponibilità|orari?)\\b"
+      - "\\?$"
+    subcategories:
+      availability:
+        description: "Richieste di disponibilità"
+        indicators: [disponibilità, ci sono, c'è, esistono]
+      price:
+        description: "Richieste di prezzo"
+        indicators: [quanto, costa, prezzo, tariffa]
+      schedule:
+        description: "Richieste di orari"
+        indicators: [orari, ora, quando, a che ora]
+      options:
+        description: "Richieste generiche di opzioni"
+        indicators: [quali, opzioni, soluzioni]
+    examples:
+      - "Quanto costa un biglietto per Roma?"
+      - "Ci sono treni disponibili domani?"
+      - "A che ora parte il prossimo?"
+
+  SPECIFICATION:
+    description: "Raffinamento e specificazione di requisiti"
+    keywords:
+      - preferibilmente
+      - possibilmente
+      - se possibile
+      - meglio
+      - vorrei
+      - circa
+      - intorno
+    patterns:
+      - "\\b(preferi[a-z]+|possibilmente|se possibile|meglio|vorrei)\\b"
+    subcategories:
+      time_constraint:
+        description: "Vincoli temporali"
+        indicators: [mattina, pomeriggio, sera, prima, dopo, entro]
+      price_constraint:
+        description: "Vincoli di prezzo"
+        indicators: [meno di, massimo, budget, economico, sotto]
+      preferences:
+        description: "Preferenze generiche"
+        indicators: [preferibilmente, possibilmente, meglio, vorrei]
+      conditions:
+        description: "Condizioni specifiche"
+        indicators: [se, a condizione, purché, solo se]
+    examples:
+      - "Preferibilmente dopo le 15"
+      - "Se costa meno di 30 euro"
+      - "Possibilmente diretto"
+
+  NEGOTIATION:
+    description: "Negoziazione, obiezioni e ricerca alternative"
+    keywords:
+      - troppo
+      - caro
+      - altro
+      - alternativa
+      - sconto
+      - meno
+      - costoso
+    patterns:
+      - "\\b(troppo|caro|costoso|altro|alternativa|sconto|meno)\\b"
+    subcategories:
+      price_objection:
+        description: "Obiezioni sul prezzo"
+        indicators: [troppo caro, costoso, caro, prezzo alto]
+      time_objection:
+        description: "Obiezioni sugli orari"
+        indicators: [troppo presto, troppo tardi, orario scomodo]
+      alternatives:
+        description: "Richiesta di alternative"
+        indicators: [altro, alternativa, diverso, opzione]
+      compromise:
+        description: "Disponibilità al compromesso"
+        indicators: [va bene anche, accetto, può andare]
+    examples:
+      - "È troppo caro, c'è di meno?"
+      - "Non c'è un altro treno?"
+      - "Va bene anche se faccio cambio"
+
+  CONFIRMATION:
+    description: "Conferme e accettazioni"
+    keywords:
+      - sì
+      - si
+      - va bene
+      - ok
+      - okay
+      - perfetto
+      - d'accordo
+      - confermo
+    patterns:
+      - "\\b(sì|si|va bene|ok|okay|perfetto|d'accordo|confermo)\\b"
+    subcategories:
+      positive:
+        description: "Conferme positive dirette"
+        indicators: [sì, si, ok, va bene, perfetto]
+      conditional:
+        description: "Conferme condizionate"
+        indicators: [se, a condizione, purché]
+      verification_request:
+        description: "Richieste di verifica"
+        indicators: [quindi, ricapitolando, confermi, giusto]
+    examples:
+      - "Sì, va bene"
+      - "Perfetto, confermo"
+      - "Quindi ricapitolando..."
+
+  TRANSACTION:
+    description: "Transazioni, acquisti, pagamenti"
+    keywords:
+      - prenoto
+      - acquisto
+      - compro
+      - prendo
+      - pagamento
+      - carta
+      - pago
+    patterns:
+      - "\\b(prenot[ao]|acquist[ao]|compr[ao]|prend[ao]|pagamento|carta|pago)\\b"
+    subcategories:
+      purchase:
+        description: "Azioni di acquisto/prenotazione"
+        indicators: [prenoto, acquisto, compro, prendo]
+      payment:
+        description: "Informazioni su pagamento"
+        indicators: [pagamento, carta, pago, metodo]
+      personal_data:
+        description: "Fornire dati personali"
+        indicators: [a nome, intestato, email, telefono]
+    examples:
+      - "Lo prendo"
+      - "Come posso pagare?"
+      - "A nome di Mario Rossi"
+
+  PROBLEM_HANDLING:
+    description: "Gestione problemi, errori, richieste di chiarimento"
+    keywords:
+      - problema
+      - errore
+      - non funziona
+      - non capisco
+      - aiuto
+      - difficoltà
+    patterns:
+      - "\\b(problema|errore|non funziona|non capisco|aiuto|difficoltà)\\b"
+    subcategories:
+      clarification:
+        description: "Richieste di chiarimento"
+        indicators: [non capisco, non ho capito, puoi ripetere, spiegare]
+      technical_issue:
+        description: "Problemi tecnici"
+        indicators: [errore, non funziona, problema tecnico, bug]
+      frustration:
+        description: "Espressioni di frustrazione"
+        indicators: [ennesima volta, sempre, ancora, ma è possibile]
+    examples:
+      - "Non funziona il pagamento"
+      - "Non ho capito, puoi ripetere?"
+      - "È la terza volta che provo!"
+
+  CLOSING:
+    description: "Chiusure di conversazione"
+    keywords:
+      - grazie
+      - arrivederci
+      - buona giornata
+      - ciao
+      - saluti
+    patterns:
+      - "\\b(grazie|arrivederci|buona giornata|saluti|ciao)\\b.*$"
+    subcategories:
+      thanks:
+        description: "Ringraziamenti"
+        indicators: [grazie, ringrazio]
+      farewell:
+        description: "Saluti finali"
+        indicators: [arrivederci, buona giornata, saluti, ciao]
+      aborted:
+        description: "Chiusure senza conclusione"
+        indicators: [ci penso, richiamo, torno, forse]
+    examples:
+      - "Grazie mille, buona giornata"
+      - "Arrivederci"
+      - "Ci penso e richiamo"
+
+# Configurazione slot da estrarre
+slots:
+  destination:
+    pattern: "\\b(per|a|verso)\\s+([A-Z][a-z]+(?:\\s+[A-Z][a-z]+)?)\\b"
+    group: 2
+    description: "Città di destinazione"
+    examples: ["per Milano", "a Roma", "verso Firenze"]
+
+  origin:
+    pattern: "\\b(da|partendo da)\\s+([A-Z][a-z]+(?:\\s+[A-Z][a-z]+)?)\\b"
+    group: 2
+    description: "Città di partenza"
+    examples: ["da Roma", "partendo da Milano"]
+
+  date:
+    pattern: "\\b(oggi|domani|dopodomani|lunedì|martedì|mercoledì|giovedì|venerdì|sabato|domenica|\\d{1,2}[/-]\\d{1,2}(?:[/-]\\d{2,4})?)\\b"
+    group: 1
+    description: "Data del viaggio"
+    examples: ["domani", "lunedì", "15/02/2026"]
+
+  time:
+    pattern: "\\b(mattina|pomeriggio|sera|notte|\\d{1,2}:\\d{2}|alle\\s+\\d{1,2})\\b"
+    group: 1
+    description: "Orario o fascia oraria"
+    examples: ["mattina", "14:30", "alle 10"]
+
+  ticket_type:
+    pattern: "\\b(andata|ritorno|andata-ritorno|solo andata)\\b"
+    group: 1
+    description: "Tipo di biglietto"
+    examples: ["andata-ritorno", "solo andata"]
+
+  passengers:
+    pattern: "\\b(\\d+)\\s+(persone|passeggeri|biglietti?)\\b"
+    group: 1
+    description: "Numero di passeggeri"
+    examples: ["2 persone", "3 biglietti"]
+
+  class:
+    pattern: "\\b(prima|seconda)\\s+classe\\b"
+    group: 1
+    description: "Classe di viaggio"
+    examples: ["prima classe", "seconda classe"]
+
+  price:
+    pattern: "\\b(\\d+)\\s*€\\b"
+    group: 1
+    description: "Prezzo"
+    examples: ["45€", "30 €"]
+
+  seat_preference:
+    pattern: "\\b(finestrino|corridoio|vicino)\\b"
+    group: 1
+    description: "Preferenza posto"
+    examples: ["finestrino", "corridoio"]
+
+# Configurazione attributi linguistici
+attributes:
+  register:
+    formal:
+      indicators: [vorrei, cortesemente, gentilmente, desidererei, potrei]
+    informal:
+      indicators: [voglio, mi serve, devo, dammi]
+    neutral:
+      indicators: []  # default se non matcha altri
+
+  tone:
+    urgent:
+      indicators: [subito, urgente, immediatamente, ora, veloce]
+    frustrated:
+      indicators: [ennesima volta, ancora, sempre, ma è possibile, incredibile]
+    uncertain:
+      indicators: [forse, non so, boh, mah, dipende]
+    satisfied:
+      indicators: [perfetto, ottimo, eccellente, fantastico]
+    neutral:
+      indicators: []  # default
+
+  completeness:
+    # Basato sul numero di slot estratti
+    complete: 3  # >= 3 slot
+    partial: 1   # >= 1 slot
+    vague: 0     # < 1 slot
+
+  complexity:
+    # Basato sul numero di congiunzioni/condizioni
+    complex: 2    # >= 2 congiunzioni
+    compound: 1   # 1 congiunzione
+    simple: 0     # 0 congiunzioni
+
+# Pattern per identificare congiunzioni (per complexity)
+conjunctions:
+  - "\\be\\b"
+  - "\\bma\\b"
+  - "\\bperò\\b"
+  - "\\bse\\b"
+  - "\\bquindi\\b"
+  - "\\bpossibilmente\\b"
+  - "\\boppure\\b"
+  - "\\baltrimenti\\b"

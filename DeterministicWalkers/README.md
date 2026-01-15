@@ -24,6 +24,7 @@ DeterministicWalkers/
 │   ├── search_trains.py    # Simple Search Scenario
 │   ├── ticket_purchase.py  # Full Search -> Purchase Flow
 │   ├── multi_turn.py       # Complex Multi-turn Interaction
+│   ├── greeting_to_purchase.py # Full flow: Greeting -> Search -> Purchase
 │   └── ... (see Scenarios section)
 ├── resources/              # Static Assets & Configuration
 │   ├── corpus/             # Clean, Flat-List corpus JSON files
@@ -32,9 +33,11 @@ DeterministicWalkers/
 │   ├── qa_pairs.json       # Q&A pairs for QA scenario
 │   └── system_prompt.md    # Template for System Prompt
 ├── tools/                  # Helper scripts
-│   └── corpus_builder.py   # Main script to extract/build corpus from source data
+│   ├── corpus_builder.py   # Main script to extract/build corpus from source data
+│   └── validate_dataset.py # Validation tool for generated data
 ├── main.py                 # Generator Entry Point
-└── hydrate_dataset.py      # Context Injection Script
+├── hydrate_dataset.py      # Context Injection Script
+└── visualizer.html         # Data Visualization Dashboard
 ```
 
 ---
@@ -60,6 +63,16 @@ python hydrate_dataset.py data
 ```
 
 **Output**: A folder `data/hydrated-dataset/` containing the final, ready-to-train JSONL files.
+
+### 3. Validate the Dataset
+Run the validation tool to check for structural integrity and JSON compliance.
+
+```bash
+python tools/validate_dataset.py --input data/hydrated-dataset
+```
+
+### 4. Visualize
+Open `visualizer.html` in your browser. It is automatically updated with sample data after running `main.py`.
 
 ---
 

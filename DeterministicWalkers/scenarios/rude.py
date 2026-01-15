@@ -47,7 +47,7 @@ class Rude(Scenario):
         
         # Add context (assuming start of conversation or mid-conversation implies idle state)
         ctx_builder.add_context(
-            slice_length=msg_builder.current_length() + 1,
+            slice_length=msg_builder.current_length() + 2, # User + Asst
             origin=origin,
             ctx_time=ctx_time,
             ui_state='{"state":"idle"}',

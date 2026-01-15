@@ -16,6 +16,7 @@ from scenarios.refusal import Refusal
 from scenarios.rude import Rude
 from scenarios.search_fail import SearchFail
 from scenarios.greeting_to_purchase import GreetingToPurchase
+from scenarios.ten_turn_test import TenTurnTest
     
 def main():
     parser = argparse.ArgumentParser(description="Deterministic Data Generator")
@@ -93,6 +94,7 @@ def main():
     gen.register_scenario(Rude)
     gen.register_scenario(SearchFail)
     gen.register_scenario(GreetingToPurchase)  # NEW: Demonstration scenario
+    gen.register_scenario(TenTurnTest)
     
     # Run
     if args.scenario:
@@ -104,35 +106,37 @@ def main():
 
     if args.hydrated:
         print("Starting Hydration Process...")
-        import subprocess
-        
-        # Determine paths
-        # hydrate_dataset.py expects the base dataset directory (containing 'predataset')
-        dataset_base = str(base_output_dir)
-        
-        script_path = Path(__file__).parent / "hydrate_dataset.py"
-        if script_path.exists():
-            cmd = [sys.executable, str(script_path), dataset_base]
-            try:
-                subprocess.run(cmd, check=True)
-                print("Hydration complete!")
-            except subprocess.CalledProcessError as e:
-                print(f"Error during hydration: {e}")
-        else:
-            print(f"Error: hydrate_dataset.py not found at {script_path}")
+        # Use direct import for hydration (Refactor Phase 1)
+        try:
+            from hydrate_dataset import DataSetHydrator
+            
+            # Setup paths
+            base_output_dir = Path(base_output_dir)
+            template_path = base_output_dir / "resources" / "system_prompt.md"
+            tools_path = base_output_dir / "resources" / "tools.json"
+            input_dir = base_output_dir / "predataset"
+            output_dir = base_output_dir / "hydrated-dataset"
+            
+            print(f"Initializing Hydrator with template: {template_path}")
+            hydrator = DataSetHydrator(template_path, tools_path=tools_path)
+            hydrator.process_directory(input_dir, output_dir)
+            
+        except ImportError as e:
+            print(f"Error importing hydrate_dataset: {e}")
+        except Exception as e:
+            print(f"Error during hydration: {e}")
 
     # Always update the visualizer with the latest data
-    print("Updating visualizer...")
-    embed_visualizer_data(base_output_dir, hydrated=args.hydrated)
+    print("Updating visualizer data...")
+    generate_visualizer_data(base_output_dir, hydrated=args.hydrated)
 
     print("Done!")
 
 
-def embed_visualizer_data(base_output_dir, hydrated=False):
-    """Embed the dataset directly into visualizer.html for instant viewing."""
+def generate_visualizer_data(base_output_dir, hydrated=False):
+    """Generate visualizer_data.js for the visualizer."""
     import json
     import glob
-    import re
     
     base_output_dir = Path(base_output_dir)
     
@@ -142,11 +146,7 @@ def embed_visualizer_data(base_output_dir, hydrated=False):
     else:
         data_source = base_output_dir / "predataset"
     
-    visualizer_path = Path(__file__).parent / "visualizer.html"
-    
-    if not visualizer_path.exists():
-        print(f"  Warning: visualizer.html not found at {visualizer_path}")
-        return
+    js_output_path = Path(__file__).parent / "visualizer_data.js"
         
     if not data_source.exists():
         print(f"  Warning: Data source {data_source} not found")
@@ -170,32 +170,16 @@ def embed_visualizer_data(base_output_dir, hydrated=False):
             print(f"  Error loading {filename}: {e}")
     
     if not data:
-        print("  No data files found to embed.")
+        print("  No data files found to process.")
         return
     
-    # Read visualizer template
-    with open(visualizer_path, 'r', encoding='utf-8') as f:
-        content = f.read()
-    
-    # Create the JS assignment 
+    # Write JS file
     data_js = f"window.PRELOADED_DATA = {json.dumps(data, ensure_ascii=False)};"
     
-    # Remove previous injection if present
-    content = re.sub(r'<script id="preloaded-data">.*?</script>', '', content, flags=re.DOTALL)
+    with open(js_output_path, 'w', encoding='utf-8') as f:
+        f.write(data_js)
     
-    # Inject before </body>
-    injection = f'<script id="preloaded-data">{data_js}</script>'
-    
-    if '</body>' in content:
-        new_content = content.replace('</body>', f'{injection}\n</body>')
-    else:
-        new_content = content + f'\n{injection}'
-    
-    # Write back
-    with open(visualizer_path, 'w', encoding='utf-8') as f:
-        f.write(new_content)
-    
-    print(f"  Visualizer updated with {len(data)} files.")
+    print(f"  Generated {js_output_path.name} with {len(data)} files.")
 
 if __name__ == "__main__":
     main()

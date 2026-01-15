@@ -64,7 +64,7 @@ class SearchFail(Scenario):
             user_text = self.rephrase(rng, user_text)
         
         ctx_builder.add_context(
-            slice_length=msg_builder.current_length() + 1,
+            slice_length=msg_builder.current_length() + 4, # User + Tool + Resp + Asst
             origin=origin,
             ctx_time=ctx_time,
             ui_state='{"state":"idle"}',

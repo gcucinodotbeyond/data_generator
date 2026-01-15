@@ -500,7 +500,7 @@ class SearchComponent:
         
         # Add context for this turn
         ctx_builder.add_context(
-            slice_length=msg_builder.current_length() + 1,
+            slice_length=msg_builder.current_length() + 4, # User + ToolCall + ToolResp + Asst
             origin=self.origin,
             ctx_time=ctx_time,
             ui_state='{"state":"idle"}',
@@ -627,7 +627,7 @@ class PurchaseComponent:
         
         # Add context (Context for the Purchase User Turn)
         ctx_builder.add_context(
-            slice_length=msg_builder.current_length() + 1,
+            slice_length=msg_builder.current_length() + 4, # User + ToolCall + ToolResp + Asst
             origin=origin,
             ui_state='{"state":"results"}',
             trains_array=json.dumps(self.trains)
@@ -696,7 +696,7 @@ class QAComponent:
         for q, a in selected_pairs:
             # Add context
             ctx_builder.add_context(
-                slice_length=msg_builder.current_length() + 1,
+                slice_length=msg_builder.current_length() + 2, # Includes Asst reply
                 origin=origin,
                 ctx_time=ctx_time,
                 ui_state='{"state":"idle"}',
@@ -755,7 +755,7 @@ class RefusalComponent:
             refusal = rng.choice(refusal_templates)
             
             ctx_builder.add_context(
-                slice_length=msg_builder.current_length() + 1,
+                slice_length=msg_builder.current_length() + 2, # System + Prev + User + Asst
                 origin=origin,
                 ctx_time=ctx_time,
                 ui_state='{"state":"idle"}',
@@ -795,7 +795,7 @@ class GreetingComponent:
         user_greeting, assistant_greeting = rng.choice(self.DEFAULT_GREETINGS)
         
         ctx_builder.add_context(
-            slice_length=msg_builder.current_length() + 1,
+            slice_length=msg_builder.current_length() + 2, # System + User + Asst
             origin=origin,
             ctx_time=ctx_time,
             ui_state='{"state":"idle"}',
@@ -846,7 +846,7 @@ class ConfirmationComponent:
             asst_text = rng.choice(["😊 Benissimo!", "🙂 Ottimo!", "😊 Perfetto!", "🙂 Bene!"])
             
         ctx_builder.add_context(
-            slice_length=msg_builder.current_length() + 1,
+            slice_length=msg_builder.current_length() + 2, # User + Asst
             origin=origin,
             ui_state='{"state":"idle"}',
             trains_array=trains_array

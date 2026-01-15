@@ -68,7 +68,7 @@ class LongTicketPurchase(Scenario):
                 user_text = self.rephrase(rng, user_text)
                 
                 ctx_builder.add_context(
-                    slice_length=msg_builder.current_length() + 1,
+                    slice_length=msg_builder.current_length() + 4, # User + Tool + Resp + Asst
                     origin=origin,
                     ui_state='{"state":"results","can":{"next":true}}',
                     trains_array=json.dumps(current_trains)

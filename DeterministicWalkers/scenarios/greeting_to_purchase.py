@@ -86,7 +86,7 @@ class GreetingToPurchase(Scenario):
         )
         purchase_component.build(rng, run_id, msg_builder, ctx_builder, origin)
         
-        msg_builder.add_assistant("🎉 Buon viaggio!")
+
         
         return {
             "tools": "{{TOOL_DEFINITION}}",
