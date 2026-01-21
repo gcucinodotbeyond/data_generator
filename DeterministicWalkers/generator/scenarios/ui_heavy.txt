@@ -1,0 +1,4 @@
+search
+ui
+selection_purchase
+farewell

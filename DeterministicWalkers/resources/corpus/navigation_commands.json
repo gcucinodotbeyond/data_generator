@@ -1,0 +1,114 @@
+[
+  {
+    "id": "utt_4227",
+    "text": "menu",
+    "primary_category": "NAVIGATION",
+    "sub_category": "navigation",
+    "confidence": 1.0,
+    "attributes": {
+      "register": "neutral",
+      "completeness": "vague",
+      "tone": "neutral",
+      "complexity": "simple"
+    },
+    "extracted_slots": {}
+  },
+  {
+    "id": "utt_10212",
+    "text": "home",
+    "primary_category": "NAVIGATION",
+    "sub_category": "navigation",
+    "confidence": 1.0,
+    "attributes": {
+      "register": "neutral",
+      "completeness": "vague",
+      "tone": "neutral",
+      "complexity": "simple"
+    },
+    "extracted_slots": {}
+  },
+  {
+    "id": "utt_10511",
+    "text": "esci",
+    "primary_category": "NAVIGATION",
+    "sub_category": "exit",
+    "confidence": 1.0,
+    "attributes": {
+      "register": "neutral",
+      "completeness": "vague",
+      "tone": "neutral",
+      "complexity": "simple"
+    },
+    "extracted_slots": {}
+  },
+  {
+    "id": "utt_12223",
+    "text": "indietro",
+    "primary_category": "NAVIGATION",
+    "sub_category": "navigation",
+    "confidence": 1.0,
+    "attributes": {
+      "register": "neutral",
+      "completeness": "vague",
+      "tone": "neutral",
+      "complexity": "simple"
+    },
+    "extracted_slots": {}
+  },
+  {
+    "id": "utt_13903",
+    "text": "ricomincia",
+    "primary_category": "NAVIGATION",
+    "sub_category": "navigation",
+    "confidence": 1.0,
+    "attributes": {
+      "register": "neutral",
+      "completeness": "vague",
+      "tone": "neutral",
+      "complexity": "simple"
+    },
+    "extracted_slots": {}
+  },
+  {
+    "id": "utt_20071",
+    "text": "stop",
+    "primary_category": "NAVIGATION",
+    "sub_category": "exit",
+    "confidence": 1.0,
+    "attributes": {
+      "register": "neutral",
+      "completeness": "vague",
+      "tone": "neutral",
+      "complexity": "simple"
+    },
+    "extracted_slots": {}
+  },
+  {
+    "id": "utt_20312",
+    "text": "torna al menu",
+    "primary_category": "NAVIGATION",
+    "sub_category": "navigation",
+    "confidence": 1.0,
+    "attributes": {
+      "register": "neutral",
+      "completeness": "vague",
+      "tone": "neutral",
+      "complexity": "simple"
+    },
+    "extracted_slots": {}
+  },
+  {
+    "id": "utt_22316",
+    "text": "inizio",
+    "primary_category": "NAVIGATION",
+    "sub_category": "navigation",
+    "confidence": 1.0,
+    "attributes": {
+      "register": "neutral",
+      "completeness": "vague",
+      "tone": "neutral",
+      "complexity": "simple"
+    },
+    "extracted_slots": {}
+  }
+]

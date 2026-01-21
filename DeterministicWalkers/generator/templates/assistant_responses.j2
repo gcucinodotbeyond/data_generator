@@ -1,0 +1,117 @@
+{# VARIABLES: category (required), plus context-specific vars #}
+
+{# --- SEARCHING --- #}
+{%- if category == "searching" %}
+    {{ to_json({"text": "Sto cercando...", "variables": {}}) }}
+    {{ to_json({"text": "Un attimo, controllo subito.", "variables": {}}) }}
+    {{ to_json({"text": "Verifico la disponibilità...", "variables": {}}) }}
+    {{ to_json({"text": "Controllo i treni per te.", "variables": {}}) }}
+{%- endif %}
+
+{# --- SEARCH SUCCESS --- #}
+{%- if category == "search_success" %}
+    {# Requires: n_trains, destination, first_dep #}
+    {%- if n_trains == 1 %}
+        {{ to_json({"text": "😊 Ho trovato una soluzione per " ~ destination ~ ". Parte alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Ecco qui! C'è un treno per " ~ destination ~ " alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Ho trovato un'opzione. Parte alle " ~ first_dep ~ ". Ti va bene?", "variables": {}}) }}
+    {%- else %}
+        {{ to_json({"text": "😊 Ho trovato " ~ n_trains ~ " soluzioni. La prima per " ~ destination ~ " parte alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Ecco qui! Ci sono " ~ n_trains ~ " treni per " ~ destination ~ ". Il primo è alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "🙂 Ho trovato diverse opzioni. La prima parte alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Ho trovato " ~ n_trains ~ " opzioni. Quale preferisci?", "variables": {}}) }}
+        {{ to_json({"text": "Ci sono diverse soluzioni. Preferisci quella delle " ~ first_dep ~ " o un'altra?", "variables": {}}) }}
+    {%- endif %}
+{%- endif %}
+
+{# --- SEARCH EMPTY --- #}
+{%- if category == "search_empty" %}
+    {# Requires: destination #}
+    {{ to_json({"text": "😔 Non ho trovato treni per " ~ destination ~ ".", "variables": {}}) }}
+    {{ to_json({"text": "Mi dispiace, non ci sono soluzioni per " ~ destination ~ " in questo momento.", "variables": {}}) }}
+    {{ to_json({"text": "😔 Nessun treno trovato. Vuoi provare un altro orario?", "variables": {}}) }}
+{%- endif %}
+
+{# --- GREETING RESPONSE --- #}
+{%- if category == "greeting_response" %}
+    {{ to_json({"text": "Ciao! Dove vuoi andare oggi?", "variables": {}}) }}
+    {{ to_json({"text": "Salve! Come posso aiutarti?", "variables": {}}) }}
+    {{ to_json({"text": "Ciao! Hai già in mente una destinazione?", "variables": {}}) }}
+    {{ to_json({"text": "Buongiorno! Dove ti porto?", "variables": {}}) }}
+{%- endif %}
+
+{# --- REFUSAL ACK --- #}
+{%- if category == "refusal_ack" %}
+    {{ to_json({"text": "Capisco. Posso cercare altro?", "variables": {}}) }}
+    {{ to_json({"text": "Va bene. Vuoi cercare un'altra destinazione?", "variables": {}}) }}
+    {{ to_json({"text": "Nessun problema. Dimmi se vuoi cambiare ricerca.", "variables": {}}) }}
+    {{ to_json({"text": "Ok. Posso aiutarti con altro?", "variables": {}}) }}
+{%- endif %}
+
+{# --- SELECTION REFINEMENT --- #}
+{%- if category == "selection_refinement" %}
+    {# Requires: dep_time #}
+    {{ to_json({"text": "Perfetto, treno delle " ~ dep_time ~ ".", "variables": {}}) }}
+    {{ to_json({"text": "Ottimo, quello delle " ~ dep_time ~ ".", "variables": {}}) }}
+    {{ to_json({"text": "Ricevuto, treno delle " ~ dep_time ~ ".", "variables": {}}) }}
+{%- endif %}
+
+{# --- CLASS PROMPT --- #}
+{%- if category == "class_prompt" %}
+    {{ to_json({"text": "Il treno selezionato prevede diverse classi. Preferisci Standard, Prima o Business?", "variables": {}}) }}
+    {{ to_json({"text": "In che classe vuoi viaggiare? Standard, Prima o Business?", "variables": {}}) }}
+    {{ to_json({"text": "Per questo treno ho Standard, Prima e Business. Cosa preferisci?", "variables": {}}) }}
+{%- endif %}
+
+{# --- CLASS ACK --- #}
+{%- if category == "class_ack" %}
+    {# Requires: class_name #}
+    {{ to_json({"text": "Classe " ~ class_name ~ " impostata.", "variables": {}}) }}
+    {{ to_json({"text": "Perfetto, classe " ~ class_name ~ ".", "variables": {}}) }}
+    {{ to_json({"text": "D'accordo, " ~ class_name ~ ".", "variables": {}}) }}
+{%- endif %}
+
+{# --- HANDSHAKE --- #}
+{%- if category == "handshake" %}
+    {# Requires: price #}
+    {{ to_json({"text": "Tutto pronto. Il prezzo è " ~ price ~ "€. Posso procedere all'acquisto?", "variables": {}}) }}
+    {{ to_json({"text": "Il biglietto viene " ~ price ~ "€. Confermi?", "variables": {}}) }}
+    {{ to_json({"text": "Siamo pronti. Costo totale: " ~ price ~ "€. Procedo?", "variables": {}}) }}
+    {{ to_json({"text": "Perfetto. Sono " ~ price ~ "€. Vuoi acquistare?", "variables": {}}) }}
+{%- endif %}
+
+{# --- TICKET HANDOVER --- #}
+{%- if category == "ticket_handover" %}
+    {{ to_json({"text": "Ecco il tuo biglietto. Buon viaggio!", "variables": {}}) }}
+    {{ to_json({"text": "Acquisto completato! 😄 Buon viaggio.", "variables": {}}) }}
+    {{ to_json({"text": "Fatto! Ecco il biglietto. Grazie e buon viaggio!", "variables": {}}) }}
+    {{ to_json({"text": "Ecco a te. Il biglietto è pronto. Buon viaggio! 🚄", "variables": {}}) }}
+{%- endif %}
+
+{# --- FAREWELL --- #}
+{%- if category == "farewell" %}
+    {{ to_json({"text": "A presto!", "variables": {}}) }}
+    {{ to_json({"text": "Ciao, alla prossima!", "variables": {}}) }}
+    {{ to_json({"text": "Arrivederci!", "variables": {}}) }}
+    {{ to_json({"text": "A presto, buon viaggio!", "variables": {}}) }}
+{%- endif %}
+
+{# --- UI ACTION --- #}
+{%- if category == "ui_action" %}
+    {{ to_json({"text": "Certamente.", "variables": {}}) }}
+    {{ to_json({"text": "Subito.", "variables": {}}) }}
+    {{ to_json({"text": "Ecco fatto.", "variables": {}}) }}
+{%- endif %}
+
+{# --- QA ANSWER --- #}
+{%- if category == "qa_answer" %}
+    {# Requires: answer #}
+    {{ to_json({"text": answer, "variables": {}}) }}
+{%- endif %}
+
+{# --- OOD REDIRECT --- #}
+{%- if category == "ood_redirect" %}
+    {{ to_json({"text": "😔 Mi dispiace, ma posso aiutarti solo con informazioni sui treni e l'acquisto di biglietti. 😊 Posso cercarti un treno invece!", "variables": {}}) }}
+    {{ to_json({"text": "😔 Non posso aiutarti con questo. Io mi occupo di treni e biglietti ferroviari. 🙂 Vuoi cercare una soluzione di viaggio?", "variables": {}}) }}
+    {{ to_json({"text": "🤔 Mi spiace, non ho informazioni su questo argomento. Sono specializzata in viaggi ferroviari. Posso aiutarti a trovare un treno?", "variables": {}}) }}
+{%- endif %}

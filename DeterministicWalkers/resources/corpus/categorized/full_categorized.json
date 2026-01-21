@@ -1,0 +1,72 @@
+[
+  {
+    "id": "utt_f0dc052296",
+    "text": "Pescara",
+    "source": "search_trains_messages.jsonl",
+    "primary_category": "SEARCH_QUERY",
+    "source_file": "harvested_from_fs.json"
+  },
+  {
+    "id": "utt_5598ead615",
+    "text": "Caserta, dalle 14:00",
+    "source": "search_trains_messages.jsonl",
+    "primary_category": "SEARCH_QUERY",
+    "source_file": "harvested_from_fs.json"
+  },
+  {
+    "id": "utt_a8a2df3b27",
+    "text": "Buongiorno, vorrei un biglietto per Viterbo Porta Fiorentina",
+    "source": "search_trains_messages.jsonl",
+    "primary_category": "SEARCH_QUERY",
+    "source_file": "harvested_from_fs.json"
+  },
+  {
+    "id": "utt_c52f3746fc",
+    "text": "Tre biglietti per Merano domani sera alle 20:00",
+    "source": "search_trains_messages.jsonl",
+    "primary_category": "SEARCH_QUERY",
+    "source_file": "harvested_from_fs.json"
+  },
+  {
+    "id": "utt_96e7d28f94",
+    "text": "Voglio andare dove c'è la Torre Pendente",
+    "source": "search_trains_messages.jsonl",
+    "primary_category": "OOD",
+    "source_file": "harvested_from_fs.json"
+  },
+  {
+    "id": "utt_e833b13d53",
+    "text": "Io e mia moglie vorremmo tornare là dove si balla il tarantismo, possibilmente domani mattina presto",
+    "source": "search_trains_messages.jsonl",
+    "primary_category": "OOD",
+    "source_file": "harvested_from_fs.json"
+  },
+  {
+    "id": "utt_d3b6d55296",
+    "text": "Varese",
+    "source": "search_trains_messages.jsonl",
+    "primary_category": "SEARCH_QUERY",
+    "source_file": "harvested_from_fs.json"
+  },
+  {
+    "id": "utt_11686dcf62",
+    "text": "Trieste, dalle 10:00",
+    "source": "search_trains_messages.jsonl",
+    "primary_category": "UNKNOWN",
+    "source_file": "harvested_from_fs.json"
+  },
+  {
+    "id": "utt_4ce6cf2736",
+    "text": "Voglio un biglietto per Firenze Campo di Marte",
+    "source": "search_trains_messages.jsonl",
+    "primary_category": "SEARCH_QUERY",
+    "source_file": "harvested_from_fs.json"
+  },
+  {
+    "id": "utt_9d9a7699a4",
+    "text": "Due biglietti per Milano Centrale domani alle 11:30",
+    "source": "search_trains_messages.jsonl",
+    "primary_category": "SEARCH_QUERY",
+    "source_file": "harvested_from_fs.json"
+  }
+]

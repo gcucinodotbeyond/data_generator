@@ -1,0 +1,6 @@
+greeting
+search
+qa
+ui
+selection_purchase
+farewell

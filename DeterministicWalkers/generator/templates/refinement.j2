@@ -1,0 +1,36 @@
+{# VARIABLES: train, class, aspect #}
+
+{# --- TIME / TRAIN SELECTION --- #}
+{% if aspect == "train" %}
+{# Time-based #}
+{{ to_json({"text": "No, preferisco quello delle " ~ train.dep, "variables": {"refinement": "time"}}) }}
+{{ to_json({"text": "Voglio prendere il treno delle " ~ train.dep, "variables": {"refinement": "time"}}) }}
+{{ to_json({"text": "Quello che parte alle " ~ train.dep ~ " va bene", "variables": {"refinement": "time"}}) }}
+{{ to_json({"text": "C'è posto su quello delle " ~ train.dep ~ "?", "variables": {"refinement": "time"}}) }}
+
+{# Ordinal-based #}
+{% if position_word %}
+{{ to_json({"text": "Prendo il " ~ position_word, "variables": {"refinement": "ordinal"}}) }}
+{{ to_json({"text": "Il " ~ position_word, "variables": {"refinement": "ordinal"}}) }}
+{{ to_json({"text": "Voglio il " ~ position_word, "variables": {"refinement": "ordinal"}}) }}
+{{ to_json({"text": "Scegli il " ~ position_word ~ " risultato", "variables": {"refinement": "ordinal"}}) }}
+{% endif %}
+{% endif %}
+
+{# --- CLASS SELECTION --- #}
+{# --- CLASS SELECTION --- #}
+{% if aspect == "class" %}
+{{ to_json({"text": "Viaggerò in " ~ class, "variables": {"refinement": "class"}}) }}
+{{ to_json({"text": "Prendo la " ~ class, "variables": {"refinement": "class"}}) }}
+{{ to_json({"text": "Preferisco la " ~ class, "variables": {"refinement": "class"}}) }}
+{{ to_json({"text": "Voglio la " ~ class, "variables": {"refinement": "class"}}) }}
+{{ to_json({"text": "In " ~ class ~ " per favore", "variables": {"refinement": "class"}}) }}
+{% endif %}
+
+{# --- TRAIN + CLASS SELECTION --- #}
+{% if aspect == "both" %}
+{{ to_json({"text": "Quello delle " ~ train.dep ~ " in " ~ class_name, "variables": {"refinement": "both"}}) }}
+{{ to_json({"text": "Voglio prendere quello delle " ~ train.dep ~ " in " ~ class_name, "variables": {"refinement": "both"}}) }}
+{{ to_json({"text": "Va bene quello delle " ~ train.dep ~ " ma in " ~ class_name, "variables": {"refinement": "both"}}) }}
+{{ to_json({"text": "C'è posto su quello delle " ~ train.dep ~ " in " ~ class_name ~ "?", "variables": {"refinement": "both"}}) }}
+{% endif %}

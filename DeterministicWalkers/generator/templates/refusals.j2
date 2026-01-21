@@ -1,0 +1,39 @@
+{# VARIABLES: destination, time, count #}
+
+{%- set negatives = ["No", "Assolutamente no", "Sbagliato", "Ferma", "Fermati", "Stop", "Annulla", "Cancella", "Lascia stare", "Non voglio"] -%}
+
+{# --- GENERIC NEGATIVES (Always valid) --- #}
+{%- for neg in negatives %}
+{{ to_json({"text": neg, "variables": {}}) }}
+{{ to_json({"text": neg ~ ", grazie", "variables": {}}) }}
+{%- endfor %}
+
+{# --- SINGULAR CONTEXT (count == 1 or undefined) --- #}
+{% if count is not defined or count == 1 %}
+{%- set corrections_singular = ["Non mi interessa", "Ho cambiato idea", "Non va bene", "È troppo caro", "È troppo tardi", "È troppo presto", "Non mi convince"] -%}
+
+{%- for neg in negatives %}
+{%- for corr in corrections_singular %}
+{{ to_json({"text": neg ~ ", " ~ corr, "variables": {}}) }}
+{{ to_json({"text": corr, "variables": {}}) }}
+{%- endfor %}
+{%- endfor %}
+
+{# Contextual Singular #}
+{% if refused_time %}
+{{ to_json({"text": "No, non quello delle " ~ refused_time, "variables": {"time": refused_time}}) }}
+{{ to_json({"text": "Quello delle " ~ refused_time ~ " non va bene", "variables": {"time": refused_time}}) }}
+{% endif %}
+{% endif %}
+
+{# --- PLURAL CONTEXT (count > 1) --- #}
+{% if count is defined and count > 1 %}
+{%- set corrections_plural = ["Non mi interessano", "Ho cambiato idea", "Non vanno bene", "Non mi convincono", "Non ce n'è uno buono"] -%}
+
+{%- for neg in negatives %}
+{%- for corr in corrections_plural %}
+{{ to_json({"text": neg ~ ", " ~ corr, "variables": {}}) }}
+{{ to_json({"text": corr, "variables": {}}) }}
+{%- endfor %}
+{%- endfor %}
+{% endif %}

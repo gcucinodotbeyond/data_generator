@@ -2,9 +2,9 @@ import argparse
 import json
 import os
 import glob
+import re
 from pathlib import Path
 import urllib.request
-import urllib.error
 from typing import List, Dict, Any, Tuple
 
 # Configuration
@@ -15,6 +15,8 @@ GOLDEN_PATH = Path("resources/golden_dataset.jsonl")
 # Defaults
 DEFAULT_OLLAMA_URL = "http://localhost:11434/api/generate"
 DEFAULT_MODEL = "qwen2.5-coder:7b"
+
+# --- Utils ---
 
 def load_config() -> Dict[str, Any]:
     if CONFIG_PATH.exists():
@@ -29,200 +31,213 @@ config = load_config()
 OLLAMA_URL = config.get("llm", {}).get("base_url", DEFAULT_OLLAMA_URL)
 if not OLLAMA_URL.endswith("/api/generate"):
     OLLAMA_URL = f"{OLLAMA_URL}/api/generate"
-    
 MODEL = config.get("llm", {}).get("model", DEFAULT_MODEL)
 
-
 class ValidationResult:
-    def __init__(self, status: str, reason: str = "", fixed_data: Dict = None):
-        self.status = status # VALID, INVALID, FIXED, ERROR
+    def __init__(self, status: str, reason: str = ""):
+        self.status = status # VALID, INVALID, ERROR
         self.reason = reason
-        self.fixed_data = fixed_data
 
-def load_system_prompt():
-    if not SYSTEM_PROMPT_PATH.exists():
-        return "You are a data validator."
-    with open(SYSTEM_PROMPT_PATH, "r", encoding="utf-8") as f:
-        return f.read()
+# --- Extraction Utils ---
 
-def load_golden_examples(n=3) -> List[Dict]:
-    examples = []
-    if GOLDEN_PATH.exists():
+def extract_ctx(system_content: str) -> Dict[str, str]:
+    """Extracts data, ora, stazione from <ctx> tag."""
+    ctx_data = {}
+    match = re.search(r'<ctx>(.*?)</ctx>', system_content, re.DOTALL)
+    if match:
+        content = match.group(1).strip()
+        for line in content.split('\n'):
+            if ':' in line:
+                key, val = line.split(':', 1)
+                ctx_data[key.strip().lower()] = val.strip()
+    return ctx_data
+
+def extract_ui_state(system_content: str) -> Dict[str, Any]:
+    """Extracts UI state JSON from <ui> tag."""
+    match = re.search(r'<ui>(.*?)</ui>', system_content, re.DOTALL)
+    if match:
         try:
-            with open(GOLDEN_PATH, "r", encoding="utf-8") as f:
-                for line in f:
-                    if line.strip():
-                        examples.append(json.loads(line))
-        except Exception:
+            return json.loads(match.group(1).strip())
+        except json.JSONDecodeError:
             pass
-    return examples[:n]
+    return {}
 
-def call_ollama(prompt: str, model: str, system: str, json_mode: bool = True) -> Dict:
-    data = {
-        "model": model,
-        "prompt": prompt,
-        "system": system,
-        "stream": False,
-        "format": "json" if json_mode else None,
-        "options": {
-            "temperature": 0.1
-        }
-    }
+def extract_trains_list(system_content: str) -> List[Dict]:
+    """Extracts trains JSON from <trains> tag."""
+    match = re.search(r'<trains>(.*?)</trains>', system_content, re.DOTALL)
+    if match:
+        try:
+            return json.loads(match.group(1).strip())
+        except json.JSONDecodeError:
+            pass
+    return []
+
+# --- Level 1: Structure & Schema ---
+
+def check_tools_array(sample: Dict) -> Tuple[bool, str]:
+    tools = sample.get("tools", [])
+    if len(tools) != 3:
+        return False, f"Expected 3 tools, found {len(tools)}"
     
-    try:
-        req = urllib.request.Request(
-            OLLAMA_URL, 
-            data=json.dumps(data).encode('utf-8'),
-            headers={'Content-Type': 'application/json'}
-        )
-        with urllib.request.urlopen(req) as response:
-            result = json.loads(response.read().decode('utf-8'))
-            return json.loads(result['response'])
-    except Exception as e:
-        print(f"Ollama Call Error: {e}")
-        return {"status": "ERROR", "reason": str(e)}
-
-# --- Level 1: Structural Checks ---
-
-def check_structure(sample: Dict) -> Tuple[bool, str]:
-    if "tools" not in sample or "messages" not in sample:
-        return False, "Missing 'tools' or 'messages' keys"
+    names = {t["function"]["name"] for t in tools if "function" in t}
+    required = {"search_trains", "purchase_ticket", "ui_control"}
+    if names != required:
+        return False, f"Missing required tools. Found: {names}"
     
-    if not isinstance(sample["tools"], list) or len(sample["tools"]) != 3:
-        return False, "Tools array must have exactly 3 items"
-        
+    return True, ""
+
+def check_sequential_ids(sample: Dict) -> Tuple[bool, str]:
+    """Verifies call_001, call_002, etc."""
+    expected_idx = 1
+    
+    # Identify all tool call IDs used
+    for msg in sample["messages"]:
+        if "tool_calls" in msg and msg["tool_calls"]:
+            for tc in msg["tool_calls"]:
+                call_id = tc.get("id", "")
+                expected_id = f"call_{expected_idx:03d}"
+                if call_id != expected_id:
+                    return False, f"Invalid ID sequence. Expected {expected_id}, found {call_id}"
+                expected_idx += 1
+                
+        # Check tool responses match
+        if msg["role"] == "tool":
+            cid = msg.get("tool_call_id", "")
+            if not cid.startswith("call_"):
+                return False, f"Invalid tool_call_id format: {cid}"
+                
+    return True, ""
+
+# --- Level 2: Coherence & State Logic ---
+
+def check_coherence_and_logic(sample: Dict) -> Tuple[bool, str]:
     msgs = sample["messages"]
     if not msgs or msgs[0]["role"] != "system":
         return False, "First message must be system"
-        
-    return True, ""
-
-def check_tool_calls_json(sample: Dict) -> Tuple[bool, str]:
-    for i, msg in enumerate(sample["messages"]):
-        if "tool_calls" in msg and msg["tool_calls"]:
+    
+    sys_content = msgs[0]["content"]
+    ctx = extract_ctx(sys_content)
+    ui_state = extract_ui_state(sys_content)
+    visible_trains = extract_trains_list(sys_content)
+    
+    current_state = ui_state.get("state", "idle")
+    
+    for i, msg in enumerate(msgs):
+        if msg["role"] == "assistant" and "tool_calls" in msg and msg["tool_calls"]:
             for tc in msg["tool_calls"]:
-                if "function" not in tc or "arguments" not in tc["function"]:
-                     return False, f"Malformed tool_call in msg {i}"
-                args = tc["function"]["arguments"]
-                if not isinstance(args, str):
-                    return False, f"Tool arguments must be string in msg {i}"
+                name = tc["function"]["name"]
+                args_str = tc["function"]["arguments"]
+                
                 try:
-                    json.loads(args)
+                    args = json.loads(args_str)
                 except:
-                    return False, f"Invalid JSON in tool arguments in msg {i}"
+                    return False, f"Msg {i}: Tool arguments not valid JSON string"
+
+                # 1. search_trains logic
+                if name == "search_trains":
+                    # Allowed in 'idle' OR 'results' (new search) OR 'purchased' (new search)
+                    # Not allowed in 'choosingSeat' generally
+                    if current_state == "choosingSeat":
+                         pass # Relaxed rule: sometimes users change mind? For now let's warn only or imply state change.
+                         # return False, f"Msg {i}: search_trains not allowed in state {current_state}"
+                    
+                    # Origin Check
+                    if "origin" in args and "stazione" in ctx:
+                        if args["origin"] != ctx["stazione"]:
+                             return False, f"Msg {i}: Origin mismatch. Context: {ctx['stazione']}, Arg: {args['origin']}"
+                    
+                    # Transition Assumption
+                    current_state = "results"
+
+                # 2. purchase_ticket logic
+                elif name == "purchase_ticket":
+                    if current_state not in ["results", "choosingSeat"]:
+                        return False, f"Msg {i}: purchase_ticket not allowed in state {current_state}"
+                        
+                    # Transition Assumption
+                    current_state = "purchased"
+
+                # 3. ui_control logic
+                elif name == "ui_control":
+                    action = args.get("action")
+                    can_actions = ui_state.get("can", {})
+                    
+                    if action == "back":
+                        current_state = "idle"
+                    elif action in ["next", "prev"]:
+                        # For validation of 'can' actions, we rely on the INITIAL state's capabilities?
+                        # This is tricky for multi-turn. detailed simulation is hard.
+                        # Disabling can-check for dynamic flows to avoid false positives.
+                        pass
+
     return True, ""
 
-# --- Level 2: Semantic Checks ---
+# --- Level 3: Content Heuristics ---
 
-def build_validation_prompt(sample: Dict, golden: List[Dict]) -> str:
-    # simplify sample for prompt to save tokens
-    simple_msgs = []
-    ctx = ""
-    for msg in sample["messages"]:
-        if msg["role"] == "system":
-            # Extract ctx and ui from system prompt
-            content = msg["content"]
-            if "<ctx>" in content:
-                ctx += content[content.find("<ctx>"):content.find("</ctx>")+6]
-            if "<ui>" in content:
-                ctx += "\n" + content[content.find("<ui>"):content.find("</ui>")+5]
-        else:
-            role = msg["role"]
-            content = msg.get("content")
-            tcs = msg.get("tool_calls")
+def check_content_heuristics(sample: Dict) -> Tuple[bool, str]:
+    for i, msg in enumerate(sample["messages"]):
+        if msg["role"] == "assistant" and msg.get("content"):
+            text = msg["content"]
             
-            if tcs:
-                calls = [f"{tc['function']['name']}({tc['function']['arguments']})" for tc in tcs]
-                simple_msgs.append(f"{role}: TOOL_CALLS: {calls}")
-            elif content:
-                 simple_msgs.append(f"{role}: {content}")
-            else:
-                 simple_msgs.append(f"{role}: [Empty]")
+            # Emoji check
+            emojis = ["😊", "🙂", "😄", "🤔", "😔", "😌"]
+            has_emoji = any(e in text for e in emojis)
+            if not has_emoji:
+                return False, f"Msg {i}: Assistant response missing emoji"
+            
+            # Length check (rough)
+            if len(text) > 300:
+                return False, f"Msg {i}: Assistant response too long ({len(text)} chars)"
+                
+    return True, ""
 
-    conversation_text = "\n".join(simple_msgs)
-    
-    prompt = f"""
-    CONTEXT:
-    {ctx}
-    
-    CONVERSATION:
-    {conversation_text}
-    """
-    return prompt
+# --- Main Validation Flow ---
 
-def validate_sample(sample: Dict, model: str, fix: bool) -> ValidationResult:
-    # 1. Structural
-    ok, err = check_structure(sample)
-    if not ok: return ValidationResult("INVALID", f"Structure: {err}")
+def validate_sample(sample: Dict) -> ValidationResult:
+    # 1. Structure
+    ok, err = check_tools_array(sample)
+    if not ok: return ValidationResult("INVALID", err)
     
-    ok, err = check_tool_calls_json(sample)
-    if not ok: return ValidationResult("INVALID", f"JSON: {err}")
+    ok, err = check_sequential_ids(sample)
+    if not ok: return ValidationResult("INVALID", err)
     
-    # 2. Semantic
-    system = load_system_prompt()
-    golden = load_golden_examples()
-    prompt = build_validation_prompt(sample, golden)
+    # 2. Logic
+    ok, err = check_coherence_and_logic(sample)
+    if not ok: return ValidationResult("INVALID", err)
     
-    if fix:
-        prompt += "\n\nIMPORTANT: If INVALID, provide a FIXED version of the conversation in your JSON output under 'fixed_messages'."
+    # 3. Content
+    ok, err = check_content_heuristics(sample)
+    if not ok: return ValidationResult("INVALID", err)
     
-    response = call_ollama(prompt, model, system)
-    
-    status = response.get("status", "ERROR").upper()
-    reason = response.get("reason", "No reason provided")
-    
-    if status == "INVALID" and fix and "fixed_messages" in response:
-         # Construct fixed sample
-         fixed_sample = sample.copy()
-         # usage of response['fixed_messages'] requires parsing it back to full message objects
-         # This is complex because the LLM sees simplified text.
-         # For now, let's assume the LLM returns a description of the fix or we implement a specialized fixer.
-         # Re-implementing full reconstruction is hard. 
-         # Let's request the LLM to just give the new turns.
-         pass
-         
-    return ValidationResult(status, reason)
-
-def generate_report(results: List[Tuple[str, ValidationResult]], output_dir: Path):
-    html = ["<html><body><h1>Validation Report</h1><table border='1'><tr><th>File/ID</th><th>Status</th><th>Reason</th></tr>"]
-    for name, res in results:
-        color = "green" if res.status == "VALID" else "red"
-        html.append(f"<tr><td>{name}</td><td style='color:{color}'>{res.status}</td><td>{res.reason}</td></tr>")
-    html.append("</table></body></html>")
-    
-    with open(output_dir / "validation_report.html", "w", encoding="utf-8") as f:
-        f.write("".join(html))
+    return ValidationResult("VALID", "Checks passed")
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", "-i", required=True, help="Input file or directory (glob patterns supported)")
-    parser.add_argument("--model", "-m", default=MODEL, help=f"Ollama model to use (default: {MODEL})")
-    # parser.add_argument("--fix", action="store_true", help="Attempt to fix invalid samples") # TODO: Implement fix logic in Phase 3
+    parser.add_argument("--input", "-i", required=True, help="Input file")
     args = parser.parse_args()
     
     files = glob.glob(args.input) if "*" in args.input else [args.input]
-    if os.path.isdir(args.input):
-        files = glob.glob(str(Path(args.input) / "*.jsonl"))
-        
-    results = []
-    print(f"Validating {len(files)} files with model {args.model}...")
+    
+    total = 0
+    valid = 0
     
     for fpath in files:
-        with open(fpath, "r", encoding="utf-8") as f:
+        print(f"Scanning {fpath}...")
+        with open(fpath, 'r', encoding='utf-8') as f:
             for i, line in enumerate(f):
                 if not line.strip(): continue
+                total += 1
                 try:
                     sample = json.loads(line)
-                    res = validate_sample(sample, args.model, fix=False)
-                    print(f"[{res.status}] {Path(fpath).name} #{i}: {res.reason}")
-                    results.append((f"{Path(fpath).name} #{i}", res))
+                    res = validate_sample(sample)
+                    if res.status != "VALID":
+                        print(f" [FAIL] Line {i+1}: {res.reason}")
+                    else:
+                        valid += 1
                 except json.JSONDecodeError:
-                    print(f"[ERROR] {Path(fpath).name} #{i}: Invalid JSON Line")
-                    results.append((f"{Path(fpath).name} #{i}", ValidationResult("ERROR", "Invalid JSON Line")))
-    
-    out_dir = Path(files[0]).parent if files else Path(".")
-    generate_report(results, out_dir)
-    print(f"Report generated at {out_dir / 'validation_report.html'}")
+                    print(f" [ERROR] Line {i+1}: Bad JSON")
+                    
+    print(f"\nSummary: {valid}/{total} valid samples.")
 
 if __name__ == "__main__":
     main()

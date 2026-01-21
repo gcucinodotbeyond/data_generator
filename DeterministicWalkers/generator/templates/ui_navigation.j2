@@ -1,0 +1,33 @@
+{# VARIABLES: action (next, prev, back, status, show_changes) #}
+
+{%- if action == "next" %}
+    {{ to_json({"text": "Fammi vedere altri treni", "variables": {}}) }}
+    {{ to_json({"text": "Avanti", "variables": {}}) }}
+    {{ to_json({"text": "Prossimi", "variables": {}}) }}
+    {{ to_json({"text": "Ce ne sono altri?", "variables": {}}) }}
+    {{ to_json({"text": "Vai alla pagina successiva", "variables": {}}) }}
+{%- elif action == "prev" %}
+    {{ to_json({"text": "Torna a quelli di prima", "variables": {}}) }}
+    {{ to_json({"text": "Indietro", "variables": {}}) }}
+    {{ to_json({"text": "Precedenti", "variables": {}}) }}
+    {{ to_json({"text": "Voglio rivedere i primi", "variables": {}}) }}
+{%- elif action == "back" %}
+    {{ to_json({"text": "Annulla tutto", "variables": {}}) }}
+    {{ to_json({"text": "Ricomincia la ricerca", "variables": {}}) }}
+    {{ to_json({"text": "Torna all'inizio", "variables": {}}) }}
+    {{ to_json({"text": "Annulla e ricomincia", "variables": {}}) }}
+{%- elif action == "status" %}
+    {{ to_json({"text": "A che punto siamo?", "variables": {}}) }}
+    {{ to_json({"text": "Cosa ho selezionato?", "variables": {}}) }}
+    {{ to_json({"text": "Fammi un riepilogo", "variables": {}}) }}
+    {{ to_json({"text": "Qual è il riepilogo del viaggio?", "variables": {}}) }}
+{%- elif action == "show_changes" %}
+    {{ to_json({"text": "Il primo ha cambi?", "variables": {}}) }}
+    {{ to_json({"text": "È diretto?", "variables": {}}) }}
+    {{ to_json({"text": "Ci sono fermate intermedie?", "variables": {}}) }}
+    {{ to_json({"text": "Voglio vedere le fermate di questo treno", "variables": {}}) }}
+{%- else %}
+    {{ to_json({"text": "Menu", "variables": {}}) }}
+    {{ to_json({"text": "Torna al menu", "variables": {}}) }}
+    {{ to_json({"text": "Aiuto", "variables": {}}) }}
+{%- endif %}

@@ -1,0 +1,37 @@
+{# VARIABLES: destination, time, class_type #}
+
+{%- set affirmatives = ["Sì", "Si", "Certamente", "Certo", "Va bene", "Ok", "Okay", "D'accordo", "Affermativo", "Perfetto", "Ottimo"] -%}
+{%- set procedurals = ["Procedi", "Vai avanti", "Confermo", "Prenota", "Acquista", "Fallo"] -%}
+
+{# --- SIMPLE AFFIRMATIVE --- #}
+{%- for aff in affirmatives %}
+{{ to_json({"text": aff, "variables": {}}) }}
+{{ to_json({"text": aff ~ " grazie", "variables": {}}) }}
+{%- endfor %}
+
+{# --- AFFIRMATIVE + PROCEDURAL --- #}
+{%- for aff in affirmatives %}
+{%- for proc in procedurals %}
+{{ to_json({"text": aff ~ ", " ~ proc, "variables": {}}) }}
+{{ to_json({"text": aff ~ " " ~ proc, "variables": {}}) }}
+{%- endfor %}
+{%- endfor %}
+
+{# --- CONTEXTUAL CONFIRMATION (Simulating responding to a proposal) --- #}
+{# "Va bene quello delle 8:00" #}
+{% if time %}
+{{ to_json({"text": "Va bene quello delle " ~ time, "variables": {"time": time}}) }}
+{{ to_json({"text": "Prendo quello delle " ~ time, "variables": {"time": time}}) }}
+{{ to_json({"text": "Ok per le " ~ time, "variables": {"time": time}}) }}
+{% endif %}
+
+{% if destination %}
+{{ to_json({"text": "Sì, per " ~ destination ~ " va bene", "variables": {"destination": destination}}) }}
+{{ to_json({"text": "Confermo " ~ destination, "variables": {"destination": destination}}) }}
+{% endif %}
+
+{% if class_type %}
+{{ to_json({"text": "In " ~ class_type, "variables": {"class_type": class_type}}) }}
+{{ to_json({"text": "Va bene in " ~ class_type, "variables": {"class_type": class_type}}) }}
+{{ to_json({"text": "Ok " ~ class_type, "variables": {"class_type": class_type}}) }}
+{% endif %}

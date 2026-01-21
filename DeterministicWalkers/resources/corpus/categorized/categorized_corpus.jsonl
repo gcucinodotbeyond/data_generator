@@ -1,0 +1,405 @@
+{"id": "utt_f0dc052296", "text": "Pescara", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_5598ead615", "text": "Caserta, dalle 14:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a8a2df3b27", "text": "Buongiorno, vorrei un biglietto per Viterbo Porta Fiorentina", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c52f3746fc", "text": "Tre biglietti per Merano domani sera alle 20:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_96e7d28f94", "text": "Voglio andare dove c'è la Torre Pendente", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_e833b13d53", "text": "Io e mia moglie vorremmo tornare là dove si balla il tarantismo, possibilmente domani mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d3b6d55296", "text": "Varese", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_11686dcf62", "text": "Trieste, dalle 10:00", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4ce6cf2736", "text": "Voglio un biglietto per Firenze Campo di Marte", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9d9a7699a4", "text": "Due biglietti per Milano Centrale domani alle 11:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_122dc698bf", "text": "Voglio andare dove c'è l'Arena di Verona", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_039a417afb", "text": "Noi tre famiglia vogliamo andare nella capitale eterna per vedere San Pietro", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_0662f0a071", "text": "Agrigento Centrale", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6c70ee9711", "text": "Vicenza dalle 13:30", "source": "search_trains_messages.jsonl", "primary_category": "REFINEMENT", "source_file": "harvested_from_fs.json"}
+{"id": "utt_7d994b029b", "text": "Voglio un biglietto per Roma Termini", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_7e3dabd2aa", "text": "Due biglietti per Ascoli Piceno domani alle 7 di mattina", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_dc1f7e4d1f", "text": "Voglio andare dove si trova la Cattedrale di San Zeno", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_89ac23f3e3", "text": "Io e mia moglie vogliamo tornare dalla città dei due mari, ce ne andiamo domattina presto in quattro", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a9dba17424", "text": "Perugia", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d24814d105", "text": "Lecce, dalle 10:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_544f44c754", "text": "Vorrei un biglietto per Genova Piazza Principe", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1f929ffd7e", "text": "Due biglietti per Roma Tiburtina domani alle 18:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4eb03ac024", "text": "Voglio andare dove si trova la Torre di Pisa", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_30f40807e8", "text": "Io e mia moglie ce ne torniamo giù nella terra delle orecchiette domani mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_832c04bdaf", "text": "Salerno", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_eb4a504876", "text": "Merano, dalle 14:00", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_27b8f782ef", "text": "Buongiorno, vorrei un biglietto per Modena", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d98730b331", "text": "Due biglietti per Genova Piazza Principe domani sera alle 21:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b44860cd05", "text": "Voglio andare dove si trova la Reggia più famosa d'Italia", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_44891dea46", "text": "Io e mia moglie vorremmo tornare a casa, là dove si fanno le migliori granite della Sicilia", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_f1d06ac916", "text": "Porto Torres Marittima", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_5f32e78d53", "text": "Firenze Santa Maria Novella, dalle 10:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d3f477796b", "text": "Vorrei un biglietto per Monterosso al Mare", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6bbed23563", "text": "Due biglietti per Aosta domani alle 08:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a5a484986d", "text": "Voglio andare dove si trova la Mole Antonelliana", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6e73415bb1", "text": "Io e la famiglia vogliamo tornare nella città dei canali, siamo in quattro e partiamo dopo pranzo", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_13583ec1b3", "text": "Roma San Pietro", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2f1fa1810c", "text": "Pisa Centrale, dalle 18:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8e4f87f0ce", "text": "Buongiorno, vorrei un biglietto per Napoli Campi Flegrei", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_945dcd34ca", "text": "Tre biglietti per Teramo domani alle 8:30 del mattino", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b1c746a67e", "text": "Voglio andare a vedere la Basilica di San Francesco", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_66dfad6839", "text": "Io e mia moglie vorremmo andare domani pomeriggio dove si trova la Torre che pende", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_75cc7ed7ad", "text": "Roma Termini", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_0af24e399f", "text": "Palermo Centrale, dalle 07:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_0255262f2c", "text": "Vorrei un biglietto per Foggia", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8f92bee6ca", "text": "Due biglietti per Asti domani alle 16:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_102042eef0", "text": "Voglio andare a vedere la Mole Antonelliana", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4c04b2e978", "text": "Noi tre ce ne andiamo domattina presto dove si fa il Carnevale più bello d'Italia", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a7b76c809d", "text": "Corniglia", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_e13302d01f", "text": "Avellino, dalle 12:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4591fec62f", "text": "Vorrei un biglietto per Brindisi", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_26ee2f5564", "text": "Due biglietti per Piacenza domani alle 15:00", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b35867e51a", "text": "Io e mia moglie vorremmo partire domattina presto per andare a vedere il David di Michelangelo", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_79310a0f3a", "text": "Reggio Emilia", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a6b2641902", "text": "Brescia, dalle 19:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b91e337740", "text": "Buongiorno, vorrei un biglietto per Siena", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_64240a1e1d", "text": "Due biglietti per Matera domani alle 13:00", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_364392ccdf", "text": "Voglio andare a vedere i Sassi di Matera", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_87ff10c736", "text": "Io e mia figlia ce ne andiamo là dove si fa il più bel presepe di sabbia", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_e8f9b4e973", "text": "Piacenza", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2141b6fbf2", "text": "Gorizia, dalle 11:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6885b47313", "text": "Voglio un biglietto per Parma", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ed5e962bcd", "text": "Due biglietti per Porto Torres Marittima domani alle 19:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_21bbd17d9a", "text": "Voglio andare dove si può vedere la Basilica di Sant'Antonio", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_43cb750443", "text": "Io e mia moglie ce ne andiamo a mangiare il baccalà alla vicentina nel pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4381d4f470", "text": "Milano Centrale", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_245e3f7d08", "text": "Modena, dalle 21:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a2a4be48dd", "text": "Vorrei un biglietto per Vicenza", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c9423a0dc5", "text": "Due biglietti per Ancona Marittima domani alle 15:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c3c6cbdb78", "text": "Voglio andare dove si trova la Basilica di San Francesco", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_365030d401", "text": "Io e mia moglie domattina presto vogliamo tornare al paese dove nacque Leopardi", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_0baa645831", "text": "Modena", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_3cede0b300", "text": "Milano Lambrate, dalle 16:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_39eae721dc", "text": "Vorrei un biglietto per Grosseto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_767c54acd6", "text": "Due biglietti per Ercolano Scavi domani alle 15:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_bcbc5e92f6", "text": "Voglio andare dove c'è la Mole Antonelliana", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_efaa260a32", "text": "Io e mia moglie vorremmo andare a vedere i famosi portici patrimonio UNESCO sabato mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b0e1ad6055", "text": "Potenza Centrale", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_92d1222573", "text": "Modena, dalle 10:30", "source": "search_trains_messages.jsonl", "primary_category": "REFINEMENT", "source_file": "harvested_from_fs.json"}
+{"id": "utt_5450cd3524", "text": "Buongiorno, vorrei un biglietto per Lamezia Terme Centrale", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_43f6c33bdd", "text": "Due biglietti per Portofino domani alle 7:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_47155d518f", "text": "Io e la famiglia vogliamo tornarcene a casa nostra, là dove si mangia il risotto con le seppie", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_3334104fd1", "text": "Cremona, dalle 19:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_356b5cdee3", "text": "Vorrei un biglietto per Verona Porta Nuova", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8377af87de", "text": "Due biglietti per Roma Ostiense domani alle 19:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_042006de7b", "text": "Io e mia moglie ce ne torniamo in quel di Venezia, sui canali, domani sera", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_7d1865c032", "text": "Rovigo", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a92bc93498", "text": "Genova dalle 13:30", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_94065db597", "text": "Vorrei un biglietto per Domodossola", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8acee179ed", "text": "Tre biglietti per Pavia domani alle 16:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ecfe151bc7", "text": "Vorrei andare dove si trova la Mole Antonelliana", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a719356847", "text": "Io e mia moglie vogliamo tornare in quel di San Marco, partendo domattina alle 9", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_f5f3dc03e2", "text": "Livorno Centrale", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_21ae00896e", "text": "Reggio Emilia AV, dalle 12:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_daa26d2e27", "text": "Vorrei un biglietto per Oristano", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_7ada51bcf3", "text": "Due biglietti per Domodossola domani alle 19:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_34183c8fb5", "text": "Voglio andare a vedere il David di Michelangelo", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c8f080164d", "text": "Io e mia moglie vorremmo tornare nella città delle gondole per il nostro anniversario dopodomani nel primo pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_98b1137b99", "text": "Ascoli Piceno", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_3890704d89", "text": "Roma Ostiense, dalle 13:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_197671d941", "text": "Vorrei un biglietto per Rovigo", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_efed3cafb5", "text": "Due biglietti per Firenze Campo di Marte domani alle 08:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_cf8a6f40d3", "text": "Voglio andare dove si può vedere il David di Michelangelo", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9902a10ea7", "text": "Io e mia figlia vogliamo tornare a casa dove si balla la tarantella, partiamo dopodomani nel primo pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_74be4a18ab", "text": "Bolzano, dalle 7:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_0e59f9ccf2", "text": "Vorrei un biglietto per Trani", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c9b05d5bf4", "text": "Due biglietti per Crotone domani alle 7:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_67f7878738", "text": "Io e la famiglia vogliamo tornare in quel di Firenze dove si mangia la vera bistecca, siamo in quattro e partiamo domattina presto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_15cc22518a", "text": "Firenze Rifredi", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_5c5ba09b1a", "text": "Foggia, dalle 10:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d16d68b999", "text": "Buongiorno, vorrei un biglietto per L'Aquila", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_964b527846", "text": "Devo andare a Milano Centrale domani alle 12:00, siamo in tre", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_fbfe6e90ca", "text": "Vogliamo andare dove si trova la Fontana di Trevi", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_fa445ab045", "text": "Io e mia moglie ce ne torniamo dove si mangia il ragù più buono d'Italia, partiamo domani mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_07b2172d5f", "text": "Gorizia", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_5cef9c08d5", "text": "Firenze Rifredi, dalle 7", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_bc96c4dbca", "text": "Buongiorno, vorrei un biglietto per Varese", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b94633d73d", "text": "Due biglietti per Ostuni domani mattina alle 7", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_cd2fac7ca5", "text": "Voglio andare dove si trova la Scala", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_07f5a5a447", "text": "Io e mia moglie vorremmo tornare al paese dove si fa il limoncello più buono", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_885f2a1bdb", "text": "Avellino", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_83792dc0c2", "text": "Venezia Santa Lucia, dalle 08:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_0499f5579a", "text": "Buongiorno, vorrei un biglietto per Asti", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_0142238334", "text": "Due biglietti per Pisa Centrale stasera alle 20:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1d7283b4fb", "text": "Voglio andare dove ci sono i due mari", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1c5b51e5ba", "text": "Io e mia moglie vogliamo tornare dove si fa il carnevale più bello d'Italia, domani mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_7ca34728aa", "text": "Lecce", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_7c8a9a04a9", "text": "Roma Tiburtina, dalle 14:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6042f4604a", "text": "Vorrei un biglietto per Venezia Santa Lucia", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_35a7713a65", "text": "Due biglietti per Trento domani alle 12:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_494646c8e1", "text": "Voglio andare a vedere la Gioconda", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_bad36181ee", "text": "Io e mia moglie vogliamo tornare là dove si fa il limoncello buono, magari nel primo pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_103e6830d5", "text": "Treviso Centrale, dalle 16:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_683b93d8eb", "text": "Vorrei un biglietto per Ancona", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_3d9ae381bf", "text": "Due biglietti per Palermo Centrale domani alle 17:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_fd5b597d89", "text": "Voglio andare dove si trova la Valle dei Templi", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ee56f5663b", "text": "Io e mia moglie ci trasferiremo nel bel mezzo della laguna veneta per il fine settimana", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_338f325b7b", "text": "Bolzano", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_989ec9d2d8", "text": "Vicenza, dalle 21:00", "source": "search_trains_messages.jsonl", "primary_category": "REFINEMENT", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c23c9cbf9c", "text": "Voglio un biglietto per Porto Torres Marittima", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_10089afb7b", "text": "Due biglietti per Cagliari domani alle 06:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_57d80ded27", "text": "Voglio andare a vedere i trulli pugliesi", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_f3ee7f7a48", "text": "Io e mia moglie ce ne vogliamo tornare a casa nostra nella città dei due mari il fine settimana", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_75ae464ee6", "text": "Torino", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_e746dbe95b", "text": "Novara, dalle 11:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_70c60f97ff", "text": "Vorrei un biglietto per Arezzo", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ee9066952a", "text": "Due biglietti per Grosseto domani alle 17:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_44740e6be7", "text": "Io e mia moglie dobbiamo tornare nella città del Palio di domani sera", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_fabffe7982", "text": "Benevento", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2e693b19de", "text": "Torino Porta Susa, dalle 6 del mattino", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_92fbabd137", "text": "Vorrei un biglietto per Roma Tiburtina", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ef1c0b3808", "text": "Due biglietti per Varenna-Esino domani alle 14:00", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1dfe66b42f", "text": "Voglio andare dove si trova il famoso ponte dei sospiri", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8897d1d795", "text": "Io e mia moglie ce ne andiamo a vedere dove nacque Dante, magari domattina presto verso le 7", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8ed2b23fbd", "text": "Viterbo Porta Fiorentina", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_19c0e3fa82", "text": "Foggia, dalle 11:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_267438a2bb", "text": "Vorrei un biglietto per Teramo", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8153b100d2", "text": "Due biglietti per Brescia domani alle 14:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_7fbd7eb498", "text": "Voglio andare dove si può vedere la Mole Antonelliana", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_df0e011e81", "text": "Io e mia moglie dobbiamo tornare dove fanno quel buon prosciutto di Parma, partiamo domattina presto", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8ae0bfe712", "text": "Caserta", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6173d3122d", "text": "Napoli Campi Flegrei, dalle 14:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6a8ba849e5", "text": "Vorrei un biglietto per San Benedetto del Tronto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_7e1423c5dc", "text": "Due biglietti per Napoli Centrale domani alle 11:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_623e88ac15", "text": "Voglio andare dove si mangia la vera carbonara", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_177c6ac33d", "text": "Io e mia moglie vogliamo tornare nella città eterna questo pomeriggio verso le 16", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_586ea986ce", "text": "Mantova", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_fb51aed69c", "text": "Firenze Santa Maria Novella, dalle 9:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b2a1b5a159", "text": "Buongiorno, vorrei un biglietto per Ostuni", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2b98e3b61c", "text": "Due biglietti per Manarola domani alle 7:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_08043ef11a", "text": "Io e la famiglia vogliamo visitare la città eterna dopodomani nel primo pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_80d583733b", "text": "Reggio Calabria Centrale", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_e5ee8acc52", "text": "Mantova, dalle 10:30", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_47ed801875", "text": "Due biglietti per Cosenza domani alle 16:00", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_212f5a61e8", "text": "Io e mia moglie domattina presto ce ne andiamo a vedere i sassi di Matera", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_5d566b6e5c", "text": "Cuneo", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_67b45d8b34", "text": "Corniglia, dalle 8:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_5f4bb19912", "text": "Voglio un biglietto per Pompei Scavi-Villa dei Misteri", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1d5ffade16", "text": "Due biglietti per Milano Rogoredo domani alle 07:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2c0b8529be", "text": "Io e mia moglie vogliamo tornare là dove si mangia il pesto vero, ma la mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4b2c7a5609", "text": "Chioggia", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ea0c2767f4", "text": "Lodi, dalle 12:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b533e8b09b", "text": "Due biglietti per Rovereto domani alle 15:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_aec66e8e9d", "text": "Voglio andare dove si fa il Palio", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4d996180cd", "text": "Io e mia moglie vogliamo tornare nel paese dei sassi per domani sera", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9985a18aae", "text": "Barletta", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_33dfc5e97b", "text": "Crotone, dalle 21:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_69001b5574", "text": "Buongiorno, vorrei un biglietto per Pordenone", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_883ccb0c27", "text": "Due biglietti per Roma San Pietro domani mattina alle 9:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ccac1dea70", "text": "Io e mia moglie ce ne andiamo a vedere i sassi di Matera domani nel primo pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9ba9a70baf", "text": "Reggio Emilia AV", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_e8a5d4ec4a", "text": "Lodi, dalle 7 di mattina", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2ff2b6693e", "text": "Buongiorno, vorrei un biglietto per Sorrento", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_19106fad10", "text": "Due biglietti per Molfetta domani alle 10:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6d9063dab7", "text": "Io e la moglie dobbiamo tornare dove si balla il saltarello, possibilmente verso le 15", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_386bb845ea", "text": "Pescara Centrale", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_53295bf43d", "text": "Belluno, dalle 10:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_161e052835", "text": "Vorrei un biglietto per Varenna-Esino", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_dfd1a8d5a3", "text": "Due biglietti per Viterbo Porta Fiorentina domani alle 08:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4b98fef297", "text": "Voglio andare dove si può ammirare la Gioconda", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_057140a272", "text": "Io e la famiglia vorremmo tornare nella città eterna per il weekend", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_e994cff399", "text": "Brindisi", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4935e52025", "text": "Torino Porta Susa, dalle 11:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2036db8947", "text": "Vorrei un biglietto per Napoli Campi Flegrei", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4e8bb4a95e", "text": "Due biglietti per Brunico domani alle 09:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6a529bb8e8", "text": "Voglio andare dove fanno il limoncello più buono", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_793e53274e", "text": "Io e la famiglia vogliamo tornare nella città dei sassi, siamo in quattro", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d7204c071e", "text": "Milano Lambrate, dalle 8:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8283518a57", "text": "Vorrei un biglietto per Salerno", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1ae2d9e96d", "text": "Due biglietti per Roma Ostiense domani alle 16:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_7233ff9d94", "text": "Portami dove posso vedere la Mole Antonelliana", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_80beb934ab", "text": "Io e mia moglie vogliamo andare a vedere i canali, partiamo questo pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c522147a3f", "text": "Venezia Santa Lucia, dalle 09:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_32111bb5f2", "text": "Buongiorno, vorrei un biglietto per Ancona Marittima", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_88ed70b1ba", "text": "Due biglietti per Torino Porta Susa domani mattina alle 07:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b2367a71c2", "text": "Io e mia moglie vogliamo andare a gustare la vera mozzarella di bufala domani pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9b0e1bb9f5", "text": "Catanzaro Lido, dalle 21:30", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ee7d9dbdec", "text": "Vorrei un biglietto per Cuneo", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_db1a453b34", "text": "Due biglietti per Bressanone domani alle 18:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_32392f32ba", "text": "Voglio andare dove si può vedere la Fontana di Trevi", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_54f77ee7e4", "text": "Io e la famiglia vogliamo vedere i sassi, siamo in quattro e partiamo domattina presto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8a8360cded", "text": "Courmayeur, dalle 18:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_be35174156", "text": "Vorrei un biglietto per Pavia", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c3d3f7be43", "text": "Due biglietti per Benevento domani alle 13:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_3fc56ac74d", "text": "Voglio andare dove si fa il carnevale più bello d'Italia", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d5c26b5cc2", "text": "Io e mia moglie vorremmo andare a vedere quella famosa torre pendente, magari domattina verso le nove", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6db74912f7", "text": "Ancona Marittima", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_34d6419fb4", "text": "Caserta, dalle 15:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_dfbd6c6a31", "text": "Vorrei un biglietto per Napoli Centrale", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9b0e640c90", "text": "Due biglietti per Sorrento domani alle 11:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ce48b259fe", "text": "Portami dove si trova la Torre di Pisa", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_35797be21c", "text": "Io e mia moglie vogliamo andare a mangiare il vero ragù bolognese domani pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9a79a45db3", "text": "Padova", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_e87a273093", "text": "Ercolano Scavi, dalle 14:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6b13975bca", "text": "Buongiorno, vorrei un biglietto per Lodi", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8886fdf5f1", "text": "Due biglietti per Livorno Centrale domani alle 10:00", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_58f5d9f336", "text": "Devo andare a vedere la basilica di Sant'Antonio", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_fd5c970607", "text": "Io e mia moglie vogliamo tornare dove si mangia il vero ragù alla bolognese, nel pomeriggio di dopodomani", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_3c474c5c33", "text": "Foggia, dalle 14:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4f725517b0", "text": "Due biglietti per Salerno domani alle 14:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_3290ca98d1", "text": "Voglio andare dove si trova l'Arena di Verona", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_affb93e1a1", "text": "Io e mia moglie vorremmo tornare nella città della Mole Antonelliana, possibilmente nel primo pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_cae15badd8", "text": "Firenze Campo di Marte", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c737d2c7a5", "text": "Barletta, dalle 21:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2169c777d1", "text": "Voglio un biglietto per Cosenza", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_41fc4da16c", "text": "Due biglietti per Cattolica-San Giovanni-Gabice Mare domani alle 17:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9b962b4f02", "text": "Portami dove si può vedere la Mole Antonelliana", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_25f3b864cf", "text": "Io e la mia famiglia vogliamo andare a vedere l'Arena di Verona domani pomeriggio, siamo in quattro", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_22ca68be13", "text": "Cosenza, dalle 18:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_88d97d22e6", "text": "Due biglietti per Roma San Pietro domani alle 15:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c8385e1716", "text": "Vogliamo andare a vedere la Fontana di Trevi", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_211de75055", "text": "Io, mia moglie e i due bambini ce ne torniamo nella città della Mole domani mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_417e26de6b", "text": "Reggio Calabria", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a540b9692b", "text": "Bolzano, dalle 7 di mattina", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_669281a6e3", "text": "Due biglietti per Grosseto domani alle 16", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ba133f7523", "text": "Vogliamo vedere la casa di Giulietta", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d2bdf63a86", "text": "Noi tre ce ne torniamo dove si fa il carnevale più bello, domattina presto", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_bbcd2116a5", "text": "Mantova, dalle 15:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_dc6bc38792", "text": "Due biglietti per Treviso Centrale domani alle 18:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1751184f98", "text": "Io e mia moglie ce ne torniamo nel Salento domenica mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_228cc22d16", "text": "Rovigo, dalle 11:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_e0dcc154e2", "text": "Due biglietti per Pordenone domani alle 12:30", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_15346d9fa5", "text": "Voglio andare dove si mangia il baccalà alla vicentina", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9870657ea0", "text": "Io e mia moglie vogliamo andare a vedere i sassi, partiamo nel primo pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "REFINEMENT", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6e47ab2ba9", "text": "Alessandria", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ee4fd95ebc", "text": "Sorrento, dalle 20:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8f148e8b39", "text": "Voglio un biglietto per L'Aquila", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_3ba0192492", "text": "Due biglietti per Chioggia domani alle 17:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b98ae72f9f", "text": "Io e mia moglie ce ne torniamo a casa domani sera, in quella città dove fanno il parmigiano migliore d'Italia", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_0d358dde73", "text": "Belluno", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_90ee25732e", "text": "Livorno, dalle 20:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c237ed15a2", "text": "Vorrei un biglietto per Trani, per favore", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_3ccee42861", "text": "Due biglietti per Firenze Rifredi domani alle 16:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_63ec25a2cc", "text": "Voglio andare dove c'è il David di Michelangelo", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a882252921", "text": "Io e mia moglie ce ne torniamo nella città dei due mari, per la sera", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_f9f3ef8ccd", "text": "Asti", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_3a86b86cbb", "text": "Roma Ostiense, dalle 16:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_5e2aa712c6", "text": "Buongiorno, vorrei un biglietto per Reggio Calabria Centrale", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_09088b9246", "text": "Tre biglietti per Cremona domani alle 17:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_728ad2183e", "text": "Io e mia moglie vorremmo tornare a casa nostra dalle parti della Scala, domani sera verso le 19", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_280b880b97", "text": "Livorno Centrale, dalle 17:00", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d91042fd69", "text": "Vorrei un biglietto per Siracusa", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d126f0eca7", "text": "Due biglietti per Roma Ostiense domani alle 14:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_e78417bec2", "text": "Devo andare a vedere l'Arena di Verona stasera", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_5e8864efea", "text": "Io e mia moglie vorremmo tornare a casa nostra giù in Sicilia, dove si fa la granita più buona", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6084af17c1", "text": "Torino Porta Susa, dalle 18:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8bfb6868cc", "text": "Buongiorno, vorrei un biglietto per Treviso Centrale", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1cd161ef92", "text": "Tre biglietti per Mantova domani alle 10:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_679b05cc85", "text": "Voglio andare a vedere i mosaici di Ravenna", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4a2c92efb9", "text": "Io e mia moglie ce ne torniamo domenica nel Salento, ci piacerebbe partire al pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a71a1712c4", "text": "Terni", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b3dc8c905b", "text": "Mantova, dalle 7:30", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_436bbc9482", "text": "Buongiorno, vorrei un biglietto per Nuoro", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_978f63f7c7", "text": "Due biglietti per Caserta domani alle 11:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2e988e9fc4", "text": "Io e mia moglie vorremmo andare a trovare degli amici a quella città famosa per il Palio", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_88043eda59", "text": "Taranto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_7c9e01f8df", "text": "Firenze Rifredi, dalle 9 di mattina", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_06930b3fab", "text": "Due biglietti per Manarola domani alle 7 del mattino", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2513b6e5de", "text": "Vogliamo andare dove si mangia il risotto alla milanese", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_17e8562d9a", "text": "Io e mia moglie ce ne vogliamo andare dove fanno quelle belle gondole, magari nel primo pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1b10775ddc", "text": "Rimini, dalle 18:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_afd5a8c862", "text": "Due biglietti per Portofino domani alle 20:30", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c6b081e150", "text": "Voglio andare dove c'è la Cappella Sistina", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_40af37278d", "text": "Io e mia moglie ce ne vogliamo andare a mangiare il brodetto di pesce adriatico, domani dopo pranzo", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_463e164cbe", "text": "Catanzaro Lido", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1ff65b1caa", "text": "Roma Tiburtina, dalle 15:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d7a6d7e623", "text": "Vorrei un biglietto per Reggio Emilia AV", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_73633660f7", "text": "Due biglietti per Corniglia domani alle 19:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_53b9661e1f", "text": "Voglio vedere la Fontana di Trevi", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6e345ce787", "text": "Io e la moglie ce ne torniamo in quel di Firenze sabato mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_fa1d74dd1c", "text": "Carbonia", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b165fccc28", "text": "Iglesias, dalle 12:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_cfa547cc37", "text": "Voglio un biglietto per Chieti", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4d4a84001b", "text": "Due biglietti per Avellino domani alle 18:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_725b963bae", "text": "Voglio andare dove si trovano i famosi nuraghi", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_0647bda092", "text": "Io e mia moglie vogliamo tornare nella terra dei trulli dopodomani mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_980f6a5586", "text": "San Benedetto del Tronto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_17c4060aab", "text": "Modena, dalle 9:30", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_86ee706e5e", "text": "Vorrei un biglietto per Firenze Campo di Marte", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_0e79bf0eb5", "text": "Due biglietti per Brescia domani alle 10:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8005839b73", "text": "Voglio andare dove si trova la reggia dei Borbone", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a212c5ebd8", "text": "Io e mia moglie vogliamo andare a vedere i famosi sassi domani pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b3c76c8e8c", "text": "Forte dei Marmi dalle 8:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1b0e952da5", "text": "Voglio un biglietto per Rovigo", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_5e813b948a", "text": "Due biglietti per Lodi stasera alle 18:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_09245fff9c", "text": "Portami dove si può ammirare la Basilica di San Francesco", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ec5260ed19", "text": "Io e la famiglia vogliamo andare a gustare la vera focaccia genovese domani mattina", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c944097abb", "text": "Cosenza", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_60814df3b5", "text": "Catanzaro Lido, dalle 14:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ba3210902d", "text": "Due biglietti per Brindisi domani alle 14:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_580f3547d3", "text": "Voglio andare dove c'è la Fontana di Trevi", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_3d24b647f5", "text": "Io e la moglie ce ne vogliamo andare a vedere il mare più bello d'Italia, quello della Riviera Ligure", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_7014d01819", "text": "Bologna", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2349489ce8", "text": "Catanzaro Lido, dalle 16:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_895278f4c4", "text": "Vorrei un biglietto per Chieti", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_79060500fc", "text": "Due biglietti per Cosenza domani alle 15:00", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_0fb3556cb4", "text": "Voglio andare dove c'è il Cristo Redentore brasiliano in miniatura", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_4f81838c52", "text": "Noi tre vorremmo tornarcene dalle parti della Scala, che domattina abbiamo l'opera", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_868c77e6c5", "text": "Matera Centrale", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_22caf75956", "text": "Rimini, dalle 14:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6c5d079259", "text": "Vorrei un biglietto per Messina Centrale", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_651322af66", "text": "Due biglietti per Riccione domani alle 20:00", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2d62f4fcfc", "text": "Voglio andare dove si mangia il ragù più buono d'Italia", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d753e5f369", "text": "Io e la famiglia vogliamo andare a vedere i trulli, siamo in quattro e partiamo dopodomani mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_3dd500594e", "text": "Lucca", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_84641b4370", "text": "Ancona, dalle 9:30", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2f23dc093c", "text": "Due biglietti per Paola oggi alle 17:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_becf7ecf65", "text": "Io e mia moglie vorremmo tornare nella città del Palio domani mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_cf40723b27", "text": "Verona Porta Nuova", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_ff9fa18e86", "text": "Viareggio, dalle 19:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_baff8acea3", "text": "Vorrei un biglietto per Roma San Pietro", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_8513d33909", "text": "Due biglietti per Milano Rogoredo domani alle 19:00", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9b4bcf4bb3", "text": "Voglio andare dove si trova l'Arena", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2308be9811", "text": "Io e la famiglia vogliamo andare a visitare la Città Eterna questo weekend", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_047221e6cb", "text": "Brescia, dalle 15:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_035957dba5", "text": "Vorrei un biglietto per Parma", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d17f17af5d", "text": "Due biglietti per Genova Brignole domani alle 9:30", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_0d744bbcf1", "text": "Voglio andare a vedere la Basilica di San Marco", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_f5e5c94186", "text": "Io e la famiglia vogliamo andare a vedere i Bronzi di Riace il weekend prossimo", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_39daac0351", "text": "Firenze Campo di Marte, dalle 10:00", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_006b1b5e8a", "text": "Buongiorno, vorrei un biglietto per Forte dei Marmi-Seravezza-Querceta", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1e8ed50ab1", "text": "Tre biglietti per Piacenza domani sera alle 21:00", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_fdd5ab3bd3", "text": "Io e mia moglie dobbiamo tornare dove si fa il buon brodetto di pesce, partendo dopo le 16:00", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c04c6cabc7", "text": "Pordenone", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9bcddd23d5", "text": "Roma San Pietro, dalle 21:00", "source": "search_trains_messages.jsonl", "primary_category": "PROCESS_ERROR", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1643b85fc7", "text": "Due biglietti per Palermo Centrale domani alle 18:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_179bac7f8e", "text": "Io e mia moglie ce ne torniamo nella città del David di Michelangelo alle 15:00 di domani", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_5efb98cc2a", "text": "Livorno", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_6d2a86a187", "text": "Sassari, dalle 16:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_f25721741d", "text": "Due biglietti per Genova Brignole domani sera alle 20:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_89683d6172", "text": "Io e la famiglia tutta ce ne andiamo a vedere la Cappella Sistina dopodomani mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_bf5ae29d57", "text": "Portofino", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_82d2dbbdd1", "text": "Piacenza, dalle 14:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2fe1cf556d", "text": "Tre biglietti per Rovereto domani mattina alle 9", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_7f3077b025", "text": "Io e mia moglie vorremmo tornare là dove si fa il Parmigiano Reggiano, partiamo domani verso le 11", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_92ad47447b", "text": "Udine, dalle 11:30", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_515b534c4c", "text": "Vorrei un biglietto per Milano Lambrate", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a42805f9ae", "text": "Due biglietti per Merano domani alle 15:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_cfd5244fa8", "text": "Voglio andare dove si fa il Carnevale più bello d'Italia", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_e32f33c51d", "text": "Io e la famiglia vogliamo visitare la città dove nacque San Francesco, partiamo dopodomani mattina presto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_c4c881c2c7", "text": "Novara, dalle 16:30", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1667fa7985", "text": "Due biglietti per Catanzaro Lido domani alle 12:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9d8c6179e0", "text": "Io e la mia famiglia, siamo in quattro, vorremmo andare a vedere l'Arena domani pomeriggio", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a6c6641490", "text": "Venezia Mestre", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_1122d9a0f1", "text": "Ancona Marittima, dalle 8 di mattina", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_46ba99be49", "text": "Salve, vorrei un biglietto per Trieste Centrale", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d61fc1104a", "text": "Mi servono due biglietti per Siena domani alle 13:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_49a24d1a0f", "text": "Vogliamo visitare la città della Gioconda", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d639512a83", "text": "Io e mia moglie vorremmo tornare nella città dei sassi, partendo domattina presto", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_57e0b272ac", "text": "Firenze Rifredi, dalle 20:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_46f483c2a9", "text": "Voglio un biglietto per Potenza Centrale", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_2f116a2d94", "text": "Due biglietti per San Benedetto del Tronto domani mattina alle 8:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_575a8aa93a", "text": "Voglio andare dove si trova il famoso David di Michelangelo", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_edf22c5901", "text": "Io e mia moglie ci vogliamo godere un bel tramonto sul mare ligure, magari dalle Cinque Terre", "source": "search_trains_messages.jsonl", "primary_category": "OOD", "source_file": "harvested_from_fs.json"}
+{"id": "utt_b71d135de8", "text": "San Benedetto del Tronto, dalle 9", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_073b6ae217", "text": "Due biglietti per Palermo Centrale domani alle 15:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_bbab1fd461", "text": "Io e la famiglia dobbiamo tornare nella città delle due torri per il weekend", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_180ab07611", "text": "Pavia", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_027b09baf4", "text": "Matera Centrale, dalle 18:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_06e2644053", "text": "Vorrei un biglietto per Treviso Centrale", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9dd7934d94", "text": "Due biglietti per Avellino domani alle 11:00", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_a7fee7f8ed", "text": "Voglio andare dove si fanno i tortellini più buoni del mondo", "source": "search_trains_messages.jsonl", "primary_category": "UNKNOWN", "source_file": "harvested_from_fs.json"}
+{"id": "utt_9f8838bed4", "text": "Io e la famiglia dobbiamo tornare laggiù dove si vede il mare più bello d'Italia, siamo in quattro e partiamo stasera verso le 20", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_d7b991ff72", "text": "Napoli Centrale", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}
+{"id": "utt_896642576e", "text": "Genova Brignole, dalle 16:30", "source": "search_trains_messages.jsonl", "primary_category": "SEARCH_QUERY", "source_file": "harvested_from_fs.json"}

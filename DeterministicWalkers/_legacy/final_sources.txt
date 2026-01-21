@@ -1,0 +1,13 @@
+AVAILABLE SOURCES:
+- complete_qa_pairs_with_emojis.jsonl (4474 items)
+- mixed_rude_ticket_378x_conversations_production_B3.jsonl (1956 items)
+- multi_turn.jsonl (2135 items)
+- navigation_commands.jsonl (18 items)
+- refusal.jsonl (1636 items)
+- refusal_conversations_500x_proc_BATCH04_with_keep_turns.jsonl (1703 items)
+- rude.jsonl (2864 items)
+- search_fail.jsonl (61 items)
+- search_fail_conversations_production_250x_1748691290.jsonl (298 items)
+- search_fail_conversations_production_500_1748640337_fixed.jsonl (390 items)
+- search_trains_messages.jsonl (2155 items)
+- ticket_purchase_messages.jsonl (2347 items)

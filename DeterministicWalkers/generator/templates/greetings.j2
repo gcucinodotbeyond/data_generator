@@ -1,0 +1,24 @@
+{# VARIABLES: time_of_day #}
+
+{%- set openers = ["Ciao", "Salve", "Ehi", "Buongiorno", "Buonasera", "Buondì"] -%}
+{%- set polite_requests = ["vorrei aiuto", "mi serve una mano", "mi aiuti?", "ho bisogno di te", "sei lì?"] -%}
+
+{# --- SIMPLE GREETINGS --- #}
+{%- for opener in openers %}
+{{ to_json({"text": opener, "variables": {}}) }}
+{{ to_json({"text": opener ~ "!", "variables": {}}) }}
+{%- endfor %}
+
+{# --- GREETING + REQUEST (Generic) --- #}
+{%- for opener in openers %}
+{%- for req in polite_requests %}
+{{ to_json({"text": opener ~ ", " ~ req, "variables": {}}) }}
+{%- endfor %}
+{%- endfor %}
+
+{# --- TIME SPECIFIC --- #}
+{# Note: Logic for time_of_day checks would go here if we were generating for specific contexts, 
+   but for general training data we generate all valid options. #}
+{{ to_json({"text": "Buona mattina", "variables": {}}) }}
+{{ to_json({"text": "Buon pomeriggio", "variables": {}}) }}
+{{ to_json({"text": "Buona serata", "variables": {}}) }}

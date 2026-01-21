@@ -1,0 +1,17 @@
+[
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\FS_dataset_builder\\parsing\\_synth_func\\_datasets\\search_trains_messages.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\FS_dataset_builder\\parsing\\_synth_func\\_datasets\\ticket_purchase_messages.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\FS_dataset_builder\\parsing\\_synth_navigation\\_datasets\\navigation_commands.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\FS_dataset_builder\\parsing\\_synth_qa\\_datasets\\complete_qa_pairs_with_emojis.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\FS_dataset_builder\\parsing\\_synth_refuse\\_datasets\\refusal_conversations_500x_proc_BATCH04_with_keep_turns.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\FS_dataset_builder\\parsing\\_synth_rude\\_datasets\\mixed_rude_ticket_378x_conversations_production_B3.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\FS_dataset_builder\\parsing\\_synth_search_fail\\_datasets\\search_fail_conversations_production_250x_1748691290.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\FS_dataset_builder\\parsing\\_synth_search_fail\\_datasets\\search_fail_conversations_production_500_1748640337_fixed.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\Dataset\\data\\multi_turn.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\Dataset\\data\\qa.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\Dataset\\data\\refusal.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\Dataset\\data\\rude.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\Dataset\\data\\search_fail.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\Dataset\\data\\search_trains.jsonl",
+    "c:\\Users\\gcucino\\Desktop\\data_generator\\Dataset\\data\\ticket_purchase.jsonl"
+]

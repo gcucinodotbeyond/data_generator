@@ -1,0 +1,41 @@
+{# VARIABLES: pet, luggage, service, topic #}
+
+{# --- PETS --- #}
+{% if pet or topic == 'pets' %}
+{% set p = pet or "cane" %}
+{{ to_json({"text": "Posso portare il mio " ~ p ~ "?", "variables": {"topic": "pets"}}) }}
+{{ to_json({"text": "È ammesso il " ~ p ~ " sul treno?", "variables": {"topic": "pets"}}) }}
+{{ to_json({"text": "Si paga per il " ~ p ~ "?", "variables": {"topic": "pets"}}) }}
+{{ to_json({"text": "Ho un " ~ p ~ ", può viaggiare?", "variables": {"topic": "pets"}}) }}
+{% endif %}
+
+{# --- LUGGAGE --- #}
+{% if luggage or topic == 'luggage' %}
+{% set l = luggage or "zaino" %}
+{{ to_json({"text": "Posso portare " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
+{{ to_json({"text": "Dove metto " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
+{{ to_json({"text": "C'è spazio per " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
+{{ to_json({"text": "Si paga supplemento per " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
+{% endif %}
+
+{# --- SERVICES --- #}
+{% if service or topic == 'services' %}
+{% set s = service or "wifi" %}
+{{ to_json({"text": "C'è il " ~ s ~ " a bordo?", "variables": {"topic": "services"}}) }}
+{{ to_json({"text": "Il treno ha " ~ s ~ "?", "variables": {"topic": "services"}}) }}
+{{ to_json({"text": "Funziona " ~ s ~ "?", "variables": {"topic": "services"}}) }}
+{% endif %}
+
+{# --- GENERAL QA --- #}
+{% if topic == 'refunds' %}
+{{ to_json({"text": "Qual è la politica rimborsi?", "variables": {"topic": "refunds"}}) }}
+{{ to_json({"text": "Come chiedo un rimborso?", "variables": {"topic": "refunds"}}) }}
+{% endif %}
+
+{% if topic == 'delay' or topic == 'delays' %}
+{{ to_json({"text": "Se il treno è in ritardo?", "variables": {"topic": "delays"}}) }}
+{% endif %}
+
+{% if topic == 'strike' or topic == 'strikes' %}
+{{ to_json({"text": "Cosa succede in caso di sciopero?", "variables": {"topic": "strikes"}}) }}
+{% endif %}

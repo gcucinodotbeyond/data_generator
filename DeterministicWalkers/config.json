@@ -2,7 +2,8 @@
     "llm": {
         "provider": "ollama",
         "base_url": "http://localhost:11434",
-        "model": "qwen2.5-coder:7b",
-        "temperature": 0.1
+        "model": "qwen3:4b-instruct",
+        "temperature": 0.1,
+        "paraphrase_probability": 0.1
     }
 }

@@ -1,0 +1,588 @@
+{"text": "A che ora parte il prossimo treno per Bologna?", "variables": {"destination": "Bologna"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "A che ora parte il prossimo treno per Firenze?", "variables": {"destination": "Firenze"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "A che ora parte il prossimo treno per Milano?", "variables": {"destination": "Milano"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "A che ora parte il prossimo treno per Napoli?", "variables": {"destination": "Napoli"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "A che ora parte il prossimo treno per Roma?", "variables": {"destination": "Roma"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "A che ora parte il prossimo treno per Torino?", "variables": {"destination": "Torino"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "A che ora parte il prossimo treno per Venezia?", "variables": {"destination": "Venezia"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna adesso", "variables": {"destination": "Bologna", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna alle 14:00", "variables": {"destination": "Bologna", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna alle 18:45", "variables": {"destination": "Bologna", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna alle 8:00", "variables": {"destination": "Bologna", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna alle 9:30", "variables": {"destination": "Bologna", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna domani mattina", "variables": {"destination": "Bologna", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna dopo le 14:00", "variables": {"destination": "Bologna", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna dopo le 18:45", "variables": {"destination": "Bologna", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna dopo le 8:00", "variables": {"destination": "Bologna", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna dopo le 9:30", "variables": {"destination": "Bologna", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna intorno alle 14:00", "variables": {"destination": "Bologna", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna intorno alle 18:45", "variables": {"destination": "Bologna", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna intorno alle 8:00", "variables": {"destination": "Bologna", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna intorno alle 9:30", "variables": {"destination": "Bologna", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna ora", "variables": {"destination": "Bologna", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna per le 14:00", "variables": {"destination": "Bologna", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna per le 18:45", "variables": {"destination": "Bologna", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna per le 8:00", "variables": {"destination": "Bologna", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna per le 9:30", "variables": {"destination": "Bologna", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna prima delle 14:00", "variables": {"destination": "Bologna", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna prima delle 18:45", "variables": {"destination": "Bologna", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna prima delle 8:00", "variables": {"destination": "Bologna", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna prima delle 9:30", "variables": {"destination": "Bologna", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna stasera", "variables": {"destination": "Bologna", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna subito", "variables": {"destination": "Bologna", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna verso le 14:00", "variables": {"destination": "Bologna", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna verso le 18:45", "variables": {"destination": "Bologna", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna verso le 8:00", "variables": {"destination": "Bologna", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Bologna verso le 9:30", "variables": {"destination": "Bologna", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Bologna prima delle 14:00", "variables": {"destination": "Bologna", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Bologna prima delle 18:45", "variables": {"destination": "Bologna", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Bologna prima delle 8:00", "variables": {"destination": "Bologna", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Bologna prima delle 9:30", "variables": {"destination": "Bologna", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Firenze prima delle 14:00", "variables": {"destination": "Firenze", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Firenze prima delle 18:45", "variables": {"destination": "Firenze", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Firenze prima delle 8:00", "variables": {"destination": "Firenze", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Firenze prima delle 9:30", "variables": {"destination": "Firenze", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Milano prima delle 14:00", "variables": {"destination": "Milano", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Milano prima delle 18:45", "variables": {"destination": "Milano", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Milano prima delle 8:00", "variables": {"destination": "Milano", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Milano prima delle 9:30", "variables": {"destination": "Milano", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Napoli prima delle 14:00", "variables": {"destination": "Napoli", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Napoli prima delle 18:45", "variables": {"destination": "Napoli", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Napoli prima delle 8:00", "variables": {"destination": "Napoli", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Napoli prima delle 9:30", "variables": {"destination": "Napoli", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Roma prima delle 14:00", "variables": {"destination": "Roma", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Roma prima delle 18:45", "variables": {"destination": "Roma", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Roma prima delle 8:00", "variables": {"destination": "Roma", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Roma prima delle 9:30", "variables": {"destination": "Roma", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Torino prima delle 14:00", "variables": {"destination": "Torino", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Torino prima delle 18:45", "variables": {"destination": "Torino", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Torino prima delle 8:00", "variables": {"destination": "Torino", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Torino prima delle 9:30", "variables": {"destination": "Torino", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Venezia prima delle 14:00", "variables": {"destination": "Venezia", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Venezia prima delle 18:45", "variables": {"destination": "Venezia", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Venezia prima delle 8:00", "variables": {"destination": "Venezia", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Cerco una soluzione per Venezia prima delle 9:30", "variables": {"destination": "Venezia", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Ci sono treni per Bologna?", "variables": {"destination": "Bologna"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Ci sono treni per Firenze?", "variables": {"destination": "Firenze"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Ci sono treni per Milano?", "variables": {"destination": "Milano"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Ci sono treni per Napoli?", "variables": {"destination": "Napoli"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Ci sono treni per Roma?", "variables": {"destination": "Roma"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Ci sono treni per Torino?", "variables": {"destination": "Torino"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Ci sono treni per Venezia?", "variables": {"destination": "Venezia"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Bologna per domani mattina", "variables": {"destination": "Bologna", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Bologna per stasera", "variables": {"destination": "Bologna", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Firenze per domani mattina", "variables": {"destination": "Firenze", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Firenze per stasera", "variables": {"destination": "Firenze", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Milano per domani mattina", "variables": {"destination": "Milano", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Milano per stasera", "variables": {"destination": "Milano", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Napoli per domani mattina", "variables": {"destination": "Napoli", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Napoli per stasera", "variables": {"destination": "Napoli", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Roma per domani mattina", "variables": {"destination": "Roma", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Roma per stasera", "variables": {"destination": "Roma", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Torino per domani mattina", "variables": {"destination": "Torino", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Torino per stasera", "variables": {"destination": "Torino", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Venezia per domani mattina", "variables": {"destination": "Venezia", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo arrivare a Venezia per stasera", "variables": {"destination": "Venezia", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Bologna domani mattina", "variables": {"destination": "Bologna", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Bologna stasera", "variables": {"destination": "Bologna", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Firenze domani mattina", "variables": {"destination": "Firenze", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Firenze stasera", "variables": {"destination": "Firenze", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Milano domani mattina", "variables": {"destination": "Milano", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Milano stasera", "variables": {"destination": "Milano", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Napoli domani mattina", "variables": {"destination": "Napoli", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Napoli stasera", "variables": {"destination": "Napoli", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Roma domani mattina", "variables": {"destination": "Roma", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Roma stasera", "variables": {"destination": "Roma", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Torino domani mattina", "variables": {"destination": "Torino", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Torino stasera", "variables": {"destination": "Torino", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Venezia domani mattina", "variables": {"destination": "Venezia", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo essere a Venezia stasera", "variables": {"destination": "Venezia", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo partire per Bologna", "variables": {"destination": "Bologna"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo partire per Firenze", "variables": {"destination": "Firenze"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo partire per Milano", "variables": {"destination": "Milano"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo partire per Napoli", "variables": {"destination": "Napoli"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo partire per Roma", "variables": {"destination": "Roma"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo partire per Torino", "variables": {"destination": "Torino"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Devo partire per Venezia", "variables": {"destination": "Venezia"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze adesso", "variables": {"destination": "Firenze", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze alle 14:00", "variables": {"destination": "Firenze", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze alle 18:45", "variables": {"destination": "Firenze", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze alle 8:00", "variables": {"destination": "Firenze", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze alle 9:30", "variables": {"destination": "Firenze", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze domani mattina", "variables": {"destination": "Firenze", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze dopo le 14:00", "variables": {"destination": "Firenze", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze dopo le 18:45", "variables": {"destination": "Firenze", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze dopo le 8:00", "variables": {"destination": "Firenze", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze dopo le 9:30", "variables": {"destination": "Firenze", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze intorno alle 14:00", "variables": {"destination": "Firenze", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze intorno alle 18:45", "variables": {"destination": "Firenze", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze intorno alle 8:00", "variables": {"destination": "Firenze", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze intorno alle 9:30", "variables": {"destination": "Firenze", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze ora", "variables": {"destination": "Firenze", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze per le 14:00", "variables": {"destination": "Firenze", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze per le 18:45", "variables": {"destination": "Firenze", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze per le 8:00", "variables": {"destination": "Firenze", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze per le 9:30", "variables": {"destination": "Firenze", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze prima delle 14:00", "variables": {"destination": "Firenze", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze prima delle 18:45", "variables": {"destination": "Firenze", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze prima delle 8:00", "variables": {"destination": "Firenze", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze prima delle 9:30", "variables": {"destination": "Firenze", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze stasera", "variables": {"destination": "Firenze", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze subito", "variables": {"destination": "Firenze", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze verso le 14:00", "variables": {"destination": "Firenze", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze verso le 18:45", "variables": {"destination": "Firenze", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze verso le 8:00", "variables": {"destination": "Firenze", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Firenze verso le 9:30", "variables": {"destination": "Firenze", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Bologna per adesso", "variables": {"destination": "Bologna", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Bologna per ora", "variables": {"destination": "Bologna", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Bologna per subito", "variables": {"destination": "Bologna", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Firenze per adesso", "variables": {"destination": "Firenze", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Firenze per ora", "variables": {"destination": "Firenze", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Firenze per subito", "variables": {"destination": "Firenze", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Milano per adesso", "variables": {"destination": "Milano", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Milano per ora", "variables": {"destination": "Milano", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Milano per subito", "variables": {"destination": "Milano", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Napoli per adesso", "variables": {"destination": "Napoli", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Napoli per ora", "variables": {"destination": "Napoli", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Napoli per subito", "variables": {"destination": "Napoli", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Roma per adesso", "variables": {"destination": "Roma", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Roma per ora", "variables": {"destination": "Roma", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Roma per subito", "variables": {"destination": "Roma", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Torino per adesso", "variables": {"destination": "Torino", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Torino per ora", "variables": {"destination": "Torino", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Torino per subito", "variables": {"destination": "Torino", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Venezia per adesso", "variables": {"destination": "Venezia", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Venezia per ora", "variables": {"destination": "Venezia", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Mi serve un biglietto per Venezia per subito", "variables": {"destination": "Venezia", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano adesso", "variables": {"destination": "Milano", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano alle 14:00", "variables": {"destination": "Milano", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano alle 18:45", "variables": {"destination": "Milano", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano alle 8:00", "variables": {"destination": "Milano", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano alle 9:30", "variables": {"destination": "Milano", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano domani mattina", "variables": {"destination": "Milano", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano dopo le 14:00", "variables": {"destination": "Milano", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano dopo le 18:45", "variables": {"destination": "Milano", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano dopo le 8:00", "variables": {"destination": "Milano", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano dopo le 9:30", "variables": {"destination": "Milano", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano intorno alle 14:00", "variables": {"destination": "Milano", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano intorno alle 18:45", "variables": {"destination": "Milano", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano intorno alle 8:00", "variables": {"destination": "Milano", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano intorno alle 9:30", "variables": {"destination": "Milano", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano ora", "variables": {"destination": "Milano", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano per le 14:00", "variables": {"destination": "Milano", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano per le 18:45", "variables": {"destination": "Milano", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano per le 8:00", "variables": {"destination": "Milano", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano per le 9:30", "variables": {"destination": "Milano", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano prima delle 14:00", "variables": {"destination": "Milano", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano prima delle 18:45", "variables": {"destination": "Milano", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano prima delle 8:00", "variables": {"destination": "Milano", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano prima delle 9:30", "variables": {"destination": "Milano", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano stasera", "variables": {"destination": "Milano", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano subito", "variables": {"destination": "Milano", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano verso le 14:00", "variables": {"destination": "Milano", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano verso le 18:45", "variables": {"destination": "Milano", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano verso le 8:00", "variables": {"destination": "Milano", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Milano verso le 9:30", "variables": {"destination": "Milano", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli adesso", "variables": {"destination": "Napoli", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli alle 14:00", "variables": {"destination": "Napoli", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli alle 18:45", "variables": {"destination": "Napoli", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli alle 8:00", "variables": {"destination": "Napoli", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli alle 9:30", "variables": {"destination": "Napoli", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli domani mattina", "variables": {"destination": "Napoli", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli dopo le 14:00", "variables": {"destination": "Napoli", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli dopo le 18:45", "variables": {"destination": "Napoli", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli dopo le 8:00", "variables": {"destination": "Napoli", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli dopo le 9:30", "variables": {"destination": "Napoli", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli intorno alle 14:00", "variables": {"destination": "Napoli", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli intorno alle 18:45", "variables": {"destination": "Napoli", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli intorno alle 8:00", "variables": {"destination": "Napoli", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli intorno alle 9:30", "variables": {"destination": "Napoli", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli ora", "variables": {"destination": "Napoli", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli per le 14:00", "variables": {"destination": "Napoli", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli per le 18:45", "variables": {"destination": "Napoli", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli per le 8:00", "variables": {"destination": "Napoli", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli per le 9:30", "variables": {"destination": "Napoli", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli prima delle 14:00", "variables": {"destination": "Napoli", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli prima delle 18:45", "variables": {"destination": "Napoli", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli prima delle 8:00", "variables": {"destination": "Napoli", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli prima delle 9:30", "variables": {"destination": "Napoli", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli stasera", "variables": {"destination": "Napoli", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli subito", "variables": {"destination": "Napoli", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli verso le 14:00", "variables": {"destination": "Napoli", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli verso le 18:45", "variables": {"destination": "Napoli", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli verso le 8:00", "variables": {"destination": "Napoli", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Napoli verso le 9:30", "variables": {"destination": "Napoli", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 14:00 per Bologna", "variables": {"destination": "Bologna", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 14:00 per Firenze", "variables": {"destination": "Firenze", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 14:00 per Milano", "variables": {"destination": "Milano", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 14:00 per Napoli", "variables": {"destination": "Napoli", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 14:00 per Roma", "variables": {"destination": "Roma", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 14:00 per Torino", "variables": {"destination": "Torino", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 14:00 per Venezia", "variables": {"destination": "Venezia", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 18:45 per Bologna", "variables": {"destination": "Bologna", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 18:45 per Firenze", "variables": {"destination": "Firenze", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 18:45 per Milano", "variables": {"destination": "Milano", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 18:45 per Napoli", "variables": {"destination": "Napoli", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 18:45 per Roma", "variables": {"destination": "Roma", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 18:45 per Torino", "variables": {"destination": "Torino", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 18:45 per Venezia", "variables": {"destination": "Venezia", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 8:00 per Bologna", "variables": {"destination": "Bologna", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 8:00 per Firenze", "variables": {"destination": "Firenze", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 8:00 per Milano", "variables": {"destination": "Milano", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 8:00 per Napoli", "variables": {"destination": "Napoli", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 8:00 per Roma", "variables": {"destination": "Roma", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 8:00 per Torino", "variables": {"destination": "Torino", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 8:00 per Venezia", "variables": {"destination": "Venezia", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 9:30 per Bologna", "variables": {"destination": "Bologna", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 9:30 per Firenze", "variables": {"destination": "Firenze", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 9:30 per Milano", "variables": {"destination": "Milano", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 9:30 per Napoli", "variables": {"destination": "Napoli", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 9:30 per Roma", "variables": {"destination": "Roma", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 9:30 per Torino", "variables": {"destination": "Torino", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Non voglio partire prima delle 9:30 per Venezia", "variables": {"destination": "Venezia", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Bologna adesso", "variables": {"destination": "Bologna", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Bologna domani mattina", "variables": {"destination": "Bologna", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Bologna ora", "variables": {"destination": "Bologna", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Bologna prima delle 14:00", "variables": {"destination": "Bologna", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Bologna prima delle 18:45", "variables": {"destination": "Bologna", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Bologna prima delle 8:00", "variables": {"destination": "Bologna", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Bologna prima delle 9:30", "variables": {"destination": "Bologna", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Bologna stasera", "variables": {"destination": "Bologna", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Bologna subito", "variables": {"destination": "Bologna", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Firenze adesso", "variables": {"destination": "Firenze", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Firenze domani mattina", "variables": {"destination": "Firenze", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Firenze ora", "variables": {"destination": "Firenze", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Firenze prima delle 14:00", "variables": {"destination": "Firenze", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Firenze prima delle 18:45", "variables": {"destination": "Firenze", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Firenze prima delle 8:00", "variables": {"destination": "Firenze", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Firenze prima delle 9:30", "variables": {"destination": "Firenze", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Firenze stasera", "variables": {"destination": "Firenze", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Firenze subito", "variables": {"destination": "Firenze", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Milano adesso", "variables": {"destination": "Milano", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Milano domani mattina", "variables": {"destination": "Milano", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Milano ora", "variables": {"destination": "Milano", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Milano prima delle 14:00", "variables": {"destination": "Milano", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Milano prima delle 18:45", "variables": {"destination": "Milano", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Milano prima delle 8:00", "variables": {"destination": "Milano", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Milano prima delle 9:30", "variables": {"destination": "Milano", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Milano stasera", "variables": {"destination": "Milano", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Milano subito", "variables": {"destination": "Milano", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Napoli adesso", "variables": {"destination": "Napoli", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Napoli domani mattina", "variables": {"destination": "Napoli", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Napoli ora", "variables": {"destination": "Napoli", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Napoli prima delle 14:00", "variables": {"destination": "Napoli", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Napoli prima delle 18:45", "variables": {"destination": "Napoli", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Napoli prima delle 8:00", "variables": {"destination": "Napoli", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Napoli prima delle 9:30", "variables": {"destination": "Napoli", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Napoli stasera", "variables": {"destination": "Napoli", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Napoli subito", "variables": {"destination": "Napoli", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Roma adesso", "variables": {"destination": "Roma", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Roma domani mattina", "variables": {"destination": "Roma", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Roma ora", "variables": {"destination": "Roma", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Roma prima delle 14:00", "variables": {"destination": "Roma", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Roma prima delle 18:45", "variables": {"destination": "Roma", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Roma prima delle 8:00", "variables": {"destination": "Roma", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Roma prima delle 9:30", "variables": {"destination": "Roma", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Roma stasera", "variables": {"destination": "Roma", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Roma subito", "variables": {"destination": "Roma", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Torino adesso", "variables": {"destination": "Torino", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Torino domani mattina", "variables": {"destination": "Torino", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Torino ora", "variables": {"destination": "Torino", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Torino prima delle 14:00", "variables": {"destination": "Torino", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Torino prima delle 18:45", "variables": {"destination": "Torino", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Torino prima delle 8:00", "variables": {"destination": "Torino", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Torino prima delle 9:30", "variables": {"destination": "Torino", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Torino stasera", "variables": {"destination": "Torino", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Torino subito", "variables": {"destination": "Torino", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Venezia adesso", "variables": {"destination": "Venezia", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Venezia domani mattina", "variables": {"destination": "Venezia", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Venezia ora", "variables": {"destination": "Venezia", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Venezia prima delle 14:00", "variables": {"destination": "Venezia", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Venezia prima delle 18:45", "variables": {"destination": "Venezia", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Venezia prima delle 8:00", "variables": {"destination": "Venezia", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Venezia prima delle 9:30", "variables": {"destination": "Venezia", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Venezia stasera", "variables": {"destination": "Venezia", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Partenza per Venezia subito", "variables": {"destination": "Venezia", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso partire per Bologna", "variables": {"destination": "Bologna"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso partire per Firenze", "variables": {"destination": "Firenze"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso partire per Milano", "variables": {"destination": "Milano"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso partire per Napoli", "variables": {"destination": "Napoli"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso partire per Roma", "variables": {"destination": "Roma"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso partire per Torino", "variables": {"destination": "Torino"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso partire per Venezia", "variables": {"destination": "Venezia"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso raggiungere Bologna", "variables": {"destination": "Bologna"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso raggiungere Firenze", "variables": {"destination": "Firenze"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso raggiungere Milano", "variables": {"destination": "Milano"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso raggiungere Napoli", "variables": {"destination": "Napoli"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso raggiungere Roma", "variables": {"destination": "Roma"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso raggiungere Torino", "variables": {"destination": "Torino"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Posso raggiungere Venezia", "variables": {"destination": "Venezia"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Primo treno per Bologna", "variables": {"destination": "Bologna", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Primo treno per Firenze", "variables": {"destination": "Firenze", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Primo treno per Milano", "variables": {"destination": "Milano", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Primo treno per Napoli", "variables": {"destination": "Napoli", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Primo treno per Roma", "variables": {"destination": "Roma", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Primo treno per Torino", "variables": {"destination": "Torino", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Primo treno per Venezia", "variables": {"destination": "Venezia", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Bologna dopo domani mattina", "variables": {"destination": "Bologna", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Bologna dopo le 14:00?", "variables": {"destination": "Bologna", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Bologna dopo le 18:45?", "variables": {"destination": "Bologna", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Bologna dopo le 8:00?", "variables": {"destination": "Bologna", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Bologna dopo le 9:30?", "variables": {"destination": "Bologna", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Bologna dopo stasera", "variables": {"destination": "Bologna", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Bologna prima di domani mattina", "variables": {"destination": "Bologna", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Bologna prima di stasera", "variables": {"destination": "Bologna", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Firenze dopo domani mattina", "variables": {"destination": "Firenze", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Firenze dopo le 14:00?", "variables": {"destination": "Firenze", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Firenze dopo le 18:45?", "variables": {"destination": "Firenze", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Firenze dopo le 8:00?", "variables": {"destination": "Firenze", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Firenze dopo le 9:30?", "variables": {"destination": "Firenze", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Firenze dopo stasera", "variables": {"destination": "Firenze", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Firenze prima di domani mattina", "variables": {"destination": "Firenze", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Firenze prima di stasera", "variables": {"destination": "Firenze", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Milano dopo domani mattina", "variables": {"destination": "Milano", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Milano dopo le 14:00?", "variables": {"destination": "Milano", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Milano dopo le 18:45?", "variables": {"destination": "Milano", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Milano dopo le 8:00?", "variables": {"destination": "Milano", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Milano dopo le 9:30?", "variables": {"destination": "Milano", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Milano dopo stasera", "variables": {"destination": "Milano", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Milano prima di domani mattina", "variables": {"destination": "Milano", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Milano prima di stasera", "variables": {"destination": "Milano", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Napoli dopo domani mattina", "variables": {"destination": "Napoli", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Napoli dopo le 14:00?", "variables": {"destination": "Napoli", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Napoli dopo le 18:45?", "variables": {"destination": "Napoli", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Napoli dopo le 8:00?", "variables": {"destination": "Napoli", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Napoli dopo le 9:30?", "variables": {"destination": "Napoli", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Napoli dopo stasera", "variables": {"destination": "Napoli", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Napoli prima di domani mattina", "variables": {"destination": "Napoli", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Napoli prima di stasera", "variables": {"destination": "Napoli", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Roma dopo domani mattina", "variables": {"destination": "Roma", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Roma dopo le 14:00?", "variables": {"destination": "Roma", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Roma dopo le 18:45?", "variables": {"destination": "Roma", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Roma dopo le 8:00?", "variables": {"destination": "Roma", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Roma dopo le 9:30?", "variables": {"destination": "Roma", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Roma dopo stasera", "variables": {"destination": "Roma", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Roma prima di domani mattina", "variables": {"destination": "Roma", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Roma prima di stasera", "variables": {"destination": "Roma", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Torino dopo domani mattina", "variables": {"destination": "Torino", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Torino dopo le 14:00?", "variables": {"destination": "Torino", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Torino dopo le 18:45?", "variables": {"destination": "Torino", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Torino dopo le 8:00?", "variables": {"destination": "Torino", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Torino dopo le 9:30?", "variables": {"destination": "Torino", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Torino dopo stasera", "variables": {"destination": "Torino", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Torino prima di domani mattina", "variables": {"destination": "Torino", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Torino prima di stasera", "variables": {"destination": "Torino", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Venezia dopo domani mattina", "variables": {"destination": "Venezia", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Venezia dopo le 14:00?", "variables": {"destination": "Venezia", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Venezia dopo le 18:45?", "variables": {"destination": "Venezia", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Venezia dopo le 8:00?", "variables": {"destination": "Venezia", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Venezia dopo le 9:30?", "variables": {"destination": "Venezia", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Venezia dopo stasera", "variables": {"destination": "Venezia", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Venezia prima di domani mattina", "variables": {"destination": "Venezia", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Qualcosa per Venezia prima di stasera", "variables": {"destination": "Venezia", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quali treni ci sono per Bologna?", "variables": {"destination": "Bologna"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quali treni ci sono per Firenze?", "variables": {"destination": "Firenze"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quali treni ci sono per Milano?", "variables": {"destination": "Milano"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quali treni ci sono per Napoli?", "variables": {"destination": "Napoli"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quali treni ci sono per Roma?", "variables": {"destination": "Roma"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quali treni ci sono per Torino?", "variables": {"destination": "Torino"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quali treni ci sono per Venezia?", "variables": {"destination": "Venezia"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quando parte il primo treno per Bologna?", "variables": {"destination": "Bologna"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quando parte il primo treno per Firenze?", "variables": {"destination": "Firenze"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quando parte il primo treno per Milano?", "variables": {"destination": "Milano"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quando parte il primo treno per Napoli?", "variables": {"destination": "Napoli"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quando parte il primo treno per Roma?", "variables": {"destination": "Roma"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quando parte il primo treno per Torino?", "variables": {"destination": "Torino"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Quando parte il primo treno per Venezia?", "variables": {"destination": "Venezia"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma adesso", "variables": {"destination": "Roma", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma alle 14:00", "variables": {"destination": "Roma", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma alle 18:45", "variables": {"destination": "Roma", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma alle 8:00", "variables": {"destination": "Roma", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma alle 9:30", "variables": {"destination": "Roma", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma domani mattina", "variables": {"destination": "Roma", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma dopo le 14:00", "variables": {"destination": "Roma", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma dopo le 18:45", "variables": {"destination": "Roma", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma dopo le 8:00", "variables": {"destination": "Roma", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma dopo le 9:30", "variables": {"destination": "Roma", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma intorno alle 14:00", "variables": {"destination": "Roma", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma intorno alle 18:45", "variables": {"destination": "Roma", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma intorno alle 8:00", "variables": {"destination": "Roma", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma intorno alle 9:30", "variables": {"destination": "Roma", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma ora", "variables": {"destination": "Roma", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma per le 14:00", "variables": {"destination": "Roma", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma per le 18:45", "variables": {"destination": "Roma", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma per le 8:00", "variables": {"destination": "Roma", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma per le 9:30", "variables": {"destination": "Roma", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma prima delle 14:00", "variables": {"destination": "Roma", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma prima delle 18:45", "variables": {"destination": "Roma", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma prima delle 8:00", "variables": {"destination": "Roma", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma prima delle 9:30", "variables": {"destination": "Roma", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma stasera", "variables": {"destination": "Roma", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma subito", "variables": {"destination": "Roma", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma verso le 14:00", "variables": {"destination": "Roma", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma verso le 18:45", "variables": {"destination": "Roma", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma verso le 8:00", "variables": {"destination": "Roma", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Roma verso le 9:30", "variables": {"destination": "Roma", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino adesso", "variables": {"destination": "Torino", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino alle 14:00", "variables": {"destination": "Torino", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino alle 18:45", "variables": {"destination": "Torino", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino alle 8:00", "variables": {"destination": "Torino", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino alle 9:30", "variables": {"destination": "Torino", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino domani mattina", "variables": {"destination": "Torino", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino dopo le 14:00", "variables": {"destination": "Torino", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino dopo le 18:45", "variables": {"destination": "Torino", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino dopo le 8:00", "variables": {"destination": "Torino", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino dopo le 9:30", "variables": {"destination": "Torino", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino intorno alle 14:00", "variables": {"destination": "Torino", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino intorno alle 18:45", "variables": {"destination": "Torino", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino intorno alle 8:00", "variables": {"destination": "Torino", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino intorno alle 9:30", "variables": {"destination": "Torino", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino ora", "variables": {"destination": "Torino", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino per le 14:00", "variables": {"destination": "Torino", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino per le 18:45", "variables": {"destination": "Torino", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino per le 8:00", "variables": {"destination": "Torino", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino per le 9:30", "variables": {"destination": "Torino", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino prima delle 14:00", "variables": {"destination": "Torino", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino prima delle 18:45", "variables": {"destination": "Torino", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino prima delle 8:00", "variables": {"destination": "Torino", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino prima delle 9:30", "variables": {"destination": "Torino", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino stasera", "variables": {"destination": "Torino", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino subito", "variables": {"destination": "Torino", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino verso le 14:00", "variables": {"destination": "Torino", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino verso le 18:45", "variables": {"destination": "Torino", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino verso le 8:00", "variables": {"destination": "Torino", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Torino verso le 9:30", "variables": {"destination": "Torino", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Bologna adesso", "variables": {"destination": "Bologna", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Bologna alle 14:00", "variables": {"destination": "Bologna", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Bologna alle 18:45", "variables": {"destination": "Bologna", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Bologna alle 8:00", "variables": {"destination": "Bologna", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Bologna alle 9:30", "variables": {"destination": "Bologna", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Bologna domani mattina", "variables": {"destination": "Bologna", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Bologna ora", "variables": {"destination": "Bologna", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Bologna per domani mattina", "variables": {"destination": "Bologna", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Bologna per stasera", "variables": {"destination": "Bologna", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Bologna stasera", "variables": {"destination": "Bologna", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Bologna subito", "variables": {"destination": "Bologna", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Firenze adesso", "variables": {"destination": "Firenze", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Firenze alle 14:00", "variables": {"destination": "Firenze", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Firenze alle 18:45", "variables": {"destination": "Firenze", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Firenze alle 8:00", "variables": {"destination": "Firenze", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Firenze alle 9:30", "variables": {"destination": "Firenze", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Firenze domani mattina", "variables": {"destination": "Firenze", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Firenze ora", "variables": {"destination": "Firenze", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Firenze per domani mattina", "variables": {"destination": "Firenze", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Firenze per stasera", "variables": {"destination": "Firenze", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Firenze stasera", "variables": {"destination": "Firenze", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Firenze subito", "variables": {"destination": "Firenze", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Milano adesso", "variables": {"destination": "Milano", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Milano alle 14:00", "variables": {"destination": "Milano", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Milano alle 18:45", "variables": {"destination": "Milano", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Milano alle 8:00", "variables": {"destination": "Milano", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Milano alle 9:30", "variables": {"destination": "Milano", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Milano domani mattina", "variables": {"destination": "Milano", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Milano ora", "variables": {"destination": "Milano", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Milano per domani mattina", "variables": {"destination": "Milano", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Milano per stasera", "variables": {"destination": "Milano", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Milano stasera", "variables": {"destination": "Milano", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Milano subito", "variables": {"destination": "Milano", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Napoli adesso", "variables": {"destination": "Napoli", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Napoli alle 14:00", "variables": {"destination": "Napoli", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Napoli alle 18:45", "variables": {"destination": "Napoli", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Napoli alle 8:00", "variables": {"destination": "Napoli", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Napoli alle 9:30", "variables": {"destination": "Napoli", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Napoli domani mattina", "variables": {"destination": "Napoli", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Napoli ora", "variables": {"destination": "Napoli", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Napoli per domani mattina", "variables": {"destination": "Napoli", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Napoli per stasera", "variables": {"destination": "Napoli", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Napoli stasera", "variables": {"destination": "Napoli", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Napoli subito", "variables": {"destination": "Napoli", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Roma adesso", "variables": {"destination": "Roma", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Roma alle 14:00", "variables": {"destination": "Roma", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Roma alle 18:45", "variables": {"destination": "Roma", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Roma alle 8:00", "variables": {"destination": "Roma", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Roma alle 9:30", "variables": {"destination": "Roma", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Roma domani mattina", "variables": {"destination": "Roma", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Roma ora", "variables": {"destination": "Roma", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Roma per domani mattina", "variables": {"destination": "Roma", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Roma per stasera", "variables": {"destination": "Roma", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Roma stasera", "variables": {"destination": "Roma", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Roma subito", "variables": {"destination": "Roma", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Torino adesso", "variables": {"destination": "Torino", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Torino alle 14:00", "variables": {"destination": "Torino", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Torino alle 18:45", "variables": {"destination": "Torino", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Torino alle 8:00", "variables": {"destination": "Torino", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Torino alle 9:30", "variables": {"destination": "Torino", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Torino domani mattina", "variables": {"destination": "Torino", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Torino ora", "variables": {"destination": "Torino", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Torino per domani mattina", "variables": {"destination": "Torino", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Torino per stasera", "variables": {"destination": "Torino", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Torino stasera", "variables": {"destination": "Torino", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Torino subito", "variables": {"destination": "Torino", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Venezia adesso", "variables": {"destination": "Venezia", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Venezia alle 14:00", "variables": {"destination": "Venezia", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Venezia alle 18:45", "variables": {"destination": "Venezia", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Venezia alle 8:00", "variables": {"destination": "Venezia", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Venezia alle 9:30", "variables": {"destination": "Venezia", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Venezia domani mattina", "variables": {"destination": "Venezia", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Venezia ora", "variables": {"destination": "Venezia", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Venezia per domani mattina", "variables": {"destination": "Venezia", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Venezia per stasera", "variables": {"destination": "Venezia", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Venezia stasera", "variables": {"destination": "Venezia", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Un treno per Venezia subito", "variables": {"destination": "Venezia", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Urgente per Bologna", "variables": {"destination": "Bologna", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Urgente per Firenze", "variables": {"destination": "Firenze", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Urgente per Milano", "variables": {"destination": "Milano", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Urgente per Napoli", "variables": {"destination": "Napoli", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Urgente per Roma", "variables": {"destination": "Roma", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Urgente per Torino", "variables": {"destination": "Torino", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Urgente per Venezia", "variables": {"destination": "Venezia", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia adesso", "variables": {"destination": "Venezia", "time": "adesso"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia alle 14:00", "variables": {"destination": "Venezia", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia alle 18:45", "variables": {"destination": "Venezia", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia alle 8:00", "variables": {"destination": "Venezia", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia alle 9:30", "variables": {"destination": "Venezia", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia domani mattina", "variables": {"destination": "Venezia", "time": "domani mattina"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia dopo le 14:00", "variables": {"destination": "Venezia", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia dopo le 18:45", "variables": {"destination": "Venezia", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia dopo le 8:00", "variables": {"destination": "Venezia", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia dopo le 9:30", "variables": {"destination": "Venezia", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia intorno alle 14:00", "variables": {"destination": "Venezia", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia intorno alle 18:45", "variables": {"destination": "Venezia", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia intorno alle 8:00", "variables": {"destination": "Venezia", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia intorno alle 9:30", "variables": {"destination": "Venezia", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia ora", "variables": {"destination": "Venezia", "time": "ora"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia per le 14:00", "variables": {"destination": "Venezia", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia per le 18:45", "variables": {"destination": "Venezia", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia per le 8:00", "variables": {"destination": "Venezia", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia per le 9:30", "variables": {"destination": "Venezia", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia prima delle 14:00", "variables": {"destination": "Venezia", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia prima delle 18:45", "variables": {"destination": "Venezia", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia prima delle 8:00", "variables": {"destination": "Venezia", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia prima delle 9:30", "variables": {"destination": "Venezia", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia stasera", "variables": {"destination": "Venezia", "time": "stasera"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia subito", "variables": {"destination": "Venezia", "time": "subito"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia verso le 14:00", "variables": {"destination": "Venezia", "time": "14:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia verso le 18:45", "variables": {"destination": "Venezia", "time": "18:45"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia verso le 8:00", "variables": {"destination": "Venezia", "time": "8:00"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Venezia verso le 9:30", "variables": {"destination": "Venezia", "time": "9:30"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio andare a Bologna", "variables": {"destination": "Bologna"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio andare a Firenze", "variables": {"destination": "Firenze"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio andare a Milano", "variables": {"destination": "Milano"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio andare a Napoli", "variables": {"destination": "Napoli"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio andare a Roma", "variables": {"destination": "Roma"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio andare a Torino", "variables": {"destination": "Torino"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio andare a Venezia", "variables": {"destination": "Venezia"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio partire per Bologna", "variables": {"destination": "Bologna"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio partire per Firenze", "variables": {"destination": "Firenze"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio partire per Milano", "variables": {"destination": "Milano"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio partire per Napoli", "variables": {"destination": "Napoli"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio partire per Roma", "variables": {"destination": "Roma"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio partire per Torino", "variables": {"destination": "Torino"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Voglio partire per Venezia", "variables": {"destination": "Venezia"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Vorrei partire per Bologna", "variables": {"destination": "Bologna"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Vorrei partire per Firenze", "variables": {"destination": "Firenze"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Vorrei partire per Milano", "variables": {"destination": "Milano"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Vorrei partire per Napoli", "variables": {"destination": "Napoli"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Vorrei partire per Roma", "variables": {"destination": "Roma"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Vorrei partire per Torino", "variables": {"destination": "Torino"}, "intent": "search_trains", "generator": "deterministic_jinja2"}
+{"text": "Vorrei partire per Venezia", "variables": {"destination": "Venezia"}, "intent": "search_trains", "generator": "deterministic_jinja2"}

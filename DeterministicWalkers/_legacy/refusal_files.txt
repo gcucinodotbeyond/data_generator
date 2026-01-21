@@ -1,0 +1,5 @@
+Found 4 files in c:\Users\gcucino\Desktop\data_generator\FS_dataset_builder\parsing\_synth_refuse\_datasets:
+- refusal_conversations_500x_proc_BATCH03_with_keep_turns.jsonl
+- refusal_conversations_500x_proc_BATCH04_with_keep_turns.jsonl
+- refusal_conversations_50x_proc_BATCH01_with_keep_turns.jsonl
+- refusal_conversations_50x_proc_BATCH02_with_keep_turns.jsonl

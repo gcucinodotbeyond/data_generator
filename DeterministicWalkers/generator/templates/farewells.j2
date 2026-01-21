@@ -1,0 +1,70 @@
+{# VARIABLES: sentiment (positive/negative/neutral) #}
+
+{%- set farewells = [
+    "Arrivederci", "Addio", "A presto", "Ciao", "Buona giornata", "Buona serata", 
+    "Alla prossima", "Ci vediamo", "Stammi bene", "Saluti", "Buon proseguimento", 
+    "È tutto per ora", "Chiudo qui", "Buon lavoro"
+] -%}
+
+{%- set thanks = [
+    "Grazie", "Grazie mille", "Grazie di tutto", "Ti ringrazio", "Molto gentile", 
+    "Gentilissimo", "Grazie infinite", "Perfetto grazie", "Ok grazie", "Grazie del supporto"
+] -%}
+
+{%- set pos_feedback = [
+    "Sei stato molto utile", "Ottimo servizio", "Veloce e preciso", "Funziona bene", 
+    "Molto efficiente", "Mi hai aiutato molto", "Servizio eccellente", "Tutto perfetto"
+] -%}
+
+{%- set neg_feedback = [
+    "Non funziona mai nulla", "Pessimo servizio", "Troppo lento", "Non ho capito niente", 
+    "È stato difficile", "Interfaccia confusa", "Non sei d'aiuto", "Esperienza negativa"
+] -%}
+
+{# --- SIMPLE FAREWELL --- #}
+{%- for word in farewells %}
+{{ to_json({"text": word, "variables": {}}) }}
+{%- endfor %}
+
+{# --- THANKS + FAREWELL --- #}
+{%- for t in thanks %}
+{{ to_json({"text": t, "variables": {}}) }}
+{%- endfor %}
+
+{%- for t in thanks %}
+{%- for f in farewells %}
+{{ to_json({"text": t ~ ", " ~ f|lower, "variables": {}}) }}
+{{ to_json({"text": t ~ ". " ~ f, "variables": {}}) }}
+{%- endfor %}
+{%- endfor %}
+
+{# --- POSITIVE FEEDBACK COMBINATIONS --- #}
+{% if sentiment == 'positive' %}
+{%- for p in pos_feedback %}
+{%- for f in farewells %}
+{{ to_json({"text": p ~ ". " ~ f, "variables": {}}) }}
+{%- endfor %}
+{%- endfor %}
+{%- for t in thanks %}
+{%- for p in pos_feedback %}
+{{ to_json({"text": t ~ ". " ~ p, "variables": {}}) }}
+{%- for f in farewells %}
+{{ to_json({"text": t ~ ", " ~ p|lower ~ ". " ~ f, "variables": {}}) }}
+{%- endfor %}
+{%- endfor %}
+{%- endfor %}
+{% endif %}
+
+{# --- NEGATIVE FEEDBACK COMBINATIONS --- #}
+{% if sentiment == 'negative' %}
+{%- for n in neg_feedback %}
+{%- for f in farewells %}
+{{ to_json({"text": n ~ ". " ~ f, "variables": {}}) }}
+{%- endfor %}
+{%- endfor %}
+{% endif %}
+
+{{ to_json({"text": "Basta così", "variables": {}}) }}
+{{ to_json({"text": "Ho finito", "variables": {}}) }}
+{{ to_json({"text": "Non mi serve altro", "variables": {}}) }}
+{{ to_json({"text": "Posto così", "variables": {}}) }}

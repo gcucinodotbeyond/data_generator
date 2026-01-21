@@ -229,12 +229,26 @@
 
         /* System Message */
         .system {
-            align-self: center;
-            background-color: rgba(255, 255, 255, 0.05);
-            max-width: 90%;
-            font-size: 0.9rem;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
+            align-self: stretch;
+            /* Full width for system prompt */
+            background-color: #1e1e1e;
+            border: 1px solid #d97706;
+            /* Amber border */
+            max-width: 95%;
+            font-size: 0.85rem;
+            color: #d1d5db;
+            margin-bottom: 1rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .system .message-header {
+            color: #fbbf24;
+            /* Amber text */
+            border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
         }
 
         /* Tool Message */
@@ -357,7 +371,8 @@
                 <div style="font-size: 3rem;">👋</div>
                 <h2>Select a conversation to view</h2>
                 <p>Load the <code>DeterministicWalkers/data</code> folder to start</p>
-                <p style="font-size: 0.8rem; color: #64748b;">(Or if visualizer_data.js is present, data is preloaded)</p>
+                <p style="font-size: 0.8rem; color: #64748b;">(Or if visualizer_data.js is present, data is preloaded)
+                </p>
             </div>
         </div>
     </div>
@@ -416,20 +431,43 @@
         });
 
         // Initialize when window loads
-        window.onload = function() {
-             if (window.PRELOADED_DATA) {
-                console.log("Found preloaded data!");
-                allFilesData = window.PRELOADED_DATA;
-                renderSidebar();
-                
-                // Automatically select the first file
-                const firstFile = Object.keys(allFilesData).sort()[0];
-                 if (firstFile && allFilesData[firstFile].length > 0) {
-                     // We could auto-select, but let's just make sure sidebar is populated
-                 }
-            } else {
-                 console.log("No preloaded data found.");
-            }
+        window.onload = function () {
+            // Fetch the hydrated dataset directly
+            // Path is relative to the visualizer.html file
+            const dataPath = 'data/hydrated-dataset/dialogue_dataset.jsonl';
+            console.log("Fetching data from:", dataPath);
+
+            fetch(dataPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    const conversations = parseJSONL(text);
+                    if (conversations.length > 0) {
+                        allFilesData['dialogue_dataset.jsonl'] = conversations;
+                        renderSidebar();
+                        // Automatically select the first file's first item if available
+                        const firstFile = Object.keys(allFilesData).sort()[0];
+                        if (firstFile && allFilesData[firstFile].length > 0) {
+                            // Optional: select first item?
+                        }
+                    } else {
+                        console.warn("No conversations found in fetched file.");
+                    }
+                })
+                .catch(e => {
+                    console.error("Failed to fetch data:", e);
+                    // Show error in empty state
+                    document.querySelector('.empty-state h2').textContent = "Could not load data";
+                    document.querySelector('.empty-state p').innerHTML = `
+                        Ensure you are running via a local server (e.g., <code>python tools/run_visualizer.py</code>)<br>
+                        and that <code>${dataPath}</code> exists.<br>
+                        <span style="font-size:0.8em; color:red;">${e.message}</span>
+                    `;
+                });
         };
 
         function handleFiles(fileList) {
@@ -521,6 +559,9 @@
                 wrapper.className = `message ${msg.role}`;
 
                 let header = `<div class="message-header">${msg.role}</div>`;
+                if (msg.role === 'system') {
+                    header = `<div class="message-header">🖥️ SYSTEM PROMPT</div>`;
+                }
                 let content = '';
 
                 // Handle text content
@@ -574,7 +615,7 @@
                 .replace(/'/g, "&#039;");
         }
     </script>
-    <script src="visualizer_data.js"></script>
+
 </body>
 
 </html>
