@@ -6,12 +6,13 @@ from generator.deterministic import DeterministicGenerator
 from generator.mock_api import MockBackend
 
 class DialogueGenerator:
-    def __init__(self, corpus=None, enhancer=None):
+    def __init__(self, corpus=None, enhancer=None, distribution=None):
         # We don't strictly need corpus anymore, but we keep the signature compatible for now.
         # We rely on DeterministicGenerator instance for rendering.
         self.renderer = DeterministicGenerator()
         self.enhancer = enhancer
         self.backend = MockBackend()
+        self.distribution = distribution or {}
         
         # Load stations
         stations_path = os.path.join(os.path.dirname(__file__), '..', 'resources', 'stations.json')
@@ -74,12 +75,20 @@ class DialogueGenerator:
                 print(f"Error generating dialogue {i}: {e}")
                 
         return dialogues
-
     def _init_context(self, run_id):
         """Randomly initializes the global context variables for this dialogue."""
         origin = random.choice(self.origins)
         dest = random.choice([d for d in self.destinations if d[:3] != origin[:3]]) # Avoid same city
         
+        # Rudeness selection
+        rudeness_dist = self.distribution.get("rudeness_distribution", {})
+        if rudeness_dist:
+            population = list(rudeness_dist.keys())
+            weights = list(rudeness_dist.values())
+            rudeness = random.choices(population, weights=weights, k=1)[0]
+        else:
+            rudeness = random.choice(["polite", "rude", "neutral"])
+
         return {
             "run_id": run_id,
             "origin": origin,
@@ -89,6 +98,7 @@ class DialogueGenerator:
             "passengers": random.randint(1, 3),
             "class": random.choice(["Standard", "Prima", "Business"]),
             "tone": random.choice(["formal", "informal"]), # Used by templates if supported
+            "rudeness": rudeness, # Weighted or random choice
             
             # Internal tracking
             "generated_messages": [{"role": "system", "content": "{SYSTEM_PROMPT}"}],
@@ -121,7 +131,7 @@ class DialogueGenerator:
         # ATTEMPT PARAPHRASE
         if self.enhancer and result.get("text"):
             # Only paraphrase USER intents for better stability of assistant responses
-            user_intents = ["search_trains", "greeting", "confirmation", "refusal", "qa", "ui_navigation", "refinement", "ood"]
+            user_intents = ["search_trains", "greeting", "confirmation", "refusal", "qa", "ui_navigation", "refinement", "ood", "complaint"]
             if intent not in user_intents:
                 return result
 
@@ -129,8 +139,8 @@ class DialogueGenerator:
             prob = self.enhancer.paraphrase_probability if hasattr(self.enhancer, 'paraphrase_probability') else 0.1
             
             if random.random() < prob:
-                print(f"[LLM] Paraphrasing intent '{intent}': {result['text'][:50]}...")
-                new_text = self.enhancer.paraphrase_utterance(result['text'], intent)
+                print(f"[LLM] Paraphrasing intent '{intent}' (persona: {context.get('rudeness', 'polite')}): {result['text'][:50]}...")
+                new_text = self.enhancer.paraphrase_utterance(result['text'], intent, persona=context.get('rudeness', 'polite'))
                 if new_text and new_text != result['text']:
                     result['text'] = new_text
                     result['generator'] = 'llm_paraphrased'
@@ -198,7 +208,8 @@ class DialogueGenerator:
                 "ui_state": json.dumps(context["ui_state"]) if isinstance(context["ui_state"], dict) else str(context["ui_state"]), 
                 "trains_array": json.dumps(context["current_trains"]),
                 "ctx_time": context["ctx_time"],
-                "date": context["ctx_date"]
+                "date": context["ctx_date"],
+                "ticket_info": json.dumps(context.get("ticket_info", {})) if context.get("ticket_info") else None
             }
         }
         return ctx_snapshot
@@ -323,14 +334,37 @@ class DialogueGenerator:
             available_actions.append("show_changes")
             
         action = random.choice(available_actions)
-        u_text = self._render_utterance("ui_navigation", ctx, action=action) 
+        
+        # If show_changes is picked but no target/position is in ctx yet, 
+        # we pick one to simulate a specific request (e.g., "how many changes for the first one?")
+        if action == "show_changes" and not ctx.get("target_train") and not ctx.get("position_word"):
+            pos_map = ["primo", "secondo", "terzo"]
+            target_idx = random.randint(0, min(2, len(ctx["current_trains"]) - 1)) if ctx.get("current_trains") else 0
+            ctx["position_word"] = pos_map[target_idx]
+
+        u_text = self._render_utterance("ui_navigation", ctx, action=action, 
+                                       target_train=ctx.get("target_train"), 
+                                       position_word=ctx.get("position_word")) 
         self._add_turn(ctx, "user", u_text)
         
         # Tool Call
         call_id = self._get_next_call_id(ctx)
         args = {"action": action}
         if action == "show_changes":
-            args["train_position"] = random.randint(1, min(3, len(ctx["current_trains"])))
+            # Use the index from position_word if available, or just a default
+            pos_map = ["primo", "secondo", "terzo"]
+            if ctx.get("position_word") in pos_map:
+                args["train_position"] = pos_map.index(ctx["position_word"]) + 1
+            elif ctx.get("target_train"):
+                # Find current position of target_train
+                t_id = ctx["target_train"]["id"]
+                args["train_position"] = 1
+                for i, t in enumerate(ctx.get("current_trains", [])):
+                    if t["id"] == t_id:
+                        args["train_position"] = i + 1
+                        break
+            else:
+                args["train_position"] = random.randint(1, min(3, len(ctx.get("current_trains", [])) or 1))
             
         tool_call = {
             "id": call_id,
@@ -400,6 +434,9 @@ class DialogueGenerator:
         target_train = ctx["current_trains"][target_index]
         pos_map = ["primo", "secondo", "terzo"]
         pos_word = pos_map[target_index] if target_index < 3 else "questo"
+        
+        ctx["target_train"] = target_train
+        ctx["position_word"] = pos_word
 
         # Explicit Selection
         u_sel = self._render_utterance("refinement", ctx, train=target_train, aspect="train", position_word=pos_word)
@@ -423,33 +460,71 @@ class DialogueGenerator:
         else:
             ctx["class"] = "Standard"
 
-        # Handshake
+        # Check if AV train
+        av_types = ["Frecciarossa", "Frecciargento", "Frecciabianca"]
+        is_av = any(at in target_train["type"] for at in av_types)
+
+        if is_av:
+            # Transition to choosingSeat
+            ctx["ui_state"] = {"state": "choosingSeat", "can": {"next": True, "prev": True, "back": True}}
+            
+            # Seat Prompt (concatenated with whatever was the last response)
+            seat_prompt = self._render_utterance("assistant_responses", ctx, category="seat_prompt")
+            self._add_turn(ctx, "assistant", f"{current_response} {seat_prompt}".strip())
+            
+            # User chooses seat
+            u_seat_data = self._render_utterance_data("refinement", ctx, aspect="seat")
+            u_seat = u_seat_data['text']
+            seat_type = u_seat_data.get("variables", {}).get("seat", "window")
+            self._add_turn(ctx, "user", u_seat)
+            
+            # Acknowledge seat choice
+            current_response = self._render_utterance("assistant_responses", ctx, category="seat_ack", seat_type=seat_type)
+            ctx["chosen_seat"] = "4A" if seat_type == "window" else "4B"
+
+        # Handshake (Price + Confirmation)
         handshake = self._render_utterance("assistant_responses", ctx, category="handshake", price=target_train['price'])
-        self._add_turn(ctx, "assistant", f"{current_response} {handshake}" if current_response else handshake)
+        self._add_turn(ctx, "assistant", f"{current_response} {handshake}".strip())
         
         u_yes = self._render_utterance("confirmation", ctx, time=None, class_type=None, destination=None)
         self._add_turn(ctx, "user", u_yes)
 
-        # Purchase
+        # Single Purchase Call
         call_id = self._get_next_call_id(ctx)
+        purchase_args = {"train_id": target_train["id"], "class": ctx["class"]}
+        if is_av:
+            purchase_args["seat"] = ctx.get("chosen_seat", "4A")
+            purchase_args["carriage"] = random.randint(1, 8)
+            
         tool_call = {
             "id": call_id,
             "type": "function",
             "function": {
                 "name": "purchase_ticket",
-                "arguments": json.dumps({"train_id": target_train["id"], "class": ctx["class"]})
+                "arguments": json.dumps(purchase_args)
             }
         }
         resp_json = self.backend.purchase_ticket(tool_call["function"]["arguments"])
+        resp_data = json.loads(resp_json)
         self._add_turn(ctx, "assistant", None, tool_calls=[tool_call], tool_output=resp_json)
-
+        
+        # Final Handover
         resp_handover = self._render_utterance("assistant_responses", ctx, category="ticket_handover")
         self._add_turn(ctx, "assistant", resp_handover)
-        ctx["ui_state"] = {"state": "success"}
+        
+        ctx["ticket_info"] = resp_data
+        ctx["ui_state"] = {"state": "purchased", "can": {"next": False, "prev": False, "back": False}}
+        meta_contexts.append(self._snapshot_meta(ctx, len(ctx["generated_messages"])))
+
+    def _step_complaint(self, ctx, meta_contexts):
+        u_complaint = self._render_utterance("complaint", ctx)
+        self._add_turn(ctx, "user", u_complaint)
+        resp = self._render_utterance("assistant_responses", ctx, category="complaint_response")
+        self._add_turn(ctx, "assistant", resp)
         meta_contexts.append(self._snapshot_meta(ctx, len(ctx["generated_messages"])))
 
     def _step_farewell(self, ctx, meta_contexts):
-        is_success = ctx.get("ui_state", {}).get("state") == "success"
+        is_success = ctx.get("ui_state", {}).get("state") == "purchased"
         sentiment = "positive" if is_success else "neutral"
         
         u_bye = self._render_utterance("farewell", ctx, sentiment=sentiment)
@@ -463,9 +538,26 @@ class DialogueGenerator:
         scenario_steps = ["greeting", "search", "selection_purchase", "farewell"]
         scenario_name = "default"
         
-        # Load all available scenarios from the scenarios directory
+        # Scenario Selection based on distribution
+        scenario_dist = self.distribution.get("scenario_distribution", {})
         scenario_dir = os.path.join(os.path.dirname(__file__), 'scenarios')
-        if os.path.exists(scenario_dir):
+        
+        if scenario_dist and os.path.exists(scenario_dir):
+            population = list(scenario_dist.keys())
+            weights = list(scenario_dist.values())
+            # Ensure only existing files are in population? 
+            # For simplicity, we assume config is correct or we filter now.
+            population = [p for p in population if os.path.exists(os.path.join(scenario_dir, f"{p}.txt"))]
+            # Adjust weights after filtering population
+            weights = [scenario_dist[p] for p in population]
+            
+            if population:
+                scenario_name = random.choices(population, weights=weights, k=1)[0]
+                scenario_path = os.path.join(scenario_dir, f"{scenario_name}.txt")
+                with open(scenario_path, 'r', encoding='utf-8') as f:
+                    scenario_steps = [line.strip() for line in f if line.strip() and not line.startswith("#")]
+        elif os.path.exists(scenario_dir):
+            # Fallback to pure random if no distribution
             all_files = [f for f in os.listdir(scenario_dir) if f.endswith(".txt")]
             if all_files:
                 scenario_file = random.choice(all_files)
@@ -479,24 +571,45 @@ class DialogueGenerator:
         ctx = self._init_context(run_id)
         meta_contexts = []
 
-        for step in scenario_steps:
-            if step == "greeting":
-                self._step_greeting(ctx, meta_contexts)
-            elif step == "search":
-                if not self._step_search(ctx, meta_contexts):
-                    break # Stop if no trains
-            elif step == "qa":
-                self._step_qa(ctx, meta_contexts)
-            elif step == "ui":
-                self._step_ui(ctx, meta_contexts)
-            elif step == "ood":
-                # If first turn, it's a starter
-                is_starter = len(ctx["generated_messages"]) <= 1
-                self._step_ood(ctx, meta_contexts, starter=is_starter)
-            elif step == "selection_purchase":
-                self._step_selection_purchase(ctx, meta_contexts)
-            elif step == "farewell":
-                self._step_farewell(ctx, meta_contexts)
+        for raw_line in scenario_steps:
+            # Handle composite steps: "search + complaint (price)"
+            sub_steps = [s.strip() for s in raw_line.split("+")]
+            
+            for sub_step in sub_steps:
+                # Extract optional parameter: "complaint (price)" -> step="complaint", param="price"
+                step = sub_step
+                param = None
+                if "(" in sub_step and ")" in sub_step:
+                    import re
+                    match = re.search(r"([^(]+)\s*\(([^)]+)\)", sub_step)
+                    if match:
+                        step = match.group(1).strip()
+                        param = match.group(2).strip()
+                
+                # If param exists, we might want to inject it into context for the specific step
+                # For now, we support 'topic' as the most common parameter
+                if param:
+                    ctx["topic"] = param
+
+                if step == "greeting":
+                    self._step_greeting(ctx, meta_contexts)
+                elif step == "search":
+                    if not self._step_search(ctx, meta_contexts):
+                        break # Stop if no trains
+                elif step == "qa":
+                    self._step_qa(ctx, meta_contexts)
+                elif step == "ui":
+                    self._step_ui(ctx, meta_contexts)
+                elif step == "ood":
+                    # If first turn, it's a starter
+                    is_starter = len(ctx["generated_messages"]) <= 1
+                    self._step_ood(ctx, meta_contexts, starter=is_starter)
+                elif step == "complaint":
+                    self._step_complaint(ctx, meta_contexts)
+                elif step == "selection_purchase":
+                    self._step_selection_purchase(ctx, meta_contexts)
+                elif step == "farewell":
+                    self._step_farewell(ctx, meta_contexts)
         
         result = self._finalize(ctx, meta_contexts)
         result["_meta"]["scenario_name"] = scenario_name # Add to metadata
@@ -519,6 +632,7 @@ class DialogueGenerator:
                 "scenario": "dynamic_v3",
                 "seed": random.randint(1000,999999), 
                 "run_id": ctx["run_id"],
+                "rudeness": ctx["rudeness"],
                 "contexts": meta_contexts
             }
         }

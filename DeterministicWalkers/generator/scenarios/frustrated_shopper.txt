@@ -1,0 +1,5 @@
+# Frustrated Shopper Scenario
+greeting
+search + complaint (price)
+selection_purchase + complaint (machine)
+farewell

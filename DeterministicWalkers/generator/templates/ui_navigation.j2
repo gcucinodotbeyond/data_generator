@@ -22,10 +22,21 @@
     {{ to_json({"text": "Fammi un riepilogo", "variables": {}}) }}
     {{ to_json({"text": "Qual è il riepilogo del viaggio?", "variables": {}}) }}
 {%- elif action == "show_changes" %}
-    {{ to_json({"text": "Il primo ha cambi?", "variables": {}}) }}
-    {{ to_json({"text": "È diretto?", "variables": {}}) }}
-    {{ to_json({"text": "Ci sono fermate intermedie?", "variables": {}}) }}
-    {{ to_json({"text": "Voglio vedere le fermate di questo treno", "variables": {}}) }}
+    {% if target_train %}
+        {{ to_json({"text": "Questo treno ha cambi?", "variables": {}}) }}
+        {{ to_json({"text": "È diretto?", "variables": {}}) }}
+        {{ to_json({"text": "Ci sono fermate intermedie?", "variables": {}}) }}
+        {{ to_json({"text": "Voglio vedere le fermate di questo treno", "variables": {}}) }}
+    {% elif position_word %}
+        {{ to_json({"text": "Il " ~ position_word ~ " ha cambi?", "variables": {}}) }}
+        {{ to_json({"text": "Che fermate fa il " ~ position_word ~ "?", "variables": {}}) }}
+        {{ to_json({"text": "Vedi i cambi del " ~ position_word, "variables": {}}) }}
+        {{ to_json({"text": "Il " ~ position_word ~ " è diretto?", "variables": {}}) }}
+    {% else %}
+        {# Fallback if neither is present, though logic should prevent this #}
+        {{ to_json({"text": "Il primo ha cambi?", "variables": {}}) }}
+        {{ to_json({"text": "È diretto?", "variables": {}}) }}
+    {% endif %}
 {%- else %}
     {{ to_json({"text": "Menu", "variables": {}}) }}
     {{ to_json({"text": "Torna al menu", "variables": {}}) }}

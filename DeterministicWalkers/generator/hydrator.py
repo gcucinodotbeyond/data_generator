@@ -34,11 +34,11 @@ class DataSetHydrator:
             return None
 
     def hydrate_line(self, line_content: str) -> str:
-        """Hydrate a single JSONL line."""
+        """Hydrate a single JSONL line (1:1 mapping)."""
         try:
             data = json.loads(line_content)
         except json.JSONDecodeError:
-            return line_content # Return raw line on error
+            return line_content
 
         # 1. Hydrate Tools
         if self.tools_content and data.get("tools") == "{{TOOL_DEFINITION}}":
@@ -47,40 +47,46 @@ class DataSetHydrator:
         # 2. Hydrate Messages (System Prompt)
         messages = data.get("messages", [])
         if messages:
-            # Find system message
             system_message = next((m for m in messages if m["role"] == "system"), None)
             
-            if system_message and system_message.get("content") == "{SYSTEM_PROMPT}":
-                # Extract meta params for hydration
-                meta_params = self._extract_params(data)
+            # Allow both placeholder and initial Talìa prompt for re-hydration if needed
+            if system_message and (system_message.get("content") == "{SYSTEM_PROMPT}" or "{SYSTEM_PROMPT}" in system_message.get("content", "")):
+                # Extract meta params
+                # For 1:1, we use the first context (start state) as it's the most common for starting-point system prompts
+                meta = data.get("_meta", {})
+                params = {}
+                if "contexts" in meta and isinstance(meta["contexts"], list) and meta["contexts"]:
+                    params = meta["contexts"][0].get("params", {})
+                else:
+                    params = meta.get("params", {})
                 
-                # Perform substitution using Jinja2
+                prepared_params = self._prepare_params(params)
+                
                 try:
                     from jinja2 import Template
                     template = Template(self.template_content)
                     
-                    # Defaults
                     defaults = {
                          "origin": "UNKNOWN",
                          "ctx_time": "12:00",
                          "date": "2024-05-01",
                          "ui_state": '{"state":"idle"}',
-                         "trains_array": "[]"
+                         "trains_array": "[]",
+                         "ticket_info": None
                     }
                     
-                    # Merge defaults with actual params
                     hydration_context = defaults.copy()
-                    hydration_context.update(meta_params)
+                    hydration_context.update(prepared_params)
+                    
+                    # Ensure ui_state_raw is there
+                    if "ui_state_raw" not in hydration_context:
+                        hydration_context["ui_state_raw"] = json.loads(hydration_context["ui_state"])
                     
                     hydrated_content = template.render(**hydration_context)
                     system_message["content"] = hydrated_content
                     
-                except ImportError:
-                    print("Error: jinja2 not found. Please install with 'pip install jinja2'")
-                    raise
                 except Exception as e:
                     print(f"Error rendering template: {e}")
-                    return json.dumps(data, ensure_ascii=False)
 
         # 3. Remove Meta if requested
         if self.remove_meta:
@@ -88,19 +94,33 @@ class DataSetHydrator:
 
         return json.dumps(data, ensure_ascii=False)
 
-    def _extract_params(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Extract hydration parameters from _meta field."""
-        meta = data.get("_meta", {})
+    def _prepare_params(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Prepare raw parameters for Jinja2."""
+        p = params.copy()
         
-        # New structure: meta -> contexts -> [0] -> params
-        # Use simple heuristic: Use the first context params for system prompt hydration
-        if "contexts" in meta and isinstance(meta["contexts"], list) and meta["contexts"]:
-            return meta["contexts"][0].get("params", {})
-        
-        return meta.get("params", {})
+        # ui_state -> ui_state_raw
+        if "ui_state" in p and isinstance(p["ui_state"], str):
+            try:
+                p["ui_state_raw"] = json.loads(p["ui_state"])
+            except:
+                p["ui_state_raw"] = {"state": "unknown"}
+        elif "ui_state" in p and isinstance(p["ui_state"], dict):
+            p["ui_state_raw"] = p["ui_state"]
+            p["ui_state"] = json.dumps(p["ui_state"])
+        else:
+            p["ui_state_raw"] = {"state": "unknown"}
+
+        # ticket_info
+        if "ticket_info" in p and isinstance(p["ticket_info"], str):
+             try:
+                 p["ticket_info"] = json.loads(p["ticket_info"])
+             except:
+                 pass
+                 
+        return p
 
     def process_file(self, input_path: Path, output_path: Path) -> int:
-        """Process a single file and return hydrated line count."""
+        """Process a single file."""
         count = 0
         with open(input_path, 'r', encoding='utf-8') as fin, \
              open(output_path, 'w', encoding='utf-8') as fout:
@@ -108,25 +128,19 @@ class DataSetHydrator:
                 line = line.strip()
                 if not line: continue
                 new_line = self.hydrate_line(line)
-                fout.write(new_line + '\n')
+                fout.write(new_line + "\n")
                 count += 1
         return count
 
     def process_directory(self, input_dir: Path, output_dir: Path) -> int:
         """Process all .jsonl files in a directory."""
         if not input_dir.exists():
-            print(f"Error: Input directory {input_dir} does not exist.")
             return 0
         
         output_dir.mkdir(parents=True, exist_ok=True)
-        total_files = 0
         total_lines = 0
-        
         for f in input_dir.glob("*.jsonl"):
             out_f = output_dir / f.name
             print(f"  Hydrating {f.name}...")
-            lines_done = self.process_file(f, out_f)
-            total_files += 1
-            total_lines += lines_done
-            
+            total_lines += self.process_file(f, out_f)
         return total_lines

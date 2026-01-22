@@ -1,35 +1,65 @@
-{# VARIABLES: pet, luggage, service, topic #}
+{# VARIABLES: pet, luggage, service, topic, rudeness #}
 
 {# --- PETS --- #}
 {% if pet or topic == 'pets' %}
 {% set p = pet or "cane" %}
+{% if rudeness == 'rude' %}
+{{ to_json({"text": "Il " ~ p ~ " può salire?", "variables": {"topic": "pets"}}) }}
+{{ to_json({"text": "Devo pagare pure per il " ~ p ~ "?", "variables": {"topic": "pets"}}) }}
+{% elif rudeness == 'polite' %}
+{{ to_json({"text": "Mi scusi, saprebbe dirmi se il mio " ~ p ~ " può viaggiare con me?", "variables": {"topic": "pets"}}) }}
+{{ to_json({"text": "Sarebbe così gentile da confermarmi se il " ~ p ~ " paga il biglietto?", "variables": {"topic": "pets"}}) }}
+{% else %} {# neutral #}
 {{ to_json({"text": "Posso portare il mio " ~ p ~ "?", "variables": {"topic": "pets"}}) }}
 {{ to_json({"text": "È ammesso il " ~ p ~ " sul treno?", "variables": {"topic": "pets"}}) }}
 {{ to_json({"text": "Si paga per il " ~ p ~ "?", "variables": {"topic": "pets"}}) }}
 {{ to_json({"text": "Ho un " ~ p ~ ", può viaggiare?", "variables": {"topic": "pets"}}) }}
 {% endif %}
+{% endif %}
 
 {# --- LUGGAGE --- #}
 {% if luggage or topic == 'luggage' %}
 {% set l = luggage or "zaino" %}
+{% if rudeness == 'rude' %}
+{{ to_json({"text": "Dove cazzo metto " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
+{{ to_json({"text": "C'è spazio o devo tenerlo in braccio?", "variables": {"topic": "luggage"}}) }}
+{% elif rudeness == 'polite' %}
+{{ to_json({"text": "Saprebbe indicarmi gentilmente dove posare " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
+{{ to_json({"text": "Mi scusi, c'è un'area dedicata per " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
+{% else %} {# neutral #}
 {{ to_json({"text": "Posso portare " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
 {{ to_json({"text": "Dove metto " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
 {{ to_json({"text": "C'è spazio per " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
 {{ to_json({"text": "Si paga supplemento per " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
 {% endif %}
+{% endif %}
 
 {# --- SERVICES --- #}
 {% if service or topic == 'services' %}
 {% set s = service or "wifi" %}
+{% if rudeness == 'rude' %}
+{{ to_json({"text": "Almeno il " ~ s ~ " c'è?", "variables": {"topic": "services"}}) }}
+{{ to_json({"text": "Il " ~ s ~ " funziona o è la solita roba?", "variables": {"topic": "services"}}) }}
+{% elif rudeness == 'polite' %}
+{{ to_json({"text": "Sarebbe così gentile da dirmi se è presente il " ~ s ~ "?", "variables": {"topic": "services"}}) }}
+{{ to_json({"text": "Mi scusi per il disturbo, saprebbe dirmi se c'è il " ~ s ~ "?", "variables": {"topic": "services"}}) }}
+{% else %} {# neutral #}
 {{ to_json({"text": "C'è il " ~ s ~ " a bordo?", "variables": {"topic": "services"}}) }}
 {{ to_json({"text": "Il treno ha " ~ s ~ "?", "variables": {"topic": "services"}}) }}
 {{ to_json({"text": "Funziona " ~ s ~ "?", "variables": {"topic": "services"}}) }}
 {% endif %}
+{% endif %}
 
 {# --- GENERAL QA --- #}
 {% if topic == 'refunds' %}
+{% if rudeness == 'rude' %}
+{{ to_json({"text": "Voglio i soldi indietro.", "variables": {"topic": "refunds"}}) }}
+{% elif rudeness == 'polite' %}
+{{ to_json({"text": "Mi scusi, saprebbe gentilmente indicarmi la procedura di rimborso?", "variables": {"topic": "refunds"}}) }}
+{% else %} {# neutral #}
 {{ to_json({"text": "Qual è la politica rimborsi?", "variables": {"topic": "refunds"}}) }}
 {{ to_json({"text": "Come chiedo un rimborso?", "variables": {"topic": "refunds"}}) }}
+{% endif %}
 {% endif %}
 
 {% if topic == 'delay' or topic == 'delays' %}

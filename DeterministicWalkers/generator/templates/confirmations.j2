@@ -1,21 +1,52 @@
-{# VARIABLES: destination, time, class_type #}
+{# VARIABLES: destination, time, class_type, rudeness #}
 
 {%- set affirmatives = ["Sì", "Si", "Certamente", "Certo", "Va bene", "Ok", "Okay", "D'accordo", "Affermativo", "Perfetto", "Ottimo"] -%}
 {%- set procedurals = ["Procedi", "Vai avanti", "Confermo", "Prenota", "Acquista", "Fallo"] -%}
 
 {# --- SIMPLE AFFIRMATIVE --- #}
-{%- for aff in affirmatives %}
+{% if rudeness == 'rude' %}
+    {% for aff in ["Ok", "Si", "Vbb"] %}
 {{ to_json({"text": aff, "variables": {}}) }}
+    {% endfor %}
+{% elif rudeness == 'polite' %}
+    {% for aff in affirmatives %}
 {{ to_json({"text": aff ~ " grazie", "variables": {}}) }}
-{%- endfor %}
+{{ to_json({"text": "Certamente, proceda pure", "variables": {}}) }}
+    {% endfor %}
+{% else %} {# neutral #}
+    {% for aff in affirmatives %}
+{{ to_json({"text": aff, "variables": {}}) }}
+    {% endfor %}
+{% endif %}
 
 {# --- AFFIRMATIVE + PROCEDURAL --- #}
-{%- for aff in affirmatives %}
-{%- for proc in procedurals %}
+{% if rudeness != 'rude' %}
+    {% for aff in affirmatives %}
+    {% for proc in procedurals %}
+    {% if rudeness == 'polite' %}
+{{ to_json({"text": aff ~ ", " ~ proc ~ " pure, grazie", "variables": {}}) }}
+    {% else %}
 {{ to_json({"text": aff ~ ", " ~ proc, "variables": {}}) }}
 {{ to_json({"text": aff ~ " " ~ proc, "variables": {}}) }}
-{%- endfor %}
-{%- endfor %}
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+{% endif %}
+
+{# --- BASE CONFIRMATIONS --- #}
+{% if rudeness == 'rude' %}
+    {% for ok in ["Vabbè", "Ok", "Si", "Procedi", "Muoviti"] %}
+{{ to_json({"text": ok, "variables": {}}) }}
+    {% endfor %}
+{% elif rudeness == 'polite' %}
+    {% for ok in ["Sì, la ringrazio", "Molto bene, proceda", "Perfetto, va benissimo"] %}
+{{ to_json({"text": ok, "variables": {}}) }}
+    {% endfor %}
+{% else %} {# neutral #}
+    {% for ok in ["Sì", "Perfetto", "Va bene", "Confermo", "Ok grazie"] %}
+{{ to_json({"text": ok, "variables": {}}) }}
+    {% endfor %}
+{% endif %}
 
 {# --- CONTEXTUAL CONFIRMATION (Simulating responding to a proposal) --- #}
 {# "Va bene quello delle 8:00" #}

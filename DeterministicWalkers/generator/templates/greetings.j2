@@ -1,24 +1,53 @@
-{# VARIABLES: time_of_day #}
+{# VARIABLES: time_of_day, rudeness #}
 
 {%- set openers = ["Ciao", "Salve", "Ehi", "Buongiorno", "Buonasera", "Buondì"] -%}
 {%- set polite_requests = ["vorrei aiuto", "mi serve una mano", "mi aiuti?", "ho bisogno di te", "sei lì?"] -%}
 
 {# --- SIMPLE GREETINGS --- #}
-{%- for opener in openers %}
+{% if rudeness == 'rude' %}
+    {%- set rude_openers = ["Oeh", "Ehilà", "Aò", "Senti", "Uè", "Oh"] -%}
+    {%- for opener in rude_openers %}
+{{ to_json({"text": opener, "variables": {}}) }}
+{{ to_json({"text": opener ~ "...", "variables": {}}) }}
+    {%- endfor %}
+{% elif rudeness == 'polite' %}
+    {%- for opener in openers %}
+{{ to_json({"text": opener ~ ", per favore mi aiuti?", "variables": {}}) }}
+{{ to_json({"text": opener ~ ", gentilissimo!", "variables": {}}) }}
+    {%- endfor %}
+{% else %} {# neutral #}
+    {%- for opener in openers %}
 {{ to_json({"text": opener, "variables": {}}) }}
 {{ to_json({"text": opener ~ "!", "variables": {}}) }}
-{%- endfor %}
+    {%- endfor %}
+{% endif %}
 
 {# --- GREETING + REQUEST (Generic) --- #}
-{%- for opener in openers %}
-{%- for req in polite_requests %}
+{% if rudeness == 'rude' %}
+    {%- set rude_requests = ["fammi vedere i treni", "muoviti", "voglio un biglietto", "sbrigati", "ho fretta"] -%}
+    {%- for opener in ["Ehi", "Senti", "Oh"] %}
+    {%- for req in rude_requests %}
 {{ to_json({"text": opener ~ ", " ~ req, "variables": {}}) }}
-{%- endfor %}
-{%- endfor %}
+    {%- endfor %}
+    {%- endfor %}
+{% elif rudeness == 'polite' %}
+    {%- for opener in openers %}
+    {%- for req in polite_requests %}
+{{ to_json({"text": opener ~ ", " ~ req ~ " per favore", "variables": {}}) }}
+{{ to_json({"text": opener ~ ", " ~ req ~ " Saresti così gentile?", "variables": {}}) }}
+    {%- endfor %}
+    {%- endfor %}
+{% else %} {# neutral #}
+    {%- for opener in openers %}
+    {%- for req in polite_requests %}
+{{ to_json({"text": opener ~ ", " ~ req, "variables": {}}) }}
+    {%- endfor %}
+    {%- endfor %}
+{% endif %}
 
 {# --- TIME SPECIFIC --- #}
-{# Note: Logic for time_of_day checks would go here if we were generating for specific contexts, 
-   but for general training data we generate all valid options. #}
+{% if rudeness != 'rude' %}
 {{ to_json({"text": "Buona mattina", "variables": {}}) }}
 {{ to_json({"text": "Buon pomeriggio", "variables": {}}) }}
 {{ to_json({"text": "Buona serata", "variables": {}}) }}
+{% endif %}

@@ -1,4 +1,4 @@
-{# VARIABLES: destination, time, date, origin, time_type #}
+{# VARIABLES: destination, time, date, origin, time_type, rudeness #}
 
 {%- set polite_openers = [
     "Vorrei", "Voglio", "Desidero", "Avrei bisogno di", "Mi serve", "Devo", "Potresti", "Puoi", "Sapresti", "Mi cerchi"
@@ -16,11 +16,22 @@
 {%- set numeric_prepositions = ["alle", "per le", "verso le", "intorno alle", "dopo le", "prima delle"] -%}
 
 {# --- PATTERN 1: SIMPLE DIRECT SEARCH (Voglio andare a Milano) --- #}
-{%- for opener in ["Voglio", "Vorrei", "Devo", "Posso"] %}
+{% if rudeness == 'rude' %}
+    {%- for opener in ["Muoviti,", "Sbrigati,", "Voglio un treno per", "Devo andare a"] %}
+{{ to_json({"text": opener ~ " " ~ destination, "variables": {"destination": destination}}) }}
+    {%- endfor %}
+    {{ to_json({"text": destination ~ ", ora!", "variables": {"destination": destination, "time": "ora"}}) }}
+{% elif rudeness == 'polite' %}
+    {%- for opener in ["Potrebbe gentilmente cercarmi un treno per", "Sarebbe così gentile da trovarmi un treno per", "Avrei la necessità di andare a"] %}
+{{ to_json({"text": opener ~ " " ~ destination ~ ", per favore?", "variables": {"destination": destination}}) }}
+    {%- endfor %}
+{% else %} {# neutral #}
+    {%- for opener in ["Voglio", "Vorrei", "Devo", "Posso"] %}
 {{ to_json({"text": opener ~ " andare a " ~ destination, "variables": {"destination": destination}}) }}
 {{ to_json({"text": opener ~ " partire per " ~ destination, "variables": {"destination": destination}}) }}
 {{ to_json({"text": opener ~ " raggiungere " ~ destination, "variables": {"destination": destination}}) }}
-{%- endfor %}
+    {%- endfor %}
+{% endif %}
 
 {# --- PATTERN 2: SEARCH WITH VERB + OBJECT (Vorrei cercare un treno per Milano) --- #}
 {%- for opener in polite_openers %}

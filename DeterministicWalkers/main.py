@@ -44,7 +44,19 @@ def main():
     # 2. Dialogue Generation
     if args.dialogues > 0:
         print(f"[Dialogue] Generating {args.dialogues} dialogues...")
-        dial_gen = DialogueGenerator(enhancer=enhancer)
+        
+        # Load distribution config if exists
+        dist_config = {}
+        dist_path = os.path.join(os.path.dirname(__file__), 'distribution_config.json')
+        if os.path.exists(dist_path):
+            try:
+                with open(dist_path, 'r', encoding='utf-8') as f:
+                    dist_config = json.load(f)
+                    print(f"[System] Loaded distribution config from {dist_path}")
+            except Exception as e:
+                print(f"Warning: Could not load distribution_config.json: {e}")
+
+        dial_gen = DialogueGenerator(enhancer=enhancer, distribution=dist_config)
         dialogues = dial_gen.generate_dialogues(count=args.dialogues)
         
         print(f"Saving {len(dialogues)} raw dialogues to {DIALOGUE_FILE}...")

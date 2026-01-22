@@ -1,2 +1,9 @@
-{# VARIABLES: question #}
+{% if rudeness == 'rude' %}
+{{ to_json({"text": question ~ ". Sbrigati a rispondere.", "variables": {}}) }}
+{{ to_json({"text": question ~ "... se ne sei capace.", "variables": {}}) }}
+{% elif rudeness == 'polite' %}
+{{ to_json({"text": "Mi scusi per la domanda insolita, ma " ~ question ~ "?", "variables": {}}) }}
+{{ to_json({"text": "Saprebbe gentilmente aiutarmi con questa curiosità? " ~ question ~ "?", "variables": {}}) }}
+{% else %} {# neutral #}
 {{ to_json({"text": question, "variables": {}}) }}
+{% endif %}

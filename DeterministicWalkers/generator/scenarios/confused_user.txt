@@ -1,0 +1,6 @@
+# Confused User Scenario
+greeting
+search + ui + complaint (ui)
+ui + complaint (ux)
+selection_purchase
+farewell

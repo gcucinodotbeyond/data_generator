@@ -1,36 +1,78 @@
-{# VARIABLES: train, class, aspect #}
+{# VARIABLES: train, class, aspect, rudeness #}
 
 {# --- TIME / TRAIN SELECTION --- #}
 {% if aspect == "train" %}
-{# Time-based #}
+{% if rudeness == 'rude' %}
+{{ to_json({"text": "Dammi quello delle " ~ train.dep, "variables": {"refinement": "time"}}) }}
+{{ to_json({"text": "Il treno delle " ~ train.dep, "variables": {"refinement": "time"}}) }}
+{{ to_json({"text": "Quello lì", "variables": {"refinement": "ordinal"}}) }}
+{% elif rudeness == 'polite' %}
+{{ to_json({"text": "Le dispiacerebbe selezionare quello delle " ~ train.dep ~ "?", "variables": {"refinement": "time"}}) }}
+{{ to_json({"text": "Preferirei gentilmente il treno delle " ~ train.dep, "variables": {"refinement": "time"}}) }}
+{% else %} {# neutral #}
 {{ to_json({"text": "No, preferisco quello delle " ~ train.dep, "variables": {"refinement": "time"}}) }}
 {{ to_json({"text": "Voglio prendere il treno delle " ~ train.dep, "variables": {"refinement": "time"}}) }}
 {{ to_json({"text": "Quello che parte alle " ~ train.dep ~ " va bene", "variables": {"refinement": "time"}}) }}
 {{ to_json({"text": "C'è posto su quello delle " ~ train.dep ~ "?", "variables": {"refinement": "time"}}) }}
+{% endif %}
 
 {# Ordinal-based #}
 {% if position_word %}
+{% if rudeness == 'rude' %}
+{{ to_json({"text": "Il " ~ position_word, "variables": {"refinement": "ordinal"}}) }}
+{{ to_json({"text": "Dammi il " ~ position_word, "variables": {"refinement": "ordinal"}}) }}
+{% elif rudeness == 'polite' %}
+{{ to_json({"text": "Sceglierei il " ~ position_word ~ " se possibile", "variables": {"refinement": "ordinal"}}) }}
+{{ to_json({"text": "Puntiamo sul " ~ position_word ~ ", grazie", "variables": {"refinement": "ordinal"}}) }}
+{% else %} {# neutral #}
 {{ to_json({"text": "Prendo il " ~ position_word, "variables": {"refinement": "ordinal"}}) }}
 {{ to_json({"text": "Il " ~ position_word, "variables": {"refinement": "ordinal"}}) }}
 {{ to_json({"text": "Voglio il " ~ position_word, "variables": {"refinement": "ordinal"}}) }}
 {{ to_json({"text": "Scegli il " ~ position_word ~ " risultato", "variables": {"refinement": "ordinal"}}) }}
 {% endif %}
 {% endif %}
+{% endif %}
 
 {# --- CLASS SELECTION --- #}
-{# --- CLASS SELECTION --- #}
 {% if aspect == "class" %}
+{% if rudeness == 'rude' %}
+{{ to_json({"text": "Muoviti ad aggiungermi la " ~ class, "variables": {"refinement": "class"}}) }}
+{{ to_json({"text": "La " ~ class, "variables": {"refinement": "class"}}) }}
+{% elif rudeness == 'polite' %}
+{{ to_json({"text": "Viaggerei volentieri in " ~ class, "variables": {"refinement": "class"}}) }}
+{{ to_json({"text": "In " ~ class ~ ", se possibile, grazie", "variables": {"refinement": "class"}}) }}
+{% else %} {# neutral #}
 {{ to_json({"text": "Viaggerò in " ~ class, "variables": {"refinement": "class"}}) }}
 {{ to_json({"text": "Prendo la " ~ class, "variables": {"refinement": "class"}}) }}
 {{ to_json({"text": "Preferisco la " ~ class, "variables": {"refinement": "class"}}) }}
 {{ to_json({"text": "Voglio la " ~ class, "variables": {"refinement": "class"}}) }}
-{{ to_json({"text": "In " ~ class ~ " per favore", "variables": {"refinement": "class"}}) }}
+{% endif %}
 {% endif %}
 
 {# --- TRAIN + CLASS SELECTION --- #}
 {% if aspect == "both" %}
+{% if rudeness == 'rude' %}
+{{ to_json({"text": train.dep ~ " in " ~ class_name, "variables": {"refinement": "both"}}) }}
+{{ to_json({"text": "Scegli " ~ train.dep ~ " in " ~ class_name, "variables": {"refinement": "both"}}) }}
+{% else %}
 {{ to_json({"text": "Quello delle " ~ train.dep ~ " in " ~ class_name, "variables": {"refinement": "both"}}) }}
 {{ to_json({"text": "Voglio prendere quello delle " ~ train.dep ~ " in " ~ class_name, "variables": {"refinement": "both"}}) }}
 {{ to_json({"text": "Va bene quello delle " ~ train.dep ~ " ma in " ~ class_name, "variables": {"refinement": "both"}}) }}
 {{ to_json({"text": "C'è posto su quello delle " ~ train.dep ~ " in " ~ class_name ~ "?", "variables": {"refinement": "both"}}) }}
+{% endif %}
+{% endif %}
+{# --- SEAT SELECTION --- #}
+{% if aspect == "seat" %}
+{% if rudeness == 'rude' %}
+{{ to_json({"text": "Dammelo al finestrino", "variables": {"refinement": "seat", "seat": "window"}}) }}
+{{ to_json({"text": "Corridoio", "variables": {"refinement": "seat", "seat": "aisle"}}) }}
+{% elif rudeness == 'polite' %}
+{{ to_json({"text": "Preferirei gentilmente il finestrino", "variables": {"refinement": "seat", "seat": "window"}}) }}
+{{ to_json({"text": "Sceglierei il corridoio, grazie", "variables": {"refinement": "seat", "seat": "aisle"}}) }}
+{% else %} {# neutral #}
+{{ to_json({"text": "Vorrei il finestrino", "variables": {"refinement": "seat", "seat": "window"}}) }}
+{{ to_json({"text": "Meglio il corridoio", "variables": {"refinement": "seat", "seat": "aisle"}}) }}
+{{ to_json({"text": "Finestrino, grazie", "variables": {"refinement": "seat", "seat": "window"}}) }}
+{{ to_json({"text": "Prendo un posto nel corridoio", "variables": {"refinement": "seat", "seat": "aisle"}}) }}
+{% endif %}
 {% endif %}

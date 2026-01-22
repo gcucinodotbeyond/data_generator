@@ -1,0 +1,20 @@
+{
+    "rudeness_distribution": {
+        "polite": 0.2,
+        "neutral": 0.3,
+        "rude": 0.5
+    },
+    "scenario_distribution": {
+        "default": 0.2,
+        "minimal": 0.1,
+        "lost_user": 0.1,
+        "curious_traveler": 0.1,
+        "frustrated_shopper": 0.1,
+        "confused_user": 0.1,
+        "complaint": 0.1,
+        "polite_purchase": 0.1,
+        "ui_heavy": 0.05,
+        "window_shopper": 0.05,
+        "chatty_shopper": 0.0
+    }
+}

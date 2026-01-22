@@ -1,5 +1,5 @@
+greeting
 search
 complaint
-ui
 selection_purchase
 farewell

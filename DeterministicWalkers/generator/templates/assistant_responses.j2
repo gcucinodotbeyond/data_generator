@@ -48,6 +48,22 @@
     {{ to_json({"text": "Ok. Posso aiutarti con altro?", "variables": {}}) }}
 {%- endif %}
 
+{# --- SEAT PROMPT --- #}
+{%- if category == "seat_prompt" %}
+    {{ to_json({"text": "Preferisci un posto al finestrino o vicino al corridoio?", "variables": {}}) }}
+    {{ to_json({"text": "Vuoi sederti al finestrino o preferisci il corridoio?", "variables": {}}) }}
+    {{ to_json({"text": "Per questo treno puoi scegliere il posto. Finestrino o corridoio?", "variables": {}}) }}
+{%- endif %}
+
+{# --- SEAT ACK --- #}
+{%- if category == "seat_ack" %}
+    {% if seat_type == "window" %}
+    {{ to_json({"text": "Posto al finestrino selezionato.", "variables": {"seat_type": "window"}}) }}
+    {% else %}
+    {{ to_json({"text": "Corridoio selezionato.", "variables": {"seat_type": "aisle"}}) }}
+    {% endif %}
+{%- endif %}
+
 {# --- SELECTION REFINEMENT --- #}
 {%- if category == "selection_refinement" %}
     {# Requires: dep_time #}
@@ -114,4 +130,12 @@
     {{ to_json({"text": "😔 Mi dispiace, ma posso aiutarti solo con informazioni sui treni e l'acquisto di biglietti. 😊 Posso cercarti un treno invece!", "variables": {}}) }}
     {{ to_json({"text": "😔 Non posso aiutarti con questo. Io mi occupo di treni e biglietti ferroviari. 🙂 Vuoi cercare una soluzione di viaggio?", "variables": {}}) }}
     {{ to_json({"text": "🤔 Mi spiace, non ho informazioni su questo argomento. Sono specializzata in viaggi ferroviari. Posso aiutarti a trovare un treno?", "variables": {}}) }}
+{%- endif %}
+
+{# --- COMPLAINT RESPONSE --- #}
+{%- if category == "complaint_response" %}
+    {{ to_json({"text": "Mi dispiace davvero molto per il disagio. Mi scuso a nome del servizio. Posso aiutarti a trovare una soluzione alternativa?", "variables": {}}) }}
+    {{ to_json({"text": "Capisco perfettamente la sua frustrazione e mi scuso. Sto cercando di fare il possibile per aiutarla con il suo viaggio.", "variables": {}}) }}
+    {{ to_json({"text": "Ci scusiamo per l'inconveniente. Purtroppo capitano dei problemi tecnici o ritardi indipendenti dalla mia volontà. Come posso rimediare?", "variables": {}}) }}
+    {{ to_json({"text": "Mi spiace che stia riscontrando queste difficoltà. Sono qui per cercare di rendere il processo il più semplice possibile. Continuiamo?", "variables": {}}) }}
 {%- endif %}

@@ -1,0 +1,5 @@
+# Curious Traveler Scenario
+greeting + qa (pets)
+search + qa (services)
+selection_purchase + qa (luggage)
+farewell

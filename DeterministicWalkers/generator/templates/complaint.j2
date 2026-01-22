@@ -1,0 +1,96 @@
+{# VARIABLES: rudeness #}
+
+{%- set rude_phrases = [
+    "Mamma mia non funziona mai nulla siete degli idioti",
+    "Siete una manica di incompetenti, non va niente!",
+    "Che schifo di servizio, mi sono stancato di voi",
+    "Siete vergognosi, ogni volta è la stessa storia",
+    "Non sapete fare il vostro lavoro, vergogna!"
+] -%}
+
+{%- set neutral_phrases = [
+    "Guarda che non sta funzionando, uff",
+    "Ma perché è così difficile? Non capisco",
+    "Ancora problemi? È incredibile",
+    "Si è bloccato tutto di nuovo...",
+    "Non riesco a fare il biglietto, che noia"
+] -%}
+
+{%- set polite_phrases = [
+    "Mi sembra non stia funzionando...",
+    "Scusa, ma sto riscontrando qualche difficoltà",
+    "Temo ci sia un problemino tecnico",
+    "Non sono sicuro di come procedere, sembra bloccato",
+    "Mi scusi, ma forse la macchina ha un guasto?"
+] -%}
+
+{# TOPIC: Delays / Strikes #}
+{%- set rude_service = [
+    "Sempre ritardi! Siete dei falliti",
+    "Ancora sciopero? Ma andate a lavorare sul serio!",
+    "Treni che non passano mai, siete ridicoli"
+] -%}
+
+{%- set neutral_service = [
+    "C'è sempre sciopero, non se ne può più",
+    "Un altro ritardo? Devo arrivare puntuale",
+    "I treni oggi sono un disastro"
+] -%}
+
+{%- set polite_service = [
+    "Purtroppo vedo che ci sono molti ritardi oggi",
+    "Mi spiace, ma lo sciopero mi sta creando problemi",
+    "Speravo che oggi non ci fossero ritardi"
+] -%}
+
+{# TOPIC: Prices #}
+{%- set rude_price = [
+    "Prezzi da furto, siete dei ladri!",
+    "Ma vi sembra il caso di far pagare così tanto? Ladri",
+    "Non pago queste cifre per un servizio così scadente"
+] -%}
+
+{%- set neutral_price = [
+    "Il biglietto costa troppo, non è giusto",
+    "Prezzi assurdi per questo viaggio",
+    "Caspita, è aumentato tutto così tanto?"
+] -%}
+
+{%- set polite_price = [
+    "Il costo è un po' più alto di quanto mi aspettassi",
+    "Non pensavo costasse così tanto viaggiare",
+    "Esistono soluzioni un po' più economiche?"
+] -%}
+
+{# TOPIC: Machine / UI difficulty #}
+{%- set rude_ui = [
+    "Questa macchina è una trappola, non funziona niente",
+    "Chi ha progettato questo schermo? È un idiota",
+    "Non si capisce nulla, cambiate interfaccia!"
+] -%}
+
+{%- set neutral_ui = [
+    "È complicatissimo usare questo sistema",
+    "Non riesco a trovare il tasto giusto, uff",
+    "Questo schermo non risponde bene"
+] -%}
+
+{%- set polite_ui = [
+    "Mi trovo un po' in difficoltà con questa schermata",
+    "Non sono molto pratico con queste macchinette",
+    "Forse sto sbagliando io, ma non riesco a selezionare"
+] -%}
+
+{% if rudeness == 'rude' %}
+    {% for p in rude_phrases + rude_service + rude_price + rude_ui %}
+{{ to_json({"text": p, "variables": {"topic": "complaint"}}) }}
+    {% endfor %}
+{% elif rudeness == 'polite' %}
+    {% for p in polite_phrases + polite_service + polite_price + polite_ui %}
+{{ to_json({"text": p, "variables": {"topic": "complaint"}}) }}
+    {% endfor %}
+{% else %}
+    {% for p in neutral_phrases + neutral_service + neutral_price + neutral_ui %}
+{{ to_json({"text": p, "variables": {"topic": "complaint"}}) }}
+    {% endfor %}
+{% endif %}
