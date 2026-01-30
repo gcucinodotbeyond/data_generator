@@ -1,0 +1,5 @@
+greeting
+qa
+qa
+qa
+farewell

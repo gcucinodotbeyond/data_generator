@@ -135,10 +135,10 @@ Example output:
         
         return []
 
-    def paraphrase_utterance(self, text, intent, persona="polite"):
+    def paraphrase_utterance(self, text, intent, persona="polite", verbose="standard"):
         """
         Rewrites a single utterance using LLM to increase variety, 
-        adapting the tone to the persona (polite vs. rude).
+        adapting the tone to the persona (polite vs. rude) and verbosity.
         """
         persona_instruction = "Mantieni un tono gentile, educato e cordiale."
         if persona == "rude":
@@ -146,9 +146,16 @@ Example output:
         elif persona == "neutral":
             persona_instruction = "Usa un tono naturale e diretto, senza particolari cortesie ma senza essere sgarbato. Una comunicazione standard."
 
+        verbose_instruction = "Usa una lunghezza normale per la risposta."
+        if verbose == "concise":
+            verbose_instruction = "Sii estremamente conciso, quasi come un telegramma. Usa il minimo numero di parole necessario per trasmettere il messaggio."
+        elif verbose == "verbose":
+            verbose_instruction = "Sii prolisso e logorroico. Aggiungi dettagli, commenti personali, o riflessioni superflue mantenendo il significato originale."
+
         prompt = f"""
 Riscrivi la seguente frase in italiano in modo naturale e colloquiale, mantenendo ESATTAMENTE lo stesso significato e tutti i dati (orari, stazioni, prezzi).
 {persona_instruction}
+{verbose_instruction}
 Non aggiungere commenti, non rispondere alla frase, scrivi SOLO la parafrasi.
 
 Frase originale: "{text}"

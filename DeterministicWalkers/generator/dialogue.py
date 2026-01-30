@@ -32,24 +32,27 @@ class DialogueGenerator:
             self.origins = ["Milano Centrale", "Roma Termini", "Napoli Centrale"]
             self.destinations = ["Roma", "Milano", "Napoli", "Firenze"]
 
-        self.dates = ["oggi", "domani", "venerdì", "il 25 aprile"]
+        self.dates = ["oggi", "per oggi", "per domani", "domani", "sabato", "domenica prossima", "il 15 del mese", "per venerdì"]
         self.times = ["mattina", "pomeriggio", "sera", "10:00", "15:30", "subito"]
         
         self.refusal_reasons = ["too_expensive", "too_late", "wrong_type"]
 
-        # Load QA Pairs
-        qa_path = os.path.join(os.path.dirname(__file__), '..', 'resources', 'qa_pairs.json')
+        # Load QA Pairs (Strictly use classified LLM version)
+        qa_path = os.path.join(os.path.dirname(__file__), '..', 'qa', 'qa_classified_llm.json')
         self.qa_pairs = []
         try:
             if os.path.exists(qa_path):
                 with open(qa_path, 'r', encoding='utf-8') as f:
                     self.qa_pairs = json.load(f)
+                print(f"[Dialogue] Loaded {len(self.qa_pairs)} classified QA pairs from {os.path.basename(qa_path)}")
+            else:
+                print(f"Warning: Classified QA file not found at {qa_path}")
         except Exception as e:
-            print(f"Warning: Could not load qa_pairs.json ({e}).")
+            print(f"Warning: Could not load QA pairs ({e}).")
 
         # Load OOD Questions (Refusals)
-        starters_path = os.path.join(os.path.dirname(__file__), '..', 'resources', 'refusal_starters.json')
-        followups_path = os.path.join(os.path.dirname(__file__), '..', 'resources', 'refusal_followups.json')
+        starters_path = os.path.join(os.path.dirname(__file__), '..', 'resources', 'ood_starters.json')
+        followups_path = os.path.join(os.path.dirname(__file__), '..', 'resources', 'ood_followups.json')
         self.ood_starters = []
         self.ood_followups = []
         try:
@@ -89,6 +92,15 @@ class DialogueGenerator:
         else:
             rudeness = random.choice(["polite", "rude", "neutral"])
 
+        # Verbose selection
+        verbose_dist = self.distribution.get("verbose_distribution", {})
+        if verbose_dist:
+            population = list(verbose_dist.keys())
+            weights = list(verbose_dist.values())
+            verbose = random.choices(population, weights=weights, k=1)[0]
+        else:
+            verbose = random.choice(["concise", "standard", "verbose"])
+
         return {
             "run_id": run_id,
             "origin": origin,
@@ -99,6 +111,7 @@ class DialogueGenerator:
             "class": random.choice(["Standard", "Prima", "Business"]),
             "tone": random.choice(["formal", "informal"]), # Used by templates if supported
             "rudeness": rudeness, # Weighted or random choice
+            "verbose": verbose, # Weighted or random choice
             
             # Internal tracking
             "generated_messages": [{"role": "system", "content": "{SYSTEM_PROMPT}"}],
@@ -139,8 +152,13 @@ class DialogueGenerator:
             prob = self.enhancer.paraphrase_probability if hasattr(self.enhancer, 'paraphrase_probability') else 0.1
             
             if random.random() < prob:
-                print(f"[LLM] Paraphrasing intent '{intent}' (persona: {context.get('rudeness', 'polite')}): {result['text'][:50]}...")
-                new_text = self.enhancer.paraphrase_utterance(result['text'], intent, persona=context.get('rudeness', 'polite'))
+                print(f"[LLM] Paraphrasing intent '{intent}' (persona: {context.get('rudeness', 'polite')}, verbose: {context.get('verbose', 'standard')}): {result['text'][:50]}...")
+                new_text = self.enhancer.paraphrase_utterance(
+                    result['text'], 
+                    intent, 
+                    persona=context.get('rudeness', 'polite'),
+                    verbose=context.get('verbose', 'standard')
+                )
                 if new_text and new_text != result['text']:
                     result['text'] = new_text
                     result['generator'] = 'llm_paraphrased'
@@ -214,21 +232,117 @@ class DialogueGenerator:
         }
         return ctx_snapshot
 
+    def _inject_system_context(self, context, meta_contexts):
+        """
+        Inject XML-formatted system message based on current context state
+        Called after key interactions (tool responses, state changes)
+        """
+        from generator.context_formatter import ContextFormatter
+        
+        # Create snapshot params
+        snapshot_params = {
+            "origin": context["origin"],
+            "ui_state": json.dumps(context["ui_state"]),
+            "trains_array": json.dumps(context["current_trains"]),
+            "ctx_time": context["ctx_time"],
+            "date": context["ctx_date"],
+            "ticket_info": json.dumps(context.get("ticket_info")) if context.get("ticket_info") else None
+        }
+        
+        # Format as XML
+        system_content = ContextFormatter.format_context(snapshot_params)
+        
+        # Add system message
+        context["generated_messages"].append({
+            "role": "system",
+            "content": system_content
+        })
+        
+        # Track in meta_contexts
+        meta_contexts.append(self._snapshot_meta(context, len(context["generated_messages"])))
+
+    def _get_contextual_qa(self, ctx):
+        """Selects a QA pair based on the current context (train type, stations, UI state)."""
+        if not self.qa_pairs:
+            return None, None
+            
+        # If we have legacy format (list of lists/tuples), just pick random
+        if self.qa_pairs and isinstance(self.qa_pairs[0], (list, tuple)):
+            return random.choice(self.qa_pairs)
+
+        candidates = []
+        
+        # Determine context attributes
+        target_train = ctx.get("target_train")
+        train_type = target_train["type"] if target_train else None
+        origin = ctx.get("origin")
+        destination = ctx.get("destination")
+        ui_state = ctx.get("ui_state", {}).get("state", "idle")
+        
+        # Scoring system
+        scored_candidates = []
+        for item in self.qa_pairs:
+            score = 0
+            metadata = item.get("metadata", {})
+            entities = [e.lower() for e in metadata.get("entities", [])]
+            tags = metadata.get("contextual_tags", [])
+            
+            # Match Train Type
+            if train_type:
+                for tt in ["Frecciarossa", "Intercity", "Italo", "Regionale"]:
+                    if tt.lower() in train_type.lower() and tt.lower() in entities:
+                        score += 15
+            
+            # Match Stations
+            if origin and origin.lower() in entities:
+                score += 10
+            if destination and destination.lower() in entities:
+                score += 10
+                
+            # Contextual Tags matching UI State
+            if ui_state in ["results", "choosingSeat"]:
+                if "requires_train_type" in tags or "requires_ticket_type" in tags:
+                    score += 12
+            elif ui_state == "purchased":
+                if "general_info" in tags or "location_specific" in tags:
+                    score += 8
+            
+            # Global fallback
+            if "general_info" in tags:
+                score += 2
+                
+            scored_candidates.append((score, item))
+            
+        # Sort by score and pick from top-N high-scoring ones
+        scored_candidates.sort(key=lambda x: x[0], reverse=True)
+        
+        # Filter items with at least some relevance if possible
+        high_score = scored_candidates[0][0]
+        if high_score > 0:
+            threshold = max(high_score * 0.5, 1)
+            pool = [item for score, item in scored_candidates if score >= threshold]
+            choice = random.choice(pool[:10]) # Top 10 suitable
+        else:
+            choice = random.choice(self.qa_pairs)
+            
+        return choice.get("question"), choice.get("answer"), choice.get("metadata", {}).get("labels", [{}])[0].get("subcategory", "general")
+
     def _try_interruption(self, context):
         """
         With some probability, inserts a QA or UI side-track.
         Updates context['generated_messages'] directly.
         Returns True if interrupted (and resolved), False otherwise.
         """
-        if random.random() > 0.3: # 30% chance of interruption?
+        if random.random() > 0.3: # 30% chance of interruption
             return False
             
-        interruption_type = random.choice(["qa", "qa", "ui", "ood"]) # Added ood
+        interruption_type = random.choice(["qa", "qa", "ui", "ood"]) 
         
         if interruption_type == "qa":
-            if self.qa_pairs:
-                q, a = random.choice(self.qa_pairs)
-                self._add_turn(context, "user", q)
+            q, a, topic = self._get_contextual_qa(context)
+            if q and a:
+                u_text = self._render_utterance("qa", context, question=q, topic=topic)
+                self._add_turn(context, "user", u_text)
                 self._add_turn(context, "assistant", a)
                 return True
             return False
@@ -300,6 +414,9 @@ class DialogueGenerator:
         resp_searching = self._render_utterance("assistant_responses", ctx, category="searching")
         self._add_turn(ctx, "assistant", resp_searching, tool_calls=[tool_call], tool_output=resp_json)
         
+        # Inject system context with train results
+        self._inject_system_context(ctx, meta_contexts)
+        
         # Asst Result msg
         n_trains = len(ctx["current_trains"])
         if n_trains > 0:
@@ -310,16 +427,15 @@ class DialogueGenerator:
             resp_empty = self._render_utterance("assistant_responses", ctx, category="search_empty", destination=ctx['destination'])
             self._add_turn(ctx, "assistant", resp_empty)
             # End here if no trains
-            meta_contexts.append(self._snapshot_meta(ctx, len(ctx["generated_messages"])))
             return False # Stop flow if empty
 
-        meta_contexts.append(self._snapshot_meta(ctx, len(ctx["generated_messages"])))
         return True
 
     def _step_qa(self, ctx, meta_contexts):
-        if self.qa_pairs:
-            q, a = random.choice(self.qa_pairs)
-            self._add_turn(ctx, "user", q)
+        q, a, topic = self._get_contextual_qa(ctx)
+        if q and a:
+            u_text = self._render_utterance("qa", ctx, question=q, topic=topic)
+            self._add_turn(ctx, "user", u_text)
             self._add_turn(ctx, "assistant", a)
             meta_contexts.append(self._snapshot_meta(ctx, len(ctx["generated_messages"])))
 
@@ -486,7 +602,8 @@ class DialogueGenerator:
         handshake = self._render_utterance("assistant_responses", ctx, category="handshake", price=target_train['price'])
         self._add_turn(ctx, "assistant", f"{current_response} {handshake}".strip())
         
-        u_yes = self._render_utterance("confirmation", ctx, time=None, class_type=None, destination=None)
+        overrides = {"time": None, "class": None, "destination": None}
+        u_yes = self._render_utterance("confirmation", ctx, **overrides)
         self._add_turn(ctx, "user", u_yes)
 
         # Single Purchase Call
@@ -514,7 +631,9 @@ class DialogueGenerator:
         
         ctx["ticket_info"] = resp_data
         ctx["ui_state"] = {"state": "purchased", "can": {"next": False, "prev": False, "back": False}}
-        meta_contexts.append(self._snapshot_meta(ctx, len(ctx["generated_messages"])))
+        
+        # Inject system context with ticket info
+        self._inject_system_context(ctx, meta_contexts)
 
     def _step_complaint(self, ctx, meta_contexts):
         u_complaint = self._render_utterance("complaint", ctx)
@@ -633,6 +752,7 @@ class DialogueGenerator:
                 "seed": random.randint(1000,999999), 
                 "run_id": ctx["run_id"],
                 "rudeness": ctx["rudeness"],
+                "verbose": ctx.get("verbose", "standard"),
                 "contexts": meta_contexts
             }
         }

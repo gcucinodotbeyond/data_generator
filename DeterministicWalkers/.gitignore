@@ -139,3 +139,9 @@ cython_debug/
 .idea/
 *.swp
 *.swo
+
+# Generated output
+output.json
+verification_output.txt
+
+stani_txt/

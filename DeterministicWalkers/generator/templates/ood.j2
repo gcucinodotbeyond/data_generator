@@ -1,9 +1,21 @@
-{% if rudeness == 'rude' %}
+{% if verbose == 'concise' %}
+{{ to_json({"text": question, "variables": {}}) }}
+{% elif verbose == 'verbose' %}
+    {% if rudeness == 'rude' %}
+{{ to_json({"text": "Senti un po', " ~ question ~ "? E muoviti a rispondere che non ho tempo da perdere con te.", "variables": {}}) }}
+    {% elif rudeness == 'polite' %}
+{{ to_json({"text": "Spero di non sembrare indiscreto, ma mi chiedevo se potessi rispondermi a questa curiosità: " ~ question ~ "?", "variables": {}}) }}
+    {% else %}
+{{ to_json({"text": "Stavo pensando a una cosa fuori tema e volevo chiederti: " ~ question ~ "?", "variables": {}}) }}
+    {% endif %}
+{% else %} {# standard #}
+    {% if rudeness == 'rude' %}
 {{ to_json({"text": question ~ ". Sbrigati a rispondere.", "variables": {}}) }}
 {{ to_json({"text": question ~ "... se ne sei capace.", "variables": {}}) }}
-{% elif rudeness == 'polite' %}
+    {% elif rudeness == 'polite' %}
 {{ to_json({"text": "Mi scusi per la domanda insolita, ma " ~ question ~ "?", "variables": {}}) }}
 {{ to_json({"text": "Saprebbe gentilmente aiutarmi con questa curiosità? " ~ question ~ "?", "variables": {}}) }}
-{% else %} {# neutral #}
+    {% else %} {# neutral #}
 {{ to_json({"text": question, "variables": {}}) }}
+    {% endif %}
 {% endif %}

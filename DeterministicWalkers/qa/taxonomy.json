@@ -1,0 +1,530 @@
+{
+    "Biglietteria e Tariffe": {
+        "Acquisto e Pagamenti": [
+            "acquisto",
+            "pagare",
+            "fattura",
+            "comprare",
+            "acquistare",
+            "pagamento",
+            "pagamenti",
+            "prezzo",
+            "prezzi",
+            "tariffa",
+            "metodo",
+            "metodi",
+            "contanti",
+            "carta di credito",
+            "bancomat",
+            "bonifico",
+            "euro"
+        ],
+        "Abbonamenti e Carnet": [
+            "abbonamento",
+            "abbonamenti",
+            "carnet"
+        ],
+        "Offerte e Sconti": [
+            "sconto",
+            "sconti",
+            "offerta",
+            "offerte",
+            "bonus",
+            "promozione",
+            "promo",
+            "speciale",
+            "riduzione",
+            "convenzione",
+            "convenzioni",
+            "promozionali"
+        ],
+        "Formati e Cessione": [
+            "formato",
+            "digitale",
+            "cartaceo",
+            "nominativo",
+            "cessione",
+            "cedere",
+            "trasferire",
+            "titolarità",
+            "stampare",
+            "stampa",
+            "biglietto",
+            "biglietti"
+        ],
+        "Pass Internazionali": [
+            "interrail",
+            "eurail",
+            "pass",
+            "thello",
+            "db-öbb",
+            "internazionale",
+            "estero",
+            "europa",
+            "global pass"
+        ],
+        "Smarrimento e Furto": [
+            "smarrito",
+            "smarriti",
+            "ritrovati",
+            "rubato",
+            "rubati",
+            "furto",
+            "smarrimento",
+            "dimenticato",
+            "dimenticati",
+            "oggetti",
+            "persi"
+        ]
+    },
+    "Canali di Vendita": {
+        "Canali Fisici": [
+            "tabaccaio",
+            "ricevitoria",
+            "sisal",
+            "lottomatica",
+            "puntolis",
+            "biglietteria",
+            "agenzia",
+            "agenzie",
+            "rivendita",
+            "edicola",
+            "canale",
+            "canali",
+            "puntovendita"
+        ],
+        "Self Service": [
+            "self service",
+            "self-service",
+            "biglietteria automatica",
+            "macchina",
+            "automatica",
+            "resto",
+            "emettitrice"
+        ],
+        "Canali Digitali": [
+            "app",
+            "mobile",
+            "smart",
+            "tablet",
+            "smartphone",
+            "sito",
+            "online",
+            "sito web",
+            "portale",
+            "telematico",
+            "pnr",
+            "qr code",
+            "ticketless",
+            "codice",
+            "postoclick",
+            "postoblu"
+        ]
+    },
+    "Carte e Fedeltà": {
+        "Livelli e Programma": [
+            "argento",
+            "oro",
+            "platino",
+            "fedeltà",
+            "infinito",
+            "verde",
+            "blu",
+            "programma"
+        ],
+        "Punti e Saldo": [
+            "punti",
+            "saldo",
+            "estratto conto",
+            "raccolta"
+        ],
+        "Gestione Card": [
+            "carta",
+            "cartafreccia",
+            "card",
+            "tessera",
+            "fisico",
+            "duplicato",
+            "smartcard",
+            "smart card"
+        ]
+    },
+    "Relazione e Reclami": {
+        "Uffici Reclami Regionali": [
+            "ufficio",
+            "sede",
+            "indirizzo",
+            "reclami",
+            "reclamo",
+            "reclamare",
+            "regione",
+            "piemonte",
+            "sicilia",
+            "campania",
+            "puglia",
+            "lazio",
+            "lombardia",
+            "veneto",
+            "toscana",
+            "calabria",
+            "basilicata",
+            "sardegna",
+            "marche",
+            "umbria",
+            "abruzzo",
+            "molise",
+            "liguria",
+            "trento",
+            "bolzano",
+            "valle d'aosta",
+            "aosta",
+            "venezia",
+            "milano",
+            "torino",
+            "firenze",
+            "napoli",
+            "bari",
+            "potenza",
+            "ancona",
+            "perugia",
+            "l'aquila"
+        ],
+        "Conciliazione e Diritti": [
+            "conciliazione",
+            "associazioni",
+            "associazione",
+            "consumatori",
+            "autorità",
+            "regolazione",
+            "art",
+            "diritti",
+            "diritto",
+            "passeggero",
+            "commissione",
+            "conciliatore",
+            "conciliatori",
+            "eguaglianza",
+            "imparzialità"
+        ],
+        "Feedback e Contatti": [
+            "segnalazione",
+            "feedback",
+            "contattare",
+            "assistenza clienti",
+            "chiamare",
+            "telefono",
+            "numero verde",
+            "call center",
+            "informazioni",
+            "presentare",
+            "presentazione",
+            "modulo",
+            "risposta",
+            "inviare",
+            "ricevere"
+        ]
+    },
+    "Gruppo FS e Storia": {
+        "Società del Gruppo": [
+            "rfi",
+            "mercitalia",
+            "busitalia",
+            "italferr",
+            "fse",
+            "fs sistemi urbani",
+            "fs park",
+            "fspark",
+            "grandistazioni"
+        ],
+        "Storia e Fondazione": [
+            "storia",
+            "epoca",
+            "storico",
+            "storici",
+            "fondazione",
+            "fondazione fs",
+            "giolitti",
+            "unita",
+            "bianchi",
+            "gentile",
+            "inaugurata",
+            "inaugurazione",
+            "prima ferrovia"
+        ],
+        "Sistemi e Tecnologia": [
+            "ertms",
+            "segnalamento",
+            "tecnologia",
+            "innovazione",
+            "sistema"
+        ]
+    },
+    "Rimborsi e Modifiche": {
+        "Rimborsi e Indennizzi": [
+            "rimborso",
+            "rimborsi",
+            "indennizzo",
+            "indennizzi",
+            "indennità",
+            "ritiro"
+        ],
+        "Modifiche e Cambi": [
+            "cambiare",
+            "cambio",
+            "modificare",
+            "modifica",
+            "modifiche"
+        ]
+    },
+    "Servizi e Comfort": {
+        "Lounge e Sale": [
+            "lounge",
+            "club",
+            "sala",
+            "frecciaclub",
+            "freccialounge",
+            "welcome"
+        ],
+        "Ristorazione": [
+            "cibo",
+            "bevande",
+            "bistrò",
+            "ristorante",
+            "ristorazione",
+            "bar",
+            "area meeting",
+            "pasto",
+            "acqua",
+            "caffè",
+            "alimentari",
+            "intolleranze"
+        ],
+        "Entertainment e Web": [
+            "wifi",
+            "wi-fi",
+            "frecciaplay",
+            "portale",
+            "connessione",
+            "film",
+            "musica",
+            "podcast",
+            "libri",
+            "edicola",
+            "news",
+            "sky",
+            "weshort"
+        ],
+        "Parcheggi": [
+            "parcheggio",
+            "parcheggi",
+            "parcheggiare",
+            "auto",
+            "fspark",
+            "fs park",
+            "parkinstation",
+            "p-pass",
+            "parcheggiare",
+            "napoli afragola"
+        ]
+    },
+    "Informazioni Generali": {
+        "Definizioni": [
+            "cos'è",
+            "cosa significa",
+            "cosa s'intende",
+            "cos'erano",
+            "definizione",
+            "spiegazione",
+            "differenza",
+            "cosa sono"
+        ],
+        "Azienda e Gruppo": [
+            "trenitalia",
+            "fs",
+            "ferrovie dello stato",
+            "gruppo fs",
+            "società",
+            "azienda",
+            "principio",
+            "etica",
+            "missione",
+            "obiettivi",
+            "ferrovie"
+        ],
+        "Normative e Contratti": [
+            "contratto",
+            "servizio",
+            "condizioni",
+            "regolamento",
+            "normativa",
+            "normative",
+            "obblighi",
+            "responsabilità",
+            "legge",
+            "leggi",
+            "articolo",
+            "d.p.r.",
+            "d.lgs",
+            "decreto",
+            "legislazione",
+            "disciplina",
+            "norme"
+        ]
+    },
+    "Personale e Sicurezza": {
+        "Personale di Bordo": [
+            "personale",
+            "controllore",
+            "capotreno",
+            "poteri",
+            "agenti",
+            "assistenza",
+            "board",
+            "assistente"
+        ],
+        "Sicurezza e Comportamento": [
+            "sicurezza",
+            "vietato",
+            "divieto",
+            "pericolo",
+            "pericoli",
+            "emergenza",
+            "emergenze",
+            "emergenza",
+            "comportamento",
+            "contraffatto",
+            "alterato",
+            "rivendere",
+            "questuanti",
+            "identità",
+            "documento",
+            "documenti",
+            "riconoscimento",
+            "militari",
+            "segnali",
+            "segnalamento"
+        ]
+    },
+    "Assistenza e Disabilità": {
+        "Mobilità Ridotta": [
+            "disabili",
+            "disabilità",
+            "disability",
+            "ciechi",
+            "invalidi",
+            "mobilità ridotta",
+            "blu",
+            "sala blu",
+            "anmic",
+            "anmil"
+        ],
+        "Supporto e LIS": [
+            "assistenza",
+            "lis",
+            "video-interpretariato",
+            "sordomuti",
+            "accompagnatore",
+            "accompagnamento",
+            "accompagnamenti"
+        ]
+    },
+    "Trasporto Speciale": {
+        "Animali": [
+            "cane",
+            "animali",
+            "animale",
+            "gatto",
+            "trasportino"
+        ],
+        "Bagagli e Bici": [
+            "bici",
+            "bicicletta",
+            "bagagli",
+            "trasporto",
+            "dimensioni",
+            "caricare",
+            "ingombro"
+        ]
+    },
+    "Treni e Viaggio": {
+        "Tipologia Treni": [
+            "intercity",
+            "frecciarossa",
+            "regionale",
+            "regionali",
+            "frecciargento",
+            "frecciabianca",
+            "eurocity",
+            "pendolino",
+            "frecce",
+            "milite ignoto",
+            "ignoto"
+        ],
+        "Stato Circolazione": [
+            "ritardo",
+            "soppressione",
+            "sciopero",
+            "scioperi",
+            "fermata",
+            "stazione",
+            "stazioni",
+            "binario",
+            "orari",
+            "coincidenza",
+            "transito"
+        ],
+        "Esperienza Viaggio": [
+            "viaggio",
+            "viaggiare",
+            "velocità",
+            "posto",
+            "classe",
+            "livello",
+            "bordo",
+            "prenotazione",
+            "carrozza",
+            "viaggiatori"
+        ]
+    },
+    "Agevolazioni Speciali": {
+        "Famiglie e Minori": [
+            "bambini",
+            "ragazzi",
+            "minori",
+            "figlio",
+            "scuole",
+            "famiglia",
+            "bimbi"
+        ],
+        "Gruppi e Comitive": [
+            "gruppo",
+            "comitive",
+            "scuole",
+            "scuolaintreno",
+            "comitiva"
+        ],
+        "Altre Riduzioni": [
+            "elettori",
+            "concessione",
+            "agevolazione",
+            "agevolazioni",
+            "gratuito",
+            "gratis",
+            "forze armate",
+            "polizia"
+        ]
+    },
+    "Sanzioni e Controlli": {
+        "Multe e Verbali": [
+            "multa",
+            "multe",
+            "sanzione",
+            "sanzioni",
+            "multato",
+            "verbale",
+            "regolarizzazione",
+            "regolarizzato",
+            "contestare"
+        ]
+    }
+}

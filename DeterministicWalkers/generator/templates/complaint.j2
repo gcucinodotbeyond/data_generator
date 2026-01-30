@@ -1,4 +1,4 @@
-{# VARIABLES: rudeness #}
+{# VARIABLES: rudeness, verbose #}
 
 {%- set rude_phrases = [
     "Mamma mia non funziona mai nulla siete degli idioti",
@@ -81,16 +81,37 @@
     "Forse sto sbagliando io, ma non riesco a selezionare"
 ] -%}
 
-{% if rudeness == 'rude' %}
-    {% for p in rude_phrases + rude_service + rude_price + rude_ui %}
+{% if verbose == 'concise' %}
+    {% if rudeness == 'rude' %}
+{{ to_json({"text": "Schifo.", "variables": {"topic": "complaint"}}) }}
+{{ to_json({"text": "Ladri!", "variables": {"topic": "complaint"}}) }}
+    {% else %}
+{{ to_json({"text": "Problemi.", "variables": {"topic": "complaint"}}) }}
+{{ to_json({"text": "Non va.", "variables": {"topic": "complaint"}}) }}
+    {% endif %}
+{% elif verbose == 'verbose' %}
+    {%- if rudeness == 'rude' %}
+{{ to_json({"text": "Sono stufo marcio di questo servizio che non funziona mai, siete una manica di incompetenti e non sapete fare il vostro lavoro!", "variables": {"topic": "complaint"}}) }}
+{{ to_json({"text": "Ogni volta che devo prendere un treno è una tragedia, prezzi da furto e ritardi ovunque. Siete veramente una vergogna nazionale!", "variables": {"topic": "complaint"}}) }}
+    {%- elif rudeness == 'polite' %}
+{{ to_json({"text": "Mi scusi se mi lamento, ma sto riscontrando diverse difficoltà con l'interfaccia e temo che ci sia un problema tecnico che mi impedisce di procedere.", "variables": {"topic": "complaint"}}) }}
+{{ to_json({"text": "Purtroppo mi trovo costretto a segnalare che il servizio oggi non mi sembra all'altezza delle aspettative, soprattutto per quanto riguarda i costi.", "variables": {"topic": "complaint"}}) }}
+    {%- else %}
+{{ to_json({"text": "Devo dire che sono un po' deluso, sto cercando di fare il biglietto da dieci minuti ma continua a bloccarsi tutto senza motivo.", "variables": {"topic": "complaint"}}) }}
+{{ to_json({"text": "Non è possibile che ci siano sempre tutti questi problemi tecnici, rende l'acquisto dei biglietti un'esperienza davvero frustrante per chiunque.", "variables": {"topic": "complaint"}}) }}
+    {%- endif %}
+{% else %} {# standard #}
+    {% if rudeness == 'rude' %}
+        {% for p in rude_phrases + rude_service + rude_price + rude_ui %}
 {{ to_json({"text": p, "variables": {"topic": "complaint"}}) }}
-    {% endfor %}
-{% elif rudeness == 'polite' %}
-    {% for p in polite_phrases + polite_service + polite_price + polite_ui %}
+        {% endfor %}
+    {% elif rudeness == 'polite' %}
+        {% for p in polite_phrases + polite_service + polite_price + polite_ui %}
 {{ to_json({"text": p, "variables": {"topic": "complaint"}}) }}
-    {% endfor %}
-{% else %}
-    {% for p in neutral_phrases + neutral_service + neutral_price + neutral_ui %}
+        {% endfor %}
+    {% else %}
+        {% for p in neutral_phrases + neutral_service + neutral_price + neutral_ui %}
 {{ to_json({"text": p, "variables": {"topic": "complaint"}}) }}
-    {% endfor %}
+        {% endfor %}
+    {% endif %}
 {% endif %}

@@ -2,6 +2,7 @@ import os
 import jinja2
 import json
 import itertools
+import random
 
 class DeterministicGenerator:
     def __init__(self, template_dir=None):
@@ -16,6 +17,7 @@ class DeterministicGenerator:
             trim_blocks=True,
             lstrip_blocks=True
         )
+        self.env.globals.update(random=random.random)
 
         # Domain Variables
         self.destinations = ["Roma", "Milano", "Napoli", "Firenze", "Bologna", "Torino", "Venezia"]
@@ -31,6 +33,8 @@ class DeterministicGenerator:
             {"value": "stasera", "type": "relative_future"}
         ]
 
+        self.dates = ["oggi", "domani", "venerdì prossimo", "il 15"]
+    
     def generate(self):
         all_results = []
         
@@ -74,6 +78,7 @@ class DeterministicGenerator:
         combinations = list(itertools.product(self.destinations, self.times))
         
         for dest, time_obj in combinations:
+            # 1. Standard search (no date)
             rendered_block = template.render(
                 destination=dest, 
                 time=time_obj["value"],
@@ -81,6 +86,17 @@ class DeterministicGenerator:
                 to_json=json.dumps
             )
             self._parse_and_add(rendered_block, unique_items)
+            
+            # 2. Add search with date (pick one date for variety)
+            date_val = random.choice(self.dates)
+            rendered_block_with_date = template.render(
+                destination=dest, 
+                time=time_obj["value"],
+                time_type=time_obj["type"],
+                date=date_val,
+                to_json=json.dumps
+            )
+            self._parse_and_add(rendered_block_with_date, unique_items)
                 
         return self._items_to_list(unique_items, "search_trains")
 
@@ -173,7 +189,12 @@ class DeterministicGenerator:
             return {"text": f"Error: Template {template_name} not found", "variables": context}
 
         # Render with the full context context
-        rendered_block = template.render(**context, to_json=json.dumps)
+        # Ensure date is always present even if empty for safe rendering in templates
+        render_context = context.copy()
+        if "date" not in render_context:
+            render_context["date"] = None
+
+        rendered_block = template.render(**render_context, to_json=json.dumps)
         
         # Parse the JSON lines
         unique_items = set()

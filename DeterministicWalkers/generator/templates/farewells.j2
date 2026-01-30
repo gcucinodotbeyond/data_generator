@@ -1,4 +1,4 @@
-{# VARIABLES: sentiment (positive/negative/neutral), rudeness #}
+{# VARIABLES: sentiment (positive/negative/neutral), rudeness, verbose #}
 
 {%- set farewells = [
     "Arrivederci", "Addio", "A presto", "Ciao", "Buona giornata", "Buona serata", 
@@ -21,63 +21,79 @@
     "È stato difficile", "Interfaccia confusa", "Non sei d'aiuto", "Esperienza negativa"
 ] -%}
 
-{# --- SIMPLE FAREWELL --- #}
-{%- for word in farewells %}
+{# --- CONCISE FAREWELL --- #}
+{% if verbose == 'concise' %}
+    {% if sentiment == 'positive' %}
+{{ to_json({"text": "Grazie", "variables": {}}) }}
+{{ to_json({"text": "Ok", "variables": {}}) }}
+    {% elif sentiment == 'negative' or rudeness == 'rude' %}
+{{ to_json({"text": "Basta", "variables": {}}) }}
+{{ to_json({"text": "Ciao", "variables": {}}) }}
+    {% else %}
+{{ to_json({"text": "Ciao", "variables": {}}) }}
+{{ to_json({"text": "Arrivederci", "variables": {}}) }}
+    {% endif %}
+{% endif %}
+
+{# --- VERBOSE FAREWELL --- #}
+{% if verbose == 'verbose' %}
+    {% if sentiment == 'positive' %}
+{{ to_json({"text": "Ti ringrazio davvero di cuore per tutto l'aiuto che mi hai dato oggi, sei stato prezioso. Buona giornata!", "variables": {}}) }}
+{{ to_json({"text": "Tutto perfetto, grazie mille ancora per la pazienza e per le informazioni dettagliate. Alla prossima!", "variables": {}}) }}
+    {% elif sentiment == 'negative' or rudeness == 'rude' %}
+{{ to_json({"text": "Non ne posso più di questo servizio lento e confusionario, non capisci proprio nulla. Chiudo qui.", "variables": {}}) }}
+{{ to_json({"text": "Pessima esperienza, mi hai fatto solo perdere tempo inutilmente. Non mi serve più niente, addio.", "variables": {}}) }}
+    {% else %}
+{{ to_json({"text": "D'accordo, per ora direi che ho tutte le informazioni di cui avevo bisogno. Grazie e a risentirci presto.", "variables": {}}) }}
+{{ to_json({"text": "Va bene così, non aggiungere altro. Ti ringrazio per il supporto e ti auguro un buon proseguimento di giornata.", "variables": {}}) }}
+    {% endif %}
+{% endif %}
+
+{# --- STANDARD FAREWELLS (Existing Logic) --- #}
+{% if verbose == 'standard' %}
+    {# --- SIMPLE FAREWELL --- #}
+    {%- for word in farewells %}
 {{ to_json({"text": word, "variables": {}}) }}
-{%- endfor %}
+    {%- endfor %}
 
-{# --- THANKS + FAREWELL --- #}
-{%- for t in thanks %}
+    {# --- THANKS + FAREWELL --- #}
+    {%- for t in thanks %}
 {{ to_json({"text": t, "variables": {}}) }}
-{%- endfor %}
+    {%- endfor %}
 
-{%- for t in thanks %}
-{%- for f in farewells %}
+    {%- for t in thanks %}
+    {%- for f in farewells %}
 {{ to_json({"text": t ~ ", " ~ f|lower, "variables": {}}) }}
 {{ to_json({"text": t ~ ". " ~ f, "variables": {}}) }}
-{%- endfor %}
-{%- endfor %}
+    {%- endfor %}
+    {%- endfor %}
 
-{# --- POSITIVE FEEDBACK COMBINATIONS --- #}
-{% if sentiment == 'positive' %}
-{%- for p in pos_feedback %}
-{%- for f in farewells %}
+    {# --- POSITIVE FEEDBACK COMBINATIONS --- #}
+    {% if sentiment == 'positive' %}
+    {%- for p in pos_feedback %}
+    {%- for f in farewells %}
 {{ to_json({"text": p ~ ". " ~ f, "variables": {}}) }}
-{%- endfor %}
-{%- endfor %}
-{%- for t in thanks %}
-{%- for p in pos_feedback %}
-{{ to_json({"text": t ~ ". " ~ p, "variables": {}}) }}
-{%- for f in farewells %}
-{{ to_json({"text": t ~ ", " ~ p|lower ~ ". " ~ f, "variables": {}}) }}
-{%- endfor %}
-{%- endfor %}
-{%- endfor %}
-{% endif %}
+    {%- endfor %}
+    {%- endfor %}
+    {% endif %}
 
-{# --- NEGATIVE FEEDBACK COMBINATIONS --- #}
-{% if sentiment == 'negative' or rudeness == 'rude' %}
-{%- for n in neg_feedback %}
-{%- for f in farewells %}
+    {# --- NEGATIVE FEEDBACK COMBINATIONS --- #}
+    {% if sentiment == 'negative' or rudeness == 'rude' %}
+    {%- for n in neg_feedback %}
+    {%- for f in farewells %}
 {{ to_json({"text": n ~ ". " ~ f, "variables": {}}) }}
-{%- endfor %}
-{%- endfor %}
-{%- for n in neg_feedback %}
-{{ to_json({"text": n, "variables": {}}) }}
-{%- endfor %}
-{% endif %}
+    {%- endfor %}
+    {%- endfor %}
+    {% endif %}
 
-{% if rudeness == 'rude' %}
+    {% if rudeness == 'rude' %}
 {{ to_json({"text": "Basta, chiudo.", "variables": {}}) }}
-{{ to_json({"text": "Non capisci niente.", "variables": {}}) }}
 {{ to_json({"text": "Che schifo di servizio.", "variables": {}}) }}
-{% elif rudeness == 'polite' %}
+    {% elif rudeness == 'polite' %}
 {{ to_json({"text": "Grazie infinite per l'aiuto, buona giornata!", "variables": {}}) }}
-{{ to_json({"text": "Sei stato gentilissimo, a presto.", "variables": {}}) }}
 {{ to_json({"text": "La ringrazio molto, arrivederci.", "variables": {}}) }}
-{% else %} {# neutral #}
+    {% else %} {# neutral #}
 {{ to_json({"text": "Basta così", "variables": {}}) }}
-{{ to_json({"text": "Ho finito", "variables": {}}) }}
 {{ to_json({"text": "Non mi serve altro", "variables": {}}) }}
-{{ to_json({"text": "Posto così", "variables": {}}) }}
+    {% endif %}
 {% endif %}

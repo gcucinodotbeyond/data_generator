@@ -1,53 +1,59 @@
-{# VARIABLES: time_of_day, rudeness #}
+{# VARIABLES: rudeness, verbose #}
 
-{%- set openers = ["Ciao", "Salve", "Ehi", "Buongiorno", "Buonasera", "Buondì"] -%}
-{%- set polite_requests = ["vorrei aiuto", "mi serve una mano", "mi aiuti?", "ho bisogno di te", "sei lì?"] -%}
+{% if verbose == 'concise' %}
+    {% if rudeness == 'polite' %}
+        {{ to_json({"text": "Ciao grazie", "variables": {}}) }}
+        {{ to_json({"text": "Ehilà per favore", "variables": {}}) }}
+        {{ to_json({"text": "Salve!", "variables": {}}) }}
+        {{ to_json({"text": "Ehi per favore", "variables": {}}) }}
+    {% elif rudeness == 'rude' %}
+        {{ to_json({"text": "Oh!", "variables": {}}) }}
+        {{ to_json({"text": "Senti", "variables": {}}) }}
+        {{ to_json({"text": "Uè!", "variables": {}}) }}
+        {{ to_json({"text": "Aò", "variables": {}}) }}
+        {{ to_json({"text": "Muoviti", "variables": {}}) }}
+        {{ to_json({"text": "Allora", "variables": {}}) }}
+    {% else %} {# neutral #}
+        {{ to_json({"text": "Ciao", "variables": {}}) }}
+        {{ to_json({"text": "Salve", "variables": {}}) }}
+        {{ to_json({"text": "Ehi", "variables": {}}) }}
+        {{ to_json({"text": "Uè", "variables": {}}) }}
+        {{ to_json({"text": "Orari", "variables": {}}) }}
+        {{ to_json({"text": "Treno", "variables": {}}) }}
+    {% endif %}
 
-{# --- SIMPLE GREETINGS --- #}
-{% if rudeness == 'rude' %}
-    {%- set rude_openers = ["Oeh", "Ehilà", "Aò", "Senti", "Uè", "Oh"] -%}
-    {%- for opener in rude_openers %}
-{{ to_json({"text": opener, "variables": {}}) }}
-{{ to_json({"text": opener ~ "...", "variables": {}}) }}
-    {%- endfor %}
-{% elif rudeness == 'polite' %}
-    {%- for opener in openers %}
-{{ to_json({"text": opener ~ ", per favore mi aiuti?", "variables": {}}) }}
-{{ to_json({"text": opener ~ ", gentilissimo!", "variables": {}}) }}
-    {%- endfor %}
-{% else %} {# neutral #}
-    {%- for opener in openers %}
-{{ to_json({"text": opener, "variables": {}}) }}
-{{ to_json({"text": opener ~ "!", "variables": {}}) }}
-    {%- endfor %}
+{% elif verbose == 'verbose' %}
+    {% if rudeness == 'polite' %}
+        {{ to_json({"text": "Salve, spero di non disturbare troppo. Avrei gentilmente bisogno di un aiuto per organizzare un viaggio.", "variables": {}}) }}
+        {{ to_json({"text": "Ciao! Spero che tu stia bene. Mi chiedevo se per caso potessi assistermi nella ricerca di alcuni biglietti del treno.", "variables": {}}) }}
+        {{ to_json({"text": "Salve, saresti così cortese da aiutarmi a visualizzare le opzioni di viaggio? Ti ringrazio molto.", "variables": {}}) }}
+    {% elif rudeness == 'rude' %}
+        {{ to_json({"text": "Vediamo se sto coso inutile funziona... Fammi vedere subito 'sti treni.", "variables": {}}) }}
+        {{ to_json({"text": "Ascolta, non ho né tempo né voglia di chiacchiere. Dimmi che treni ci sono e muoviti.", "variables": {}}) }}
+        {{ to_json({"text": "Vediamo se sei capace di fare qualcosa di utile. Trovami un biglietto decente, che ho fretta.", "variables": {}}) }}
+    {% else %} {# neutral #}
+        {{ to_json({"text": "Ciao, ti scrivo perché sto organizzando un viaggio e volevo capire quali sono le soluzioni migliori disponibili.", "variables": {}}) }}
+        {{ to_json({"text": "Salve, vorrei avere alcune informazioni sugli orari dei treni e su come procedere per l'acquisto di un biglietto.", "variables": {}}) }}
+        {{ to_json({"text": "Ciao, sto cercando un treno e avrei bisogno del tuo supporto per trovare l'offerta più conveniente.", "variables": {}}) }}
+    {% endif %}
+
+{% else %} {# standard #}
+    {% if rudeness == 'polite' %}
+        {{ to_json({"text": "Ciao, come stai?", "variables": {}}) }}
+        {{ to_json({"text": "Salve, spero tutto bene", "variables": {}}) }}
+        {{ to_json({"text": "Ehilà, potresti aiutarmi per favore?", "variables": {}}) }}
+        {{ to_json({"text": "Ciao, avrei bisogno di un'informazione gentilmente", "variables": {}}) }}
+    {% elif rudeness == 'rude' %}
+        {{ to_json({"text": "Senti, fammi vedere i treni", "variables": {}}) }}
+        {{ to_json({"text": "Oh, sbrigati che ho fretta", "variables": {}}) }}
+        {{ to_json({"text": "Uè, voglio un biglietto subito", "variables": {}}) }}
+        {{ to_json({"text": "Aò, rispondi che devo partire", "variables": {}}) }}
+        {{ to_json({"text": "Ascolta, muoviti", "variables": {}}) }}
+    {% else %} {# neutral #}
+        {{ to_json({"text": "Ciao, ho bisogno di un treno", "variables": {}}) }}
+        {{ to_json({"text": "Salve, vorrei vedere gli orari", "variables": {}}) }}
+        {{ to_json({"text": "Ehi, sto cercando un biglietto", "variables": {}}) }}
+        {{ to_json({"text": "Ciao, mi aiuti a trovare un viaggio?", "variables": {}}) }}
+    {% endif %}
 {% endif %}
 
-{# --- GREETING + REQUEST (Generic) --- #}
-{% if rudeness == 'rude' %}
-    {%- set rude_requests = ["fammi vedere i treni", "muoviti", "voglio un biglietto", "sbrigati", "ho fretta"] -%}
-    {%- for opener in ["Ehi", "Senti", "Oh"] %}
-    {%- for req in rude_requests %}
-{{ to_json({"text": opener ~ ", " ~ req, "variables": {}}) }}
-    {%- endfor %}
-    {%- endfor %}
-{% elif rudeness == 'polite' %}
-    {%- for opener in openers %}
-    {%- for req in polite_requests %}
-{{ to_json({"text": opener ~ ", " ~ req ~ " per favore", "variables": {}}) }}
-{{ to_json({"text": opener ~ ", " ~ req ~ " Saresti così gentile?", "variables": {}}) }}
-    {%- endfor %}
-    {%- endfor %}
-{% else %} {# neutral #}
-    {%- for opener in openers %}
-    {%- for req in polite_requests %}
-{{ to_json({"text": opener ~ ", " ~ req, "variables": {}}) }}
-    {%- endfor %}
-    {%- endfor %}
-{% endif %}
-
-{# --- TIME SPECIFIC --- #}
-{% if rudeness != 'rude' %}
-{{ to_json({"text": "Buona mattina", "variables": {}}) }}
-{{ to_json({"text": "Buon pomeriggio", "variables": {}}) }}
-{{ to_json({"text": "Buona serata", "variables": {}}) }}
-{% endif %}

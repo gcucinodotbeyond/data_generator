@@ -4,6 +4,11 @@
         "neutral": 0.3,
         "rude": 0.5
     },
+    "verbose_distribution": {
+        "concise": 0.3,
+        "standard": 0.4,
+        "verbose": 0.3
+    },
     "scenario_distribution": {
         "default": 0.2,
         "minimal": 0.1,

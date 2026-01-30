@@ -1,4 +1,4 @@
-{# VARIABLES: destination, time, date, origin, time_type, rudeness #}
+{# VARIABLES: destination, time, date, origin, time_type, rudeness, verbose #}
 
 {%- set polite_openers = [
     "Vorrei", "Voglio", "Desidero", "Avrei bisogno di", "Mi serve", "Devo", "Potresti", "Puoi", "Sapresti", "Mi cerchi"
@@ -15,99 +15,191 @@
 {# Prepositions for numeric times (alle 8, dopo le 8) #}
 {%- set numeric_prepositions = ["alle", "per le", "verso le", "intorno alle", "dopo le", "prima delle"] -%}
 
+{# --- PATTERN 0: CONCISE SEARCH (Roma 10:00) --- #}
+{% if verbose == 'concise' %}
+{{ to_json({"text": destination, "variables": {"destination": destination}}) }}
+    {% if time %}
+{{ to_json({"text": destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
+    {% endif %}
+    {% if date %}
+{{ to_json({"text": destination ~ " " ~ date, "variables": {"destination": destination, "date": date}}) }}
+    {% endif %}
+    {% if date and time %}
+        {% if time_type == 'relative_now' %}
+            {# Skip date if time is "now", it's redundant/unnatural #}
+{{ to_json({"text": destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
+        {% elif date in time or (date == 'oggi' and 'domani' in time) %}
+            {# Skip contradictory or redundant labels (e.g. "oggi domani mattina" or "domani domani mattina") #}
+{{ to_json({"text": destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
+        {% else %}
+            {% set clean_time = time|replace("stasera", "sera") if date not in ["oggi", "per oggi"] else time %}
+{{ to_json({"text": destination ~ " " ~ date ~ " " ~ clean_time, "variables": {"destination": destination, "time": time, "date": date}}) }}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
 {# --- PATTERN 1: SIMPLE DIRECT SEARCH (Voglio andare a Milano) --- #}
-{% if rudeness == 'rude' %}
-    {%- for opener in ["Muoviti,", "Sbrigati,", "Voglio un treno per", "Devo andare a"] %}
+{% if verbose != 'concise' %}
+    {% if rudeness == 'rude' %}
+        {%- for opener in ["Muoviti,", "Sbrigati,", "Voglio un treno per", "Devo andare a"] %}
 {{ to_json({"text": opener ~ " " ~ destination, "variables": {"destination": destination}}) }}
-    {%- endfor %}
-    {{ to_json({"text": destination ~ ", ora!", "variables": {"destination": destination, "time": "ora"}}) }}
-{% elif rudeness == 'polite' %}
-    {%- for opener in ["Potrebbe gentilmente cercarmi un treno per", "Sarebbe così gentile da trovarmi un treno per", "Avrei la necessità di andare a"] %}
+        {%- endfor %}
+        {{ to_json({"text": destination ~ ", ora!", "variables": {"destination": destination, "time": "ora"}}) }}
+    {% elif rudeness == 'polite' %}
+        {%- for opener in ["Potrebbe gentilmente cercarmi un treno per", "Sarebbe così gentile da trovarmi un treno per", "Avrei la necessità di andare a"] %}
 {{ to_json({"text": opener ~ " " ~ destination ~ ", per favore?", "variables": {"destination": destination}}) }}
-    {%- endfor %}
-{% else %} {# neutral #}
-    {%- for opener in ["Voglio", "Vorrei", "Devo", "Posso"] %}
+        {%- endfor %}
+    {% else %} {# neutral #}
+        {%- for opener in ["Voglio", "Vorrei", "Devo", "Posso"] %}
 {{ to_json({"text": opener ~ " andare a " ~ destination, "variables": {"destination": destination}}) }}
 {{ to_json({"text": opener ~ " partire per " ~ destination, "variables": {"destination": destination}}) }}
 {{ to_json({"text": opener ~ " raggiungere " ~ destination, "variables": {"destination": destination}}) }}
-    {%- endfor %}
+        {% if date %}
+{{ to_json({"text": opener ~ " andare a " ~ destination ~ " " ~ date, "variables": {"destination": destination, "date": date}}) }}
+            {% if time %}
+                {% if time_type == 'relative_now' %}
+{{ to_json({"text": opener ~ " andare a " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
+                {% elif date in time or (date == 'oggi' and 'domani' in time) %}
+{{ to_json({"text": opener ~ " andare a " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
+                {% elif time_type == 'numeric' %}
+                    {% if date not in ["oggi", "per oggi"] %}
+{{ to_json({"text": opener ~ " andare a " ~ destination ~ " " ~ date ~ " alle " ~ time, "variables": {"destination": destination, "date": date, "time": time}}) }}
+                    {% else %}
+{{ to_json({"text": opener ~ " andare a " ~ destination ~ " alle " ~ time, "variables": {"destination": destination, "time": time}}) }}
+                    {% endif %}
+                {% else %}
+                    {% set clean_time = time|replace("stasera", "sera") if date not in ["oggi", "per oggi"] else time %}
+{{ to_json({"text": opener ~ " andare a " ~ destination ~ " " ~ date ~ " " ~ clean_time, "variables": {"destination": destination, "date": date, "time": time}}) }}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        {%- endfor %}
+    {% endif %}
 {% endif %}
 
 {# --- PATTERN 2: SEARCH WITH VERB + OBJECT (Vorrei cercare un treno per Milano) --- #}
-{%- for opener in polite_openers %}
-{%- for verb in search_verbs %}
-{%- for obj in train_synonyms %}
+{% if verbose == 'verbose' or (verbose == 'standard' and random() > 0.5) %}
+    {%- for opener in polite_openers %}
+    {%- for verb in search_verbs %}
+    {%- for obj in train_synonyms %}
 {{ to_json({"text": opener ~ " " ~ verb ~ " " ~ obj ~ " per " ~ destination, "variables": {"destination": destination}}) }}
-{%- endfor %}
-{%- endfor %}
-{%- endfor %}
+    {%- endfor %}
+    {%- endfor %}
+    {%- endfor %}
+{% endif %}
 
 {# --- PATTERN 3: TIME SPECIFIC -- Logic depends on time_type --- #}
-{% if time_type == 'numeric' %}
-    {# "alle 8:00", "prima delle 8:00" etc #}
-    {%- for prep in numeric_prepositions %}
+{% if verbose != 'concise' %}
+    {% if time_type == 'numeric' %}
+        {# "alle 8:00", "prima delle 8:00" etc #}
+        {%- for prep in numeric_prepositions %}
 {{ to_json({"text": "Un treno per " ~ destination ~ " " ~ prep ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": destination ~ " " ~ prep ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Partenza per " ~ destination ~ " " ~ prep ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
-    {%- endfor %}
+            {% if date %}
+                {% if date not in ["oggi", "per oggi"] %}
+{{ to_json({"text": destination ~ " " ~ date ~ " " ~ prep ~ " " ~ time, "variables": {"destination": destination, "date": date, "time": time}}) }}
+{{ to_json({"text": "Treno per " ~ destination ~ " " ~ date ~ " " ~ prep ~ " " ~ time, "variables": {"destination": destination, "date": date, "time": time}}) }}
+                {% else %}
+                    {# redundant to say "oggi alle 10" in a simple phrase, "alle 10" is enough #}
+{{ to_json({"text": "Treno per " ~ destination ~ " " ~ prep ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
+                {% endif %}
+            {% endif %}
+        {%- endfor %}
 
-{% elif time_type == 'relative_now' %}
-    {# "subito", "ora", "adesso" -> generally used directly or with simple prepositions #}
-    {# "Treno per Milano subito", "Milano ora" #}
+    {% elif time_type == 'relative_now' %}
 {{ to_json({"text": "Un treno per " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Partenza per " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
-    {# Some combinations like "per subito" are rare but acceptable in spoken context? "Mi serve un biglietto per subito" #}
 {{ to_json({"text": "Mi serve un biglietto per " ~ destination ~ " per " ~ time, "variables": {"destination": destination, "time": time}}) }}
 
-{% elif time_type == 'relative_future' %}
-    {# "domani mattina", "stasera" #}
-    {# "Treno per Milano domani mattina", "Treno per Milano per domani mattina" #}
+    {% elif time_type == 'relative_future' %}
 {{ to_json({"text": "Un treno per " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Un treno per " ~ destination ~ " per " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Partenza per " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
-    {# "prima di domani mattina" instead of "prima delle domani mattina" #}
 {{ to_json({"text": "Qualcosa per " ~ destination ~ " prima di " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Qualcosa per " ~ destination ~ " dopo " ~ time, "variables": {"destination": destination, "time": time}}) }}
-
+        {% if date %}
+            {% if time_type == 'relative_now' or date in time or (date == 'oggi' and 'domani' in time) %}
+{{ to_json({"text": "Andare a " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
+            {% else %}
+                {% set clean_time = time|replace("stasera", "sera") if date not in ["oggi", "per oggi"] else time %}
+{{ to_json({"text": "Treno per " ~ destination ~ " " ~ date ~ " " ~ clean_time, "variables": {"destination": destination, "time": time, "date": date}}) }}
+{{ to_json({"text": "Andare a " ~ destination ~ " " ~ date ~ " " ~ clean_time, "variables": {"destination": destination, "time": time, "date": date}}) }}
+            {% endif %}
+        {% endif %}
+    {% endif %}
 {% endif %}
-
 
 {# --- PATTERN 4: FULL SENTENCE WITH TIME --- #}
-{% if time_type == 'numeric' %}
-    {%- for opener in ["Devo essere", "Voglio arrivare", "Devo arrivare"] %}
-    {%- set prep = (numeric_prepositions)|random %}
+{% if verbose == 'verbose' %}
+    {% if time_type == 'numeric' %}
+        {%- for opener in ["Devo essere", "Voglio arrivare", "Devo arrivare"] %}
+        {%- set prep = (numeric_prepositions)|random %}
+{{ to_json({"text": "Senti, " ~ opener ~ " a " ~ destination ~ " " ~ prep ~ " " ~ time ~ " perché ho un appuntamento importante.", "variables": {"destination": destination, "time": time}}) }}
+{{ to_json({"text": "Siccome ho fretta, " ~ opener ~ " a " ~ destination ~ " " ~ prep ~ " " ~ time ~ ". Cosa mi consigli?", "variables": {"destination": destination, "time": time}}) }}
+        {%- endfor %}
+    {% elif time_type == 'relative_future' %}
+        {%- for opener in ["Devo essere", "Voglio arrivare", "Devo arrivare"] %}
+{{ to_json({"text": opener ~ " a " ~ destination ~ " " ~ time ~ " se possibile, mi aiuti a trovare il biglietto giusto?", "variables": {"destination": destination, "time": time}}) }}
+{{ to_json({"text": opener ~ " a " ~ destination ~ " per " ~ time ~ ". Spero ci siano ancora posti disponibili.", "variables": {"destination": destination, "time": time}}) }}
+        {%- endfor %}
+    {% endif %}
+{% elif verbose == 'standard' %}
+    {% if time_type == 'numeric' %}
+        {%- for opener in ["Devo essere", "Voglio arrivare", "Devo arrivare"] %}
+        {%- set prep = (numeric_prepositions)|random %}
 {{ to_json({"text": opener ~ " a " ~ destination ~ " " ~ prep ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
-    {%- endfor %}
-{% elif time_type == 'relative_future' %}
-    {%- for opener in ["Devo essere", "Voglio arrivare", "Devo arrivare"] %}
+        {%- endfor %}
+    {% elif time_type == 'relative_future' %}
+        {%- for opener in ["Devo essere", "Voglio arrivare", "Devo arrivare"] %}
 {{ to_json({"text": opener ~ " a " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": opener ~ " a " ~ destination ~ " per " ~ time, "variables": {"destination": destination, "time": time}}) }}
-    {%- endfor %}
+        {%- endfor %}
+    {% endif %}
 {% endif %}
-{# 'relative_now' doesn't fit well with "Devo arrivare a Milano subito" (implies teleportation?), maybe "Voglio partire" fits better but pattern 4 is restricted #}
-
 
 {# --- PATTERN 5: QUESTIONS (Time independent) --- #}
+{% if verbose != 'concise' %}
 {{ to_json({"text": "Ci sono treni per " ~ destination ~ "?", "variables": {"destination": destination}}) }}
 {{ to_json({"text": "Quali treni ci sono per " ~ destination ~ "?", "variables": {"destination": destination}}) }}
 {{ to_json({"text": "A che ora parte il prossimo treno per " ~ destination ~ "?", "variables": {"destination": destination}}) }}
 {{ to_json({"text": "Quando parte il primo treno per " ~ destination ~ "?", "variables": {"destination": destination}}) }}
-
+    {% if date %}
+{{ to_json({"text": "Che treni ci sono per " ~ destination ~ " " ~ date ~ "?", "variables": {"destination": destination, "date": date}}) }}
+{{ to_json({"text": "Cosa c'è per " ~ destination ~ " " ~ date ~ "?", "variables": {"destination": destination, "date": date}}) }}
+        {% if time %}
+            {% if time_type == 'relative_now' or date in time or (date == 'oggi' and 'domani' in time) %}
+{{ to_json({"text": "C'è qualcosa per " ~ destination ~ " " ~ time ~ "?", "variables": {"destination": destination, "time": time}}) }}
+            {% elif time_type == 'numeric' %}
+                {% if date not in ["oggi", "per oggi"] %}
+{{ to_json({"text": "C'è qualcosa per " ~ destination ~ " " ~ date ~ " alle " ~ time ~ "?", "variables": {"destination": destination, "date": date, "time": time}}) }}
+{{ to_json({"text": "Treni per " ~ destination ~ " " ~ date ~ " verso le " ~ time ~ "?", "variables": {"destination": destination, "date": date, "time": time}}) }}
+                {% else %}
+{{ to_json({"text": "C'è qualcosa per " ~ destination ~ " alle " ~ time ~ "?", "variables": {"destination": destination, "time": time}}) }}
+                {% endif %}
+            {% else %}
+                {% set clean_time = time|replace("stasera", "sera") if date not in ["oggi", "per oggi"] else time %}
+{{ to_json({"text": "C'è qualcosa per " ~ destination ~ " " ~ date ~ " " ~ clean_time ~ "?", "variables": {"destination": destination, "date": date, "time": time}}) }}
+{{ to_json({"text": "Quali treni partono per " ~ destination ~ " " ~ date ~ " " ~ clean_time ~ "?", "variables": {"destination": destination, "date": date, "time": time}}) }}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endif %}
 
 {# --- PATTERN 6: URGENT / IMPERATIVE (Specific checks) --- #}
-{# Only if time supports it or if we ignore time variable #}
 {% if time_type == 'relative_now' %}
 {{ to_json({"text": destination ~ " subito", "variables": {"destination": destination, "time": "subito"}}) }}
 {{ to_json({"text": destination ~ " ora", "variables": {"destination": destination, "time": "ora"}}) }}
 {{ to_json({"text": "Primo treno per " ~ destination, "variables": {"destination": destination, "time": "subito"}}) }}
+    {% if verbose != 'concise' %}
 {{ to_json({"text": "Urgente per " ~ destination, "variables": {"destination": destination, "time": "subito"}}) }}
+    {% endif %}
 {% endif %}
 
-
 {# --- PATTERN 8: DOPO/PRIMA (Treni dopo le X) --- #}
-{% if time_type == 'numeric' %}
+{% if time_type == 'numeric' and verbose != 'concise' %}
 {{ to_json({"text": "Qualcosa per " ~ destination ~ " dopo le " ~ time ~ "?", "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Cerco una soluzione per " ~ destination ~ " prima delle " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Non voglio partire prima delle " ~ time ~ " per " ~ destination, "variables": {"destination": destination, "time": time}}) }}
