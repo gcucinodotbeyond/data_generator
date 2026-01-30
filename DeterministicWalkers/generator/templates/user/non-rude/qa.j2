@@ -7,18 +7,13 @@
 {{ to_json({"text": p ~ "?", "variables": {"topic": "pets"}}) }}
 {{ to_json({"text": "Posto " ~ p ~ "?", "variables": {"topic": "pets"}}) }}
 {% elif verbose == 'verbose' %}
-    {% if rudeness == 'rude' %}
-{{ to_json({"text": "Ascolta, ho questo " ~ p ~ " con me, può salire o mi tocca lasciarlo a terra? E vedi di non farmi pagare extra.", "variables": {"topic": "pets"}}) }}
-    {% elif rudeness == 'polite' %}
+    {% if rudeness == 'polite' %}
 {{ to_json({"text": "Mi scusi per il disturbo, saprebbe per caso dirmi se il mio piccolo " ~ p ~ " può viaggiare con me sul vagoni?", "variables": {"topic": "pets"}}) }}
     {% else %}
 {{ to_json({"text": "Volevo chiederti un'informazione sugli animali: è possibile portare il mio " ~ p ~ " a bordo del treno che ho selezionato?", "variables": {"topic": "pets"}}) }}
     {% endif %}
 {% else %} {# standard #}
-    {% if rudeness == 'rude' %}
-{{ to_json({"text": "Il " ~ p ~ " può salire?", "variables": {"topic": "pets"}}) }}
-{{ to_json({"text": "Devo pagare pure per il " ~ p ~ "?", "variables": {"topic": "pets"}}) }}
-    {% elif rudeness == 'polite' %}
+    {% if rudeness == 'polite' %}
 {{ to_json({"text": "Mi scusi, saprebbe dirmi se il mio " ~ p ~ " può viaggiare con me?", "variables": {"topic": "pets"}}) }}
 {{ to_json({"text": "Sarebbe così gentile da confermarmi se il " ~ p ~ " paga il biglietto?", "variables": {"topic": "pets"}}) }}
     {% else %} {# neutral #}
@@ -35,18 +30,13 @@
 {{ to_json({"text": "Spazio " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
 {{ to_json({"text": "Posto " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
 {% elif verbose == 'verbose' %}
-    {% if rudeness == 'rude' %}
-{{ to_json({"text": "E ora dove cavolo metto questo " ~ l ~ "? C'è uno spazio decente o devo tenerlo in mezzo ai piedi?", "variables": {"topic": "luggage"}}) }}
-    {% elif rudeness == 'polite' %}
+    {% if rudeness == 'polite' %}
 {{ to_json({"text": "Mi scusi, avrei bisogno di un'indicazione: saprebbe dirmi se c'è un'area riservata per posare " ~ l ~ " ingombranti?", "variables": {"topic": "luggage"}}) }}
     {% else %}
 {{ to_json({"text": "Stavo cercando di capire se c'è abbastanza spazio per il mio " ~ l ~ " o se devo stare attento a dove lo metto.", "variables": {"topic": "luggage"}}) }}
     {% endif %}
 {% else %} {# standard #}
-    {% if rudeness == 'rude' %}
-{{ to_json({"text": "Dove metto " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
-{{ to_json({"text": "C'è spazio o devo tenerlo in braccio?", "variables": {"topic": "luggage"}}) }}
-    {% elif rudeness == 'polite' %}
+    {% if rudeness == 'polite' %}
 {{ to_json({"text": "Saprebbe indicarmi gentilmente dove posare " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
 {{ to_json({"text": "Mi scusi, c'è un'area dedicata per " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
     {% else %} {# neutral #}
@@ -63,18 +53,13 @@
 {{ to_json({"text": s ~ "?", "variables": {"topic": "services"}}) }}
 {{ to_json({"text": "Funziona " ~ s ~ "?", "variables": {"topic": "services"}}) }}
 {% elif verbose == 'verbose' %}
-    {% if rudeness == 'rude' %}
-{{ to_json({"text": "Spero che almeno il " ~ s ~ " funzioni decentemente, non come l'ultima volta che era tutto bloccato.", "variables": {"topic": "services"}}) }}
-    {% elif rudeness == 'polite' %}
+    {% if rudeness == 'polite' %}
 {{ to_json({"text": "Mi perdoni, saprebbe dirmi se su questo treno è prevista la connessione " ~ s ~ " per i passeggeri?", "variables": {"topic": "services"}}) }}
     {% else %}
 {{ to_json({"text": "Volevo assicurarmi che ci fosse il " ~ s ~ " a bordo, sai com'è, mi serve per lavorare durante il viaggio.", "variables": {"topic": "services"}}) }}
     {% endif %}
 {% else %} {# standard #}
-    {% if rudeness == 'rude' %}
-{{ to_json({"text": "Almeno il " ~ s ~ " c'è?", "variables": {"topic": "services"}}) }}
-{{ to_json({"text": "Il " ~ s ~ " funziona o è la solita roba?", "variables": {"topic": "services"}}) }}
-    {% elif rudeness == 'polite' %}
+    {% if rudeness == 'polite' %}
 {{ to_json({"text": "Sarebbe così gentile da dirmi se è presente il " ~ s ~ "?", "variables": {"topic": "services"}}) }}
     {% else %} {# neutral #}
 {{ to_json({"text": "C'è il " ~ s ~ " a bordo?", "variables": {"topic": "services"}}) }}

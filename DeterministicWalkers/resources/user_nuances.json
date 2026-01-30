@@ -1,0 +1,27 @@
+{
+  "acknowledgement": [
+    "Capisco...",
+    "Grazie!",
+    "No grazie.",
+    "Ottimo grazie!",
+    "Ottimo!",
+    "Perfetto allora!",
+    "Perfetto grazie!",
+    "Perfetto!",
+    "Perfetto, grazie!"
+  ],
+  "connector": [
+    "Beh no...",
+    "Capito!",
+    "Fantastico!",
+    "Ok capito...",
+    "Ok ho capito...",
+    "Ok ok...",
+    "Ok ultimo tentativo...",
+    "Ok, proviamo con altro...",
+    "Va bene, hai ragione...",
+    "Va bene..."
+  ],
+  "frustration": [],
+  "polite_request": []
+}

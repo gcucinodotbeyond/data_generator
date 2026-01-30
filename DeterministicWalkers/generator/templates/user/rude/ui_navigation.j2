@@ -1,0 +1,109 @@
+{# VARIABLES: action (next, prev, back, status, show_changes), verbose, target_train, position_word #}
+
+{%- if action == "next" %}
+    {% if verbose == 'concise' %}
+        {{ to_json({"text": "Avanti!", "variables": {}}) }}
+        {{ to_json({"text": "Muoviti", "variables": {}}) }}
+        {{ to_json({"text": "Ancore", "variables": {}}) }}
+    {% elif verbose == 'verbose' %}
+        {{ to_json({"text": "Fammi vedere altri treni, muoviti che questi non mi piacciono.", "variables": {}}) }}
+        {{ to_json({"text": "Ancore questi? Vai avanti e fammi vedere roba seria.", "variables": {}}) }}
+        {{ to_json({"text": "Ma non c'è altro? Passa oltre, veloci.", "variables": {}}) }}
+    {% else %} {# standard #}
+        {{ to_json({"text": "Vai avanti e basta", "variables": {}}) }}
+        {{ to_json({"text": "Mostrami altri treni subito", "variables": {}}) }}
+        {{ to_json({"text": "Scendi, muoviti", "variables": {}}) }}
+    {% endif %}
+
+{%- elif action == "prev" %}
+    {% if verbose == 'concise' %}
+        {{ to_json({"text": "Indietro!", "variables": {}}) }}
+        {{ to_json({"text": "Torna su", "variables": {}}) }}
+        {{ to_json({"text": "Prima!", "variables": {}}) }}
+    {% elif verbose == 'verbose' %}
+        {{ to_json({"text": "Ti ho detto di tornare indietro, non hai capito?", "variables": {}}) }}
+        {{ to_json({"text": "Rifai vedere quelli di prima, muoviti.", "variables": {}}) }}
+        {{ to_json({"text": "Torna su, non perdere tempo con questi.", "variables": {}}) }}
+    {% else %} {# standard #}
+        {{ to_json({"text": "Torna indietro subito", "variables": {}}) }}
+        {{ to_json({"text": "Rifai vedere quelli di prima", "variables": {}}) }}
+        {{ to_json({"text": "Vai su, sbrigati", "variables": {}}) }}
+    {% endif %}
+
+{%- elif action == "back" %}
+    {% if verbose == 'concise' %}
+        {{ to_json({"text": "Annulla!", "variables": {}}) }}
+        {{ to_json({"text": "Basta", "variables": {}}) }}
+        {{ to_json({"text": "Chiudi tutto", "variables": {}}) }}
+    {% elif verbose == 'verbose' %}
+        {{ to_json({"text": "Che disastro, cancella tutto e fammi ricominciare.", "variables": {}}) }}
+        {{ to_json({"text": "Reset. Subito.", "variables": {}}) }}
+        {{ to_json({"text": "Non va bene niente, torna all'inizio e vedi di fare meglio.", "variables": {}}) }}
+    {% else %} {# standard #}
+        {{ to_json({"text": "Annulla tutto subito", "variables": {}}) }}
+        {{ to_json({"text": "Torna all'inizio e basta", "variables": {}}) }}
+        {{ to_json({"text": "Ricomincia che è meglio", "variables": {}}) }}
+    {% endif %}
+
+{%- elif action == "status" %}
+    {% if verbose == 'concise' %}
+        {{ to_json({"text": "Stato!", "variables": {}}) }}
+        {{ to_json({"text": "Dati!", "variables": {}}) }}
+        {{ to_json({"text": "Allora?", "variables": {}}) }}
+    {% elif verbose == 'verbose' %}
+        {{ to_json({"text": "Allora? A che punto siamo? Fammi vedere lo stato.", "variables": {}}) }}
+        {{ to_json({"text": "Fammi il riepilogo, non ho tutto il giorno.", "variables": {}}) }}
+        {{ to_json({"text": "Voglio vedere cosa hai combinato finora, mostramelo.", "variables": {}}) }}
+    {% else %} {# standard #}
+        {{ to_json({"text": "Datti una mossa col riepilogo", "variables": {}}) }}
+        {{ to_json({"text": "Fammi vedere subito cosa ho scelto", "variables": {}}) }}
+        {{ to_json({"text": "Voglio lo stato attuale", "variables": {}}) }}
+    {% endif %}
+
+{%- elif action == "show_info" %}
+    {%- if target == "train" %}
+        {% if verbose == 'concise' %}
+            {{ to_json({"text": "Cambi!", "variables": {}}) }}
+            {{ to_json({"text": "Diretto o no?", "variables": {}}) }}
+            {{ to_json({"text": "Fermate!", "variables": {}}) }}
+        {% elif verbose == 'verbose' %}
+            {% if target_train %}
+                {{ to_json({"text": "Spero che non ci siano cambi, dimmi subito se è diretto.", "variables": {}}) }}
+                {{ to_json({"text": "Dove ferma sto treno? Fammi vedere le soste.", "variables": {}}) }}
+                {{ to_json({"text": "Cambi? Non ho voglia di fare scale, dimmi se devo scendere.", "variables": {}}) }}
+            {% elif position_word %}
+                {{ to_json({"text": "Il " ~ position_word ~ " ha cambi? Muoviti a dirmelo.", "variables": {}}) }}
+            {% endif %}
+        {% else %} {# standard #}
+            {% if target_train %}
+                {{ to_json({"text": "Ha cambi sto treno?", "variables": {}}) }}
+                {{ to_json({"text": "Dimmi se è diretto subito", "variables": {}}) }}
+                {{ to_json({"text": "Fammi vedere le fermate e basta", "variables": {}}) }}
+            {% elif position_word %}
+                {{ to_json({"text": "Il " ~ position_word ~ " è diretto? Rispondi.", "variables": {}}) }}
+            {% endif %}
+        {% endif %}
+
+    {%- elif target == "station" %}
+        {{ to_json({"text": "Dove sono i bagni?", "variables": {}}) }}
+        {{ to_json({"text": "Voglio sapere dov'è la biglietteria subito.", "variables": {}}) }}
+        {{ to_json({"text": "Info stazione, muoviti.", "variables": {}}) }}
+
+    {%- elif target == "city" %}
+        {{ to_json({"text": "Come arrivo in centro?", "variables": {}}) }}
+        {{ to_json({"text": "Cosa posso vedere?", "variables": {}}) }}
+        {{ to_json({"text": "Dov'è l'ufficio turistico?", "variables": {}}) }}
+
+    {%- elif target == "help" %}
+        {{ to_json({"text": "Come funziona?", "variables": {}}) }}
+        {{ to_json({"text": "Aiuto", "variables": {}}) }}
+
+    {%- elif target == "ticket" %}
+        {{ to_json({"text": "Mostra il biglietto", "variables": {}}) }}
+        {{ to_json({"text": "Dettagli acquisto", "variables": {}}) }}
+    {%- endif %}
+
+{%- else %}
+    {{ to_json({"text": "Menu", "variables": {}}) }}
+    {{ to_json({"text": "Aiuto", "variables": {}}) }}
+{%- endif %}

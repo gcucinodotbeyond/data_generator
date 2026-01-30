@@ -1,0 +1,81 @@
+{# VARIABLES: train, class, aspect, verbose, position_word, count #}
+
+{# --- PASSENGERS --- #}
+{% if aspect == "passengers" %}
+{% if verbose == 'concise' %}
+{{ to_json({"text": count|string, "variables": {"refinement": "passengers", "count": count}}) }}
+{% elif verbose == 'verbose' %}
+{{ to_json({"text": "Siamo in " ~ count ~ " e sbrigati, non ho tutto il giorno.", "variables": {"refinement": "passengers", "count": count}}) }}
+{{ to_json({"text": count ~ " persone, muoviti!", "variables": {"refinement": "passengers", "count": count}}) }}
+{% else %} {# standard #}
+{{ to_json({"text": count|string, "variables": {"refinement": "passengers", "count": count}}) }}
+{{ to_json({"text": "In " ~ count, "variables": {"refinement": "passengers", "count": count}}) }}
+{{ to_json({"text": count ~ ", sbrigati", "variables": {"refinement": "passengers", "count": count}}) }}
+{% endif %}
+{% endif %}
+
+{# --- TIME / TRAIN SELECTION --- #}
+{% if aspect == "train" %}
+{% if verbose == 'concise' %}
+{{ to_json({"text": train.dep, "variables": {"refinement": "time"}}) }}
+{{ to_json({"text": "Quello lì", "variables": {"refinement": "ordinal"}}) }}
+{% elif verbose == 'verbose' %}
+{{ to_json({"text": "Dammi quello delle " ~ train.dep ~ " e facciamola finita, ho fretta.", "variables": {"refinement": "time"}}) }}
+{{ to_json({"text": "Il treno delle " ~ train.dep ~ "... sì quello, non farmi ripetere sempre le stesse cose.", "variables": {"refinement": "time"}}) }}
+{% else %} {# standard #}
+{{ to_json({"text": "Dammi quello delle " ~ train.dep, "variables": {"refinement": "time"}}) }}
+{{ to_json({"text": "Il treno delle " ~ train.dep, "variables": {"refinement": "time"}}) }}
+{% endif %}
+
+{# Ordinal-based #}
+{% if position_word %}
+{% if verbose == 'concise' %}
+{{ to_json({"text": position_word, "variables": {"refinement": "ordinal"}}) }}
+{% elif verbose == 'verbose' %}
+{{ to_json({"text": "Scegli il " ~ position_word ~ " e non se ne parli più, muoviti.", "variables": {"refinement": "ordinal"}}) }}
+{% else %} {# standard #}
+{{ to_json({"text": "Il " ~ position_word, "variables": {"refinement": "ordinal"}}) }}
+{{ to_json({"text": "Dammi il " ~ position_word, "variables": {"refinement": "ordinal"}}) }}
+{% endif %}
+{% endif %}
+{% endif %}
+
+{# --- CLASS SELECTION --- #}
+{% if aspect == "class" %}
+{% if verbose == 'concise' %}
+{{ to_json({"text": class, "variables": {"refinement": "class"}}) }}
+{% elif verbose == 'verbose' %}
+{{ to_json({"text": "Muoviti ad aggiungermi la " ~ class ~ ", non mi va di stare a discutere della classe.", "variables": {"refinement": "class"}}) }}
+{% else %} {# standard #}
+{{ to_json({"text": "La " ~ class, "variables": {"refinement": "class"}}) }}
+{% endif %}
+{% endif %}
+
+{# --- SEAT SELECTION --- #}
+{% if aspect == "seat" %}
+{% if verbose == 'concise' %}
+{{ to_json({"text": "Finestrino", "variables": {"refinement": "seat", "seat": "window"}}) }}
+{{ to_json({"text": "Corridoio", "variables": {"refinement": "seat", "seat": "aisle"}}) }}
+{% elif verbose == 'verbose' %}
+{{ to_json({"text": "Dammelo al finestrino e non farmi perdere altro tempo.", "variables": {"refinement": "seat", "seat": "window"}}) }}
+{{ to_json({"text": "Mettimi al corridoio, basta che facciamo in fretta.", "variables": {"refinement": "seat", "seat": "aisle"}}) }}
+{% else %} {# standard #}
+{{ to_json({"text": "Dammelo al finestrino", "variables": {"refinement": "seat", "seat": "window"}}) }}
+{{ to_json({"text": "Corridoio", "variables": {"refinement": "seat", "seat": "aisle"}}) }}
+{% endif %}
+{% endif %}
+
+{# --- SEAT MULTISELECT (Multi-passenger) --- #}
+{% if aspect == "seat_multiselect" %}
+{% if verbose == 'concise' %}
+{{ to_json({"text": "4A e 4B", "variables": {"refinement": "seat_multiselect", "seats": "4A,4B"}}) }}
+{{ to_json({"text": "Quei due lì", "variables": {"refinement": "seat_multiselect", "seats": "4A,4B"}}) }}
+{% elif verbose == 'verbose' %}
+{{ to_json({"text": "Mettici 4A e 4B, che sono quelli sullo schermo. Sbrigati.", "variables": {"refinement": "seat_multiselect", "seats": "4A,4B", "carriage": 4}}) }}
+{{ to_json({"text": "Ho già scelto 4A e 4B sullo schermo, muoviti a confermare.", "variables": {"refinement": "seat_multiselect", "seats": "4A,4B", "carriage": 4}}) }}
+{% else %} {# standard #}
+{{ to_json({"text": "4A e 4B, sbrigati", "variables": {"refinement": "seat_multiselect", "seats": "4A,4B", "carriage": 4}}) }}
+{{ to_json({"text": "Dammi 4A e 4B", "variables": {"refinement": "seat_multiselect", "seats": "4A,4B", "carriage": 4}}) }}
+{{ to_json({"text": "Quelli lì, 4A e 4B", "variables": {"refinement": "seat_multiselect", "seats": "4A,4B", "carriage": 4}}) }}
+{% endif %}
+{% endif %}

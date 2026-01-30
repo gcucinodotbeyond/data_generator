@@ -2,7 +2,7 @@
 Context Formatter Module
 
 Converts context snapshot parameters into XML-formatted system messages
-following the schema v1.2 defined in right_context.txt.
+following the schema v1.5 defined in right_context.txt.
 """
 
 import json
@@ -67,9 +67,10 @@ class ContextFormatter:
         origin = params.get("origin", "Unknown")
         
         # Build XML
-        xml = f'<ctx v="1.2" date="{date}" time="{ctx_time}" station="{origin}" lang="it"/>\n\n'
-        xml += f'<ui state="search" phase="init" actions="search,help,lang"/>\n\n'
-        xml += f'<query from="{origin}" to="" date="" time="" pax="1"/>'
+        xml = '<!-- SCHEMA v1.5 | AZIONI: search=cerca, show_info=informazioni -->\n\n'
+        xml += f'<ctx date="{date}" time="{ctx_time}" station="{origin}" lang="it"/>\n\n'
+        xml += f'<ui state="search" phase="init" actions="search,show_info"/>\n\n'
+        xml += f'<query from="{origin}" to="" date="" time="" pax="1" bikes="0" pets="0"/>'
         
         return xml
     
@@ -86,29 +87,39 @@ class ContextFormatter:
         except:
             trains = []
         
-        # Extract destination from first train if available
-        destination = trains[0].get("destination", "Unknown") if trains else "Unknown"
+        # Extract destination
+        destination = params.get("destination", "Unknown")
+        if destination == "Unknown" and trains:
+             destination = trains[0].get("destination", "Unknown")
+        
+        # Extract page info
+        page_info = ui_state.get("page", "1/1")
         
         # Build header comment  
-        xml = '<!-- SCHEMA v1.2 | TRENI: dep=partenza, arr=arrivo, dur=minuti, chg=cambi | CLASSI: std=standard, prm=premium, bus=business, sil=silenzio, exe=executive | PREZZO: null=esaurito | BIKE: yes/no/cond | AZIONI: select=scegli, filter=filtra, back=indietro -->\n\n'
+        xml = '<!-- SCHEMA v1.5 | TRENI: dep=partenza, arr=arrivo, dur=minuti, chg=cambi | CLASSI: std=standard, prm=premium, bus=business, sil=silenzio, exe=executive | PREZZO: null=esaurito | BIKE: yes/no/cond | AZIONI: select=scegli, filter=filtra, back=indietro -->\n\n'
         
         # CTX block
-        xml += f'<ctx v="1.2" date="{date}" time="{ctx_time}" station="{origin}" lang="it"/>\n\n'
+        xml += f'<ctx date="{date}" time="{ctx_time}" station="{origin}" lang="it"/>\n\n'
         
         # UI block
-        can_flags = ui_state.get("can", {})
-        xml += f'<ui state="results" phase="choose_train" actions="select,filter,sort,back,help"/>\n\n'
+        actions = []
+        if ui_state.get("can", {}).get("next"): actions.append("next")
+        if ui_state.get("can", {}).get("prev"): actions.append("prev")
+        actions.extend(["select", "filter", "back", "show_info"])
+        actions_str = ",".join(actions)
         
-        # QUERY block - extract search params from first train
-        pax = "1"  # Default, could be extracted from context if available
-        xml += f'<query from="{origin}" to="{destination}" date="{date}" time="{ctx_time}" pax="{pax}"/>\n\n'
+        xml += f'<ui state="select" phase="choose_train" actions="{actions_str}" page="{page_info}"/>\n\n'
+        
+        # QUERY block
+        pax = "1"
+        xml += f'<query from="{origin}" to="{destination}" date="{date}" time="{ctx_time}" pax="{pax}" bikes="0"/>\n\n'
         
         # TRAINS block
         train_count = len(trains)
         if train_count == 0:
-            xml += '<trains count="0"/>'
+            xml += '<trains total="0"/>'
         else:
-            xml += f'<trains count="{train_count}">\n'
+            xml += f'<trains total="{train_count}" page="{page_info}">\n'
             
             for idx, train in enumerate(trains, 1):
                 # Get train type abbreviation
@@ -122,8 +133,14 @@ class ContextFormatter:
                 chg = train.get("changes", 0)
                 train_id = train.get("id", f"TRAIN{idx}")
                 
-                # Bike status
-                bike = "no"  # Default - could be enhanced
+                # Bike status logic v1.5
+                # FR/FA -> cond, ICN -> no, others -> yes
+                if type_abbr in ["FR", "FA"]:
+                    bike = "cond"
+                elif type_abbr == "ICN":
+                    bike = "no"
+                else:
+                    bike = "yes"
                 
                 xml += f'  <t pos="{idx}" id="{train_id}" dep="{dep}" arr="{arr}" dur="{dur}" type="{type_abbr}" chg="{chg}" bike="{bike}">\n'
                 
@@ -148,10 +165,11 @@ class ContextFormatter:
     
     @staticmethod
     def _format_customize(params: dict, ui_state: dict) -> str:
-        """Format customize phase with <selected>, <booking>, <availability>"""
+        """Format customize phase with <selected>, <booking>, <seats>"""
         ctx_time = params.get("ctx_time", "12:00")
         date = params.get("date", "2026-01-29")
         origin = params.get("origin", "Unknown")
+        page_info = ui_state.get("page", "1/1")
         
         # Parse trains to get selected train (assume first or extract from params)
         try:
@@ -165,26 +183,25 @@ class ContextFormatter:
         type_abbr = ContextFormatter.TRAIN_TYPE_MAP.get(train_type, "FR")
         dep = selected_train.get("dep", "00:00")
         arr = selected_train.get("arr", "00:00")
-        destination = selected_train.get("destination", "Unknown")
+        destination = params.get("destination", selected_train.get("destination", "Unknown"))
         price = selected_train.get("price", "100.00")
         
         # Build XML
-        xml = '<!-- SCHEMA v1.2 | SEAT: window=finestrino, aisle=corridoio | AZIONI: confirm=procedi, change_class=cambia, change_seat=cambia posto, back=indietro -->\n\n'
+        xml = '<!-- SCHEMA v1.5 | SEAT: window=finestrino, aisle=corridoio | AZIONI: confirm=procedi, change_class=cambia, change_seat=cambia posto, back=indietro -->\n\n'
         
-        xml += f'<ctx v="1.2" date="{date}" time="{ctx_time}" station="{origin}" lang="it"/>\n\n'
-        xml += '<ui state="customize" phase="select_seats" actions="confirm,change_class,change_seat,back" timeout="180"/>\n\n'
+        xml += f'<ctx date="{date}" time="{ctx_time}" station="{origin}" lang="it"/>\n\n'
+        xml += f'<ui state="customize" phase="select_seats" actions="confirm,change_class,change_seat,back,show_info" page="{page_info}"/>\n\n'
         
         xml += f'<selected train="{train_id}" type="{type_abbr}" class="std" dep="{dep}" arr="{arr}" route="{origin}→{destination}" unit="{price}"/>\n\n'
         
-        xml += '<booking pax="1" bikes="0" subtotal="' + str(price) + '">\n'
+        xml += '<booking pax="1" data="pending">\n'
         xml += '  <pax id="1" seat="" pref="window"/>\n'
+        xml += '  <contact email="false" phone="false"/>\n'
+        xml += '  <extras bikes="0" pets="0" luggage="0"/>\n'
         xml += '</booking>\n\n'
         
-        xml += '<availability car="4" class="std">\n'
-        xml += '  <row n="5">A,B,C,D</row>\n'
-        xml += '  <row n="6">A,B,C,D</row>\n'
-        xml += '  <row n="7">B,C</row>\n'
-        xml += '</availability>'
+        # Flattened seats
+        xml += f'<seats train="{train_id}" class="std" free="1A,1B,1C,1D,2A,2B,3A,3C,4A,4B,4D,5A,6B"/>'
         
         return xml
     
@@ -194,6 +211,7 @@ class ContextFormatter:
         ctx_time = params.get("ctx_time", "12:00")
         date = params.get("date", "2026-01-29")
         origin = params.get("origin", "Unknown")
+        page_info = ui_state.get("page", "1/1")
         
         # Parse ticket info if available
         try:
@@ -207,23 +225,25 @@ class ContextFormatter:
         total = ticket_info.get("total", "100.00")
         
         # Build XML
-        xml = '<!-- SCHEMA v1.2 | DELIVERY: print=stampa, sms=SMS, email=email | AZIONI: print, sms, email, new, help -->\n\n'
+        xml = '<!-- SCHEMA v1.5 | DELIVERY: print=stampa, sms=SMS, email=email | AZIONI: show_info, print, sms, email, new, help -->\n\n'
         
-        xml += f'<ctx v="1.2" date="{date}" time="{ctx_time}" station="{origin}" lang="it"/>\n\n'
-        xml += '<ui state="purchased" phase="delivery" actions="print,sms,email,new,help"/>\n\n'
+        xml += f'<ctx date="{date}" time="{ctx_time}" station="{origin}" lang="it"/>\n\n'
+        xml += f'<ui state="purchased" phase="delivery" actions="show_info,print,sms,email,new" page="{page_info}"/>\n\n'
         
-        xml += '<booking pax="1" bikes="0">\n'
+        xml += '<booking pax="1" data="complete">\n'
         xml += '  <pax id="1" seat="4A" car="4"/>\n'
+        xml += '  <contact email="true" phone="false"/>\n'
+        xml += '  <extras bikes="0" pets="0" luggage="0"/>\n'
         xml += '</booking>\n\n'
         
         xml += f'<ticket pnr="{pnr}" train="{train_id}" type="FR" class="std"\n'
         xml += f'        route="{origin}→Unknown" date="{date[-5:]}"\n'
-        xml += f'        dep="00:00" arr="00:00" platform="pending"\n'
-        xml += f'        total="{total}" delivery="pending"/>\n\n'
+        xml += f'        dep="00:00" arr="00:00" platform="5"\n'
+        xml += f'        unit="{total}" extras="0" total="{total}" delivery="pending"/>\n\n'
         
         xml += '<station_info>\n'
-        xml += '  <platform n="1" access="scale mobili"/>\n'
-        xml += '  <timing walk="5" boarding_opens="" boarding_closes=""/>\n'
+        xml += '  <platform number="5" access="scale mobili"/>\n'
+        xml += '  <timing walk_minutes="5" boarding_opens="" boarding_closes=""/>\n'
         xml += '  <services wc="binario 1" bar="piano superiore"/>\n'
         xml += '</station_info>'
         

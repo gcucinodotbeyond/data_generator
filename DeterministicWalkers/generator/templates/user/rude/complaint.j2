@@ -1,0 +1,39 @@
+{# VARIABLES: verbose #}
+
+{%- set rude_phrases = [
+    "Mamma mia non funziona mai nulla siete degli idioti",
+    "Siete una manica di incompetenti, non va niente!",
+    "Che schifo di servizio, mi sono stancato di voi",
+    "Siete vergognosi, ogni volta è la stessa storia",
+    "Non sapete fare il vostro lavoro, vergogna!"
+] -%}
+
+{%- set rude_service = [
+    "Sempre ritardi! Siete dei falliti",
+    "Ancora sciopero? Ma andate a lavorare sul serio!",
+    "Treni che non passano mai, siete ridicoli"
+] -%}
+
+{%- set rude_price = [
+    "Prezzi da furto, siete dei ladri!",
+    "Ma vi sembra il caso di far pagare così tanto? Ladri",
+    "Non pago queste cifre per un servizio così scadente"
+] -%}
+
+{%- set rude_ui = [
+    "Questa macchina è una trappola, non funziona niente",
+    "Chi ha progettato questo schermo? È un idiota",
+    "Non si capisce nulla, cambiate interfaccia!"
+] -%}
+
+{% if verbose == 'concise' %}
+{{ to_json({"text": "Schifo.", "variables": {"topic": "complaint"}}) }}
+{{ to_json({"text": "Ladri!", "variables": {"topic": "complaint"}}) }}
+{% elif verbose == 'verbose' %}
+{{ to_json({"text": "Sono stufo marcio di questo servizio che non funziona mai, siete una manica di incompetenti e non sapete fare il vostro lavoro!", "variables": {"topic": "complaint"}}) }}
+{{ to_json({"text": "Ogni volta che devo prendere un treno è una tragedia, prezzi da furto e ritardi ovunque. Siete veramente una vergogna nazionale!", "variables": {"topic": "complaint"}}) }}
+{% else %} {# standard #}
+    {% for p in rude_phrases + rude_service + rude_price + rude_ui %}
+{{ to_json({"text": p, "variables": {"topic": "complaint"}}) }}
+    {% endfor %}
+{% endif %}

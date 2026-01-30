@@ -1,0 +1,35 @@
+{# VARIABLES: sentiment (positive/negative/neutral), verbose #}
+
+{%- set farewells = [
+    "Basta", "Chiudo", "Ciao", "Addio"
+] -%}
+
+{%- set neg_feedback = [
+    "Non funziona mai nulla", "Pessimo servizio", "Troppo lento", "Non ho capito niente", 
+    "È stato difficile", "Interfaccia confusa", "Non sei d'aiuto", "Esperienza negativa"
+] -%}
+
+{# --- CONCISE FAREWELL --- #}
+{% if verbose == 'concise' %}
+{{ to_json({"text": "Basta", "variables": {}}) }}
+{{ to_json({"text": "Ciao", "variables": {}}) }}
+{% endif %}
+
+{# --- VERBOSE FAREWELL --- #}
+{% if verbose == 'verbose' %}
+{{ to_json({"text": "Non ne posso più di questo servizio lento e confusionario, non capisci proprio nulla. Chiudo qui.", "variables": {}}) }}
+{{ to_json({"text": "Pessima esperienza, mi hai fatto solo perdere tempo inutilmente. Non mi serve più niente, addio.", "variables": {}}) }}
+{% endif %}
+
+{# --- STANDARD FAREWELLS --- #}
+{% if verbose == 'standard' %}
+    {# --- NEGATIVE FEEDBACK COMBINATIONS --- #}
+    {%- for n in neg_feedback %}
+    {%- for f in farewells %}
+{{ to_json({"text": n ~ ". " ~ f, "variables": {}}) }}
+    {% endfor %}
+    {% endfor %}
+
+{{ to_json({"text": "Basta, chiudo.", "variables": {}}) }}
+{{ to_json({"text": "Che schifo di servizio.", "variables": {}}) }}
+{% endif %}

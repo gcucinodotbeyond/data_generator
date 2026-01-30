@@ -6,10 +6,6 @@
             {{ to_json({"text": "Avanti grazie", "variables": {}}) }}
             {{ to_json({"text": "Altro per favore", "variables": {}}) }}
             {{ to_json({"text": "Prossimi", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Avanti!", "variables": {}}) }}
-            {{ to_json({"text": "Muoviti", "variables": {}}) }}
-            {{ to_json({"text": "Ancore", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Avanti", "variables": {}}) }}
             {{ to_json({"text": "Altri", "variables": {}}) }}
@@ -21,10 +17,6 @@
             {{ to_json({"text": "Saresti così gentile da mostrarmi le opzioni successive della lista?", "variables": {}}) }}
             {{ to_json({"text": "Per favore, potresti farmi vedere se ci sono altre soluzioni dopo queste?", "variables": {}}) }}
             {{ to_json({"text": "Vorrei vedere i prossimi treni nell'elenco, se possibile.", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Fammi vedere altri treni, muoviti che questi non mi piacciono.", "variables": {}}) }}
-            {{ to_json({"text": "Ancore questi? Vai avanti e fammi vedere roba seria.", "variables": {}}) }}
-            {{ to_json({"text": "Ma non c'è altro? Passa oltre, veloci.", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Fammi vedere i prossimi treni perché questi non mi convincono molto.", "variables": {}}) }}
             {{ to_json({"text": "Sposta la pagina in avanti per vedere le partenze successive.", "variables": {}}) }}
@@ -35,10 +27,6 @@
             {{ to_json({"text": "Vai avanti per favore", "variables": {}}) }}
             {{ to_json({"text": "Mostrami i prossimi, grazie", "variables": {}}) }}
             {{ to_json({"text": "C'è altro dopo per favore?", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Vai avanti e basta", "variables": {}}) }}
-            {{ to_json({"text": "Mostrami altri treni subito", "variables": {}}) }}
-            {{ to_json({"text": "Scendi, muoviti", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Vai avanti", "variables": {}}) }}
             {{ to_json({"text": "Mostrami i prossimi risultati", "variables": {}}) }}
@@ -53,10 +41,6 @@
             {{ to_json({"text": "Indietro grazie", "variables": {}}) }}
             {{ to_json({"text": "Prima per favore", "variables": {}}) }}
             {{ to_json({"text": "Pagina precedente grazie", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Indietro!", "variables": {}}) }}
-            {{ to_json({"text": "Torna su", "variables": {}}) }}
-            {{ to_json({"text": "Prima!", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Indietro", "variables": {}}) }}
             {{ to_json({"text": "Prima", "variables": {}}) }}
@@ -69,10 +53,6 @@
             {{ to_json({"text": "Potresti cortesemente tornare alla schermata precedente? Vorrei ricontrollare i primi risultati.", "variables": {}}) }}
             {{ to_json({"text": "Saresti così gentile da mostrarmi di nuovo i treni che abbiamo visto poco fa?", "variables": {}}) }}
             {{ to_json({"text": "Se non disturbo, vorrei tornare indietro di una pagina.", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Ti ho detto di tornare indietro, non hai capito?", "variables": {}}) }}
-            {{ to_json({"text": "Rifai vedere quelli di prima, muoviti.", "variables": {}}) }}
-            {{ to_json({"text": "Torna su, non perdere tempo con questi.", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Torna a quelli di prima, volevo rivedere meglio le prime soluzioni che hai trovato.", "variables": {}}) }}
             {{ to_json({"text": "Vai indietro perché mi sembra che i primi treni fossero più convenienti.", "variables": {}}) }}
@@ -83,10 +63,6 @@
             {{ to_json({"text": "Torna a quelli di prima per favore", "variables": {}}) }}
             {{ to_json({"text": "Vai indietro grazie", "variables": {}}) }}
             {{ to_json({"text": "Vorrei rivedere quelli precedenti", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Torna indietro subito", "variables": {}}) }}
-            {{ to_json({"text": "Rifai vedere quelli di prima", "variables": {}}) }}
-            {{ to_json({"text": "Vai su, sbrigati", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Torna a quelli di prima", "variables": {}}) }}
             {{ to_json({"text": "Vai indietro", "variables": {}}) }}
@@ -101,10 +77,6 @@
             {{ to_json({"text": "Annulla grazie", "variables": {}}) }}
             {{ to_json({"text": "Inizio per favore", "variables": {}}) }}
             {{ to_json({"text": "Reset", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Annulla!", "variables": {}}) }}
-            {{ to_json({"text": "Basta", "variables": {}}) }}
-            {{ to_json({"text": "Chiudi tutto", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Annulla", "variables": {}}) }}
             {{ to_json({"text": "Inizio", "variables": {}}) }}
@@ -116,10 +88,6 @@
             {{ to_json({"text": "Scusa, avrei bisogno di ricominciare la ricerca dall'inizio, potresti aiutarmi?", "variables": {}}) }}
             {{ to_json({"text": "Sarebbe possibile annullare tutto e tornare alla pagina principale?", "variables": {}}) }}
             {{ to_json({"text": "Vorrei cambiare tutto e ripartire da zero, se non è un problema.", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Che disastro, cancella tutto e fammi ricominciare.", "variables": {}}) }}
-            {{ to_json({"text": "Reset. Subito.", "variables": {}}) }}
-            {{ to_json({"text": "Non va bene niente, torna all'inizio e vedi di fare meglio.", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Annulla tutto e ricomincia da capo, ho cambiato idea sul viaggio.", "variables": {}}) }}
             {{ to_json({"text": "Basta così, torna all'inizio che devo inserire dati diversi.", "variables": {}}) }}
@@ -130,10 +98,6 @@
             {{ to_json({"text": "Annulla tutto per favore", "variables": {}}) }}
             {{ to_json({"text": "Vorrei tornare all'inizio se possibile", "variables": {}}) }}
             {{ to_json({"text": "Possiamo ricominciare da capo?", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Annulla tutto subito", "variables": {}}) }}
-            {{ to_json({"text": "Torna all'inizio e basta", "variables": {}}) }}
-            {{ to_json({"text": "Ricomincia che è meglio", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Annulla tutto", "variables": {}}) }}
             {{ to_json({"text": "Torna all'inizio", "variables": {}}) }}
@@ -148,10 +112,6 @@
             {{ to_json({"text": "Stato grazie", "variables": {}}) }}
             {{ to_json({"text": "Riepilogo per favore", "variables": {}}) }}
             {{ to_json({"text": "Info", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Stato!", "variables": {}}) }}
-            {{ to_json({"text": "Dati!", "variables": {}}) }}
-            {{ to_json({"text": "Allora?", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Stato?", "variables": {}}) }}
             {{ to_json({"text": "Riepilogo", "variables": {}}) }}
@@ -163,10 +123,6 @@
             {{ to_json({"text": "Potresti gentilmente farmi un riepilogo di quello che ho selezionato finora per favore?", "variables": {}}) }}
             {{ to_json({"text": "Saresti così cortese da dirmi a che punto è la mia prenotazione?", "variables": {}}) }}
             {{ to_json({"text": "Per favore, mi ricapitoli i dettagli del viaggio che ho scelto?", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Allora? A che punto siamo? Fammi vedere lo stato.", "variables": {}}) }}
-            {{ to_json({"text": "Fammi il riepilogo, non ho tutto il giorno.", "variables": {}}) }}
-            {{ to_json({"text": "Voglio vedere cosa hai combinato finora, mostramelo.", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Voglio vedere il riepilogo del mio ordine prima di procedere.", "variables": {}}) }}
             {{ to_json({"text": "Fammi vedere bene cosa ho scelto e quanto sto spendendo.", "variables": {}}) }}
@@ -177,10 +133,6 @@
             {{ to_json({"text": "A che punto siamo per favore?", "variables": {}}) }}
             {{ to_json({"text": "Mi fai un riepilogo grazie?", "variables": {}}) }}
             {{ to_json({"text": "Cosa ho selezionato finora?", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Datti una mossa col riepilogo", "variables": {}}) }}
-            {{ to_json({"text": "Fammi vedere subito cosa ho scelto", "variables": {}}) }}
-            {{ to_json({"text": "Voglio lo stato attuale", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "A che punto siamo?", "variables": {}}) }}
             {{ to_json({"text": "Fammi un riepilogo", "variables": {}}) }}
@@ -189,80 +141,101 @@
         {% endif %}
     {% endif %}
 
-{%- elif action == "show_changes" %}
-    {% if verbose == 'concise' %}
+{%- elif action == "show_info" %}
+    {%- if target == "train" %}
+        {% if verbose == 'concise' %}
+            {% if rudeness == 'polite' %}
+                {{ to_json({"text": "Cambi grazie", "variables": {}}) }}
+                {{ to_json({"text": "Diretto per favore?", "variables": {}}) }}
+                {{ to_json({"text": "Fermate", "variables": {}}) }}
+            {% else %}
+                {{ to_json({"text": "Cambi?", "variables": {}}) }}
+                {{ to_json({"text": "Diretto?", "variables": {}}) }}
+                {{ to_json({"text": "Fermate?", "variables": {}}) }}
+                {{ to_json({"text": "Soste?", "variables": {}}) }}
+            {% endif %}
+        {% elif verbose == 'verbose' %}
+            {% if rudeness == 'polite' %}
+                {% if target_train %}
+                    {{ to_json({"text": "Sapresti dirmi se questo treno prevede dei cambi o delle fermate intermedie, per favore?", "variables": {}}) }}
+                    {{ to_json({"text": "Saresti così gentile da controllare se il viaggio è diretto?", "variables": {}}) }}
+                    {{ to_json({"text": "Vorrei sapere se ci sono delle soste lungo il tragitto, grazie.", "variables": {}}) }}
+                {% elif position_word %}
+                    {{ to_json({"text": "Saresti così gentile da dirmi se il " ~ position_word ~ " treno ha dei cambi?", "variables": {}}) }}
+                {% endif %}
+            {% else %} {# neutral #}
+                {% if target_train %}
+                    {{ to_json({"text": "Questo treno ha dei cambi o delle fermate intermedie che dovrei conoscere?", "variables": {}}) }}
+                    {{ to_json({"text": "Volevo sapere se il risultato della lista è un treno diretto o se devo scendere.", "variables": {}}) }}
+                    {{ to_json({"text": "Fammi vedere l'elenco delle fermate di questa soluzione.", "variables": {}}) }}
+                {% elif position_word %}
+                    {{ to_json({"text": "Volevo sapere se il " ~ position_word ~ " risultato della lista è un treno diretto.", "variables": {}}) }}
+                {% endif %}
+            {% endif %}
+        {% else %} {# standard #}
+            {% if rudeness == 'polite' %}
+                {% if target_train %}
+                    {{ to_json({"text": "Questo treno ha cambi, per favore?", "variables": {}}) }}
+                    {{ to_json({"text": "È diretto per caso?", "variables": {}}) }}
+                    {{ to_json({"text": "Mi dici dove si ferma, grazie?", "variables": {}}) }}
+                {% elif position_word %}
+                    {{ to_json({"text": "Il " ~ position_word ~ " ha cambi per favore?", "variables": {}}) }}
+                {% endif %}
+            {% else %} {# neutral #}
+                {% if target_train %}
+                    {{ to_json({"text": "Questo treno ha cambi?", "variables": {}}) }}
+                    {{ to_json({"text": "È diretto?", "variables": {}}) }}
+                    {{ to_json({"text": "Dove si ferma?", "variables": {}}) }}
+                    {{ to_json({"text": "Ci sono coincidenze?", "variables": {}}) }}
+                {% elif position_word %}
+                    {{ to_json({"text": "Il " ~ position_word ~ " ha cambi?", "variables": {}}) }}
+                    {{ to_json({"text": "Il " ~ position_word ~ " è diretto?", "variables": {}}) }}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+    {%- elif target == "station" %}
         {% if rudeness == 'polite' %}
-            {{ to_json({"text": "Cambi grazie", "variables": {}}) }}
-            {{ to_json({"text": "Diretto per favore?", "variables": {}}) }}
-            {{ to_json({"text": "Fermate", "variables": {}}) }}
-        {% elif rudeness == 'rude' %}
-            {{ to_json({"text": "Cambi!", "variables": {}}) }}
-            {{ to_json({"text": "Diretto o no?", "variables": {}}) }}
-            {{ to_json({"text": "Fermate!", "variables": {}}) }}
+            {{ to_json({"text": "Dove sono i bagni per favore?", "variables": {}}) }}
+            {{ to_json({"text": "Scusa, dov'è la biglietteria?", "variables": {}}) }}
+            {{ to_json({"text": "Mi dai info sulla stazione?", "variables": {}}) }}
         {% else %}
-            {{ to_json({"text": "Cambi?", "variables": {}}) }}
-            {{ to_json({"text": "Diretto?", "variables": {}}) }}
-            {{ to_json({"text": "Fermate?", "variables": {}}) }}
-            {{ to_json({"text": "Soste?", "variables": {}}) }}
+            {{ to_json({"text": "Dove sono i bagni?", "variables": {}}) }}
+            {{ to_json({"text": "Dov'è la biglietteria?", "variables": {}}) }}
+            {{ to_json({"text": "Info stazione", "variables": {}}) }}
         {% endif %}
-    {% elif verbose == 'verbose' %}
+
+    {%- elif target == "city" %}
         {% if rudeness == 'polite' %}
-            {% if target_train %}
-                {{ to_json({"text": "Sapresti dirmi se questo treno prevede dei cambi o delle fermate intermedie, per favore?", "variables": {}}) }}
-                {{ to_json({"text": "Saresti così gentile da controllare se il viaggio è diretto?", "variables": {}}) }}
-                {{ to_json({"text": "Vorrei sapere se ci sono delle soste lungo il tragitto, grazie.", "variables": {}}) }}
-            {% elif position_word %}
-                {{ to_json({"text": "Saresti così gentile da dirmi se il " ~ position_word ~ " treno ha dei cambi?", "variables": {}}) }}
-            {% endif %}
-        {% elif rudeness == 'rude' %}
-            {% if target_train %}
-                {{ to_json({"text": "Spero che non ci siano cambi, dimmi subito se è diretto.", "variables": {}}) }}
-                {{ to_json({"text": "Dove ferma sto treno? Fammi vedere le soste.", "variables": {}}) }}
-                {{ to_json({"text": "Cambi? Non ho voglia di fare scale, dimmi se devo scendere.", "variables": {}}) }}
-            {% elif position_word %}
-                {{ to_json({"text": "Il " ~ position_word ~ " ha cambi? Muoviti a dirmelo.", "variables": {}}) }}
-            {% endif %}
-        {% else %} {# neutral #}
-            {% if target_train %}
-                {{ to_json({"text": "Questo treno ha dei cambi o delle fermate intermedie che dovrei conoscere?", "variables": {}}) }}
-                {{ to_json({"text": "Volevo sapere se il risultato della lista è un treno diretto o se devo scendere.", "variables": {}}) }}
-                {{ to_json({"text": "Fammi vedere l'elenco delle fermate di questa soluzione.", "variables": {}}) }}
-            {% elif position_word %}
-                {{ to_json({"text": "Volevo sapere se il " ~ position_word ~ " risultato della lista è un treno diretto.", "variables": {}}) }}
-            {% endif %}
+            {{ to_json({"text": "Come arrivo in centro per favore?", "variables": {}}) }}
+            {{ to_json({"text": "Cosa posso vedere qui vicino?", "variables": {}}) }}
+            {{ to_json({"text": "Dov'è l'ufficio turistico grazie?", "variables": {}}) }}
+        {% else %}
+            {{ to_json({"text": "Come arrivo in centro?", "variables": {}}) }}
+            {{ to_json({"text": "Cosa posso vedere?", "variables": {}}) }}
+            {{ to_json({"text": "Dov'è l'ufficio turistico?", "variables": {}}) }}
         {% endif %}
-    {% else %} {# standard #}
+
+    {%- elif target == "help" %}
         {% if rudeness == 'polite' %}
-            {% if target_train %}
-                {{ to_json({"text": "Questo treno ha cambi, per favore?", "variables": {}}) }}
-                {{ to_json({"text": "È diretto per caso?", "variables": {}}) }}
-                {{ to_json({"text": "Mi dici dove si ferma, grazie?", "variables": {}}) }}
-            {% elif position_word %}
-                {{ to_json({"text": "Il " ~ position_word ~ " ha cambi per favore?", "variables": {}}) }}
-            {% endif %}
-        {% elif rudeness == 'rude' %}
-            {% if target_train %}
-                {{ to_json({"text": "Ha cambi sto treno?", "variables": {}}) }}
-                {{ to_json({"text": "Dimmi se è diretto subito", "variables": {}}) }}
-                {{ to_json({"text": "Fammi vedere le fermate e basta", "variables": {}}) }}
-            {% elif position_word %}
-                {{ to_json({"text": "Il " ~ position_word ~ " è diretto? Rispondi.", "variables": {}}) }}
-            {% endif %}
-        {% else %} {# neutral #}
-            {% if target_train %}
-                {{ to_json({"text": "Questo treno ha cambi?", "variables": {}}) }}
-                {{ to_json({"text": "È diretto?", "variables": {}}) }}
-                {{ to_json({"text": "Dove si ferma?", "variables": {}}) }}
-                {{ to_json({"text": "Ci sono coincidenze?", "variables": {}}) }}
-            {% elif position_word %}
-                {{ to_json({"text": "Il " ~ position_word ~ " ha cambi?", "variables": {}}) }}
-                {{ to_json({"text": "Il " ~ position_word ~ " è diretto?", "variables": {}}) }}
-            {% endif %}
+            {{ to_json({"text": "Come funziona per favore?", "variables": {}}) }}
+            {{ to_json({"text": "Mi aiuti a capire come si usa?", "variables": {}}) }}
+        {% else %}
+            {{ to_json({"text": "Come funziona?", "variables": {}}) }}
+            {{ to_json({"text": "Aiuto", "variables": {}}) }}
         {% endif %}
-    {% endif %}
+
+    {%- elif target == "ticket" %}
+        {% if rudeness == 'polite' %}
+            {{ to_json({"text": "Mostrami il biglietto grazie", "variables": {}}) }}
+            {{ to_json({"text": "Dettagli acquisto per favore", "variables": {}}) }}
+        {% else %}
+            {{ to_json({"text": "Mostra il biglietto", "variables": {}}) }}
+            {{ to_json({"text": "Dettagli acquisto", "variables": {}}) }}
+        {% endif %}
+    {%- endif %}
 
 {%- else %}
     {{ to_json({"text": "Menu", "variables": {}}) }}
     {{ to_json({"text": "Aiuto", "variables": {}}) }}
 {%- endif %}
-

@@ -10,10 +10,7 @@
 
 {# --- VERBOSE REFUSAL --- #}
 {% elif verbose == 'verbose' %}
-    {% if rudeness == 'rude' %}
-{{ to_json({"text": "No, non ci siamo proprio, questa soluzione fa schifo e non mi serve a niente. Annulla tutto.", "variables": {}}) }}
-{{ to_json({"text": "Ma cosa mi proponi? Non vedi che non va bene? Cancella subito e non farmi perdere altro tempo.", "variables": {}}) }}
-    {% elif rudeness == 'polite' %}
+    {% if rudeness == 'polite' %}
 {{ to_json({"text": "Mi scusi, ma temo che questa opzione non faccia al caso mio, preferirei non procedere oltre.", "variables": {}}) }}
 {{ to_json({"text": "La ringrazio per la proposta, ma non mi convince del tutto, quindi preferirei cercare qualcos'altro.", "variables": {}}) }}
     {% else %}
@@ -27,7 +24,7 @@
     {%- for neg in negatives %}
 {{ to_json({"text": neg, "variables": {}}) }}
 {{ to_json({"text": neg ~ ", grazie", "variables": {}}) }}
-    {%- endfor %}
+    {% endfor %}
 
     {# --- SINGULAR CONTEXT (count == 1 or undefined) --- #}
     {% if count is not defined or count == 1 %}
@@ -36,8 +33,8 @@
         {%- for corr in corrections_singular %}
 {{ to_json({"text": neg ~ ", " ~ corr, "variables": {}}) }}
 {{ to_json({"text": corr, "variables": {}}) }}
-        {%- endfor %}
-        {%- endfor %}
+        {% endfor %}
+        {% endfor %}
 
         {# Contextual Singular #}
         {% if refused_time %}
@@ -53,7 +50,7 @@
         {%- for corr in corrections_plural %}
 {{ to_json({"text": neg ~ ", " ~ corr, "variables": {}}) }}
 {{ to_json({"text": corr, "variables": {}}) }}
-        {%- endfor %}
-        {%- endfor %}
+        {% endfor %}
+        {% endfor %}
     {% endif %}
 {% endif %}

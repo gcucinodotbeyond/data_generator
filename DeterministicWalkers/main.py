@@ -18,6 +18,7 @@ def main():
     parser = argparse.ArgumentParser(description="Deterministic + LLM Data Generator")
     parser.add_argument("--no-llm", action="store_true", help="Skip LLM paraphrasing")
     parser.add_argument("--dialogues", type=int, default=100, help="Number of full dialogues to generate")
+    parser.add_argument("--scenario", type=str, help="Name of the specific scenario to generate (e.g., 'ui_heavy')")
     args = parser.parse_args()
 
     # Ensure output dirs exist and are clean
@@ -55,6 +56,16 @@ def main():
                     print(f"[System] Loaded distribution config from {dist_path}")
             except Exception as e:
                 print(f"Warning: Could not load distribution_config.json: {e}")
+
+        # Override scenario if flag provided
+        if args.scenario:
+            scenario_path = os.path.join(os.path.dirname(__file__), 'generator', 'scenarios', f"{args.scenario}.txt")
+            if os.path.exists(scenario_path):
+                print(f"[System] Forcing scenario: {args.scenario}")
+                dist_config["scenario_distribution"] = {args.scenario: 1.0}
+            else:
+                print(f"Error: Scenario '{args.scenario}' not found in generator/scenarios/")
+                return
 
         dial_gen = DialogueGenerator(enhancer=enhancer, distribution=dist_config)
         dialogues = dial_gen.generate_dialogues(count=args.dialogues)

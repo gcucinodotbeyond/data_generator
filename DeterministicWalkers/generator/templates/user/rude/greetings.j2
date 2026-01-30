@@ -1,0 +1,22 @@
+{# VARIABLES: verbose #}
+
+{% if verbose == 'concise' %}
+    {{ to_json({"text": "Oh!", "variables": {}}) }}
+    {{ to_json({"text": "Senti", "variables": {}}) }}
+    {{ to_json({"text": "Uè!", "variables": {}}) }}
+    {{ to_json({"text": "Aò", "variables": {}}) }}
+    {{ to_json({"text": "Muoviti", "variables": {}}) }}
+    {{ to_json({"text": "Allora", "variables": {}}) }}
+
+{% elif verbose == 'verbose' %}
+    {{ to_json({"text": "Vediamo se sto coso inutile funziona... Fammi vedere subito 'sti treni.", "variables": {}}) }}
+    {{ to_json({"text": "Ascolta, non ho né tempo né voglia di chiacchiere. Dimmi che treni ci sono e muoviti.", "variables": {}}) }}
+    {{ to_json({"text": "Vediamo se sei capace di fare qualcosa di utile. Trovami un biglietto decente, che ho fretta.", "variables": {}}) }}
+
+{% else %} {# standard #}
+    {{ to_json({"text": "Senti, fammi vedere i treni", "variables": {}}) }}
+    {{ to_json({"text": "Oh, sbrigati che ho fretta", "variables": {}}) }}
+    {{ to_json({"text": "Uè, voglio un biglietto subito", "variables": {}}) }}
+    {{ to_json({"text": "Aò, rispondi che devo partire", "variables": {}}) }}
+    {{ to_json({"text": "Ascolta, muoviti", "variables": {}}) }}
+{% endif %}

@@ -1,0 +1,48 @@
+{# VARIABLES: pet, luggage, service, topic, verbose #}
+
+{# --- PETS --- #}
+{% if pet or topic == 'pets' %}
+{% set p = pet or "cane" %}
+{% if verbose == 'concise' %}
+{{ to_json({"text": p ~ "?", "variables": {"topic": "pets"}}) }}
+{{ to_json({"text": "Posto " ~ p ~ "?", "variables": {"topic": "pets"}}) }}
+{% elif verbose == 'verbose' %}
+{{ to_json({"text": "Ascolta, ho questo " ~ p ~ " con me, può salire o mi tocca lasciarlo a terra? E vedi di non farmi pagare extra.", "variables": {"topic": "pets"}}) }}
+{% else %} {# standard #}
+{{ to_json({"text": "Il " ~ p ~ " può salire?", "variables": {"topic": "pets"}}) }}
+{{ to_json({"text": "Devo pagare pure per il " ~ p ~ "?", "variables": {"topic": "pets"}}) }}
+{% endif %}
+{% endif %}
+
+{# --- LUGGAGE --- #}
+{% if luggage or topic == 'luggage' %}
+{% set l = luggage or "zaino" %}
+{% if verbose == 'concise' %}
+{{ to_json({"text": "Spazio " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
+{{ to_json({"text": "Posto " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
+{% elif verbose == 'verbose' %}
+{{ to_json({"text": "E ora dove cavolo metto questo " ~ l ~ "? C'è uno spazio decente o devo tenerlo in mezzo ai piedi?", "variables": {"topic": "luggage"}}) }}
+{% else %} {# standard #}
+{{ to_json({"text": "Dove metto " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
+{{ to_json({"text": "C'è spazio o devo tenerlo in braccio?", "variables": {"topic": "luggage"}}) }}
+{% endif %}
+{% endif %}
+
+{# --- SERVICES --- #}
+{% if service or topic == 'services' %}
+{% set s = service or "wifi" %}
+{% if verbose == 'concise' %}
+{{ to_json({"text": s ~ "?", "variables": {"topic": "services"}}) }}
+{{ to_json({"text": "Funziona " ~ s ~ "?", "variables": {"topic": "services"}}) }}
+{% elif verbose == 'verbose' %}
+{{ to_json({"text": "Spero che almeno il " ~ s ~ " funzioni decentemente, non come l'ultima volta che era tutto bloccato.", "variables": {"topic": "services"}}) }}
+{% else %} {# standard #}
+{{ to_json({"text": "Almeno il " ~ s ~ " c'è?", "variables": {"topic": "services"}}) }}
+{{ to_json({"text": "Il " ~ s ~ " funziona o è la solita roba?", "variables": {"topic": "services"}}) }}
+{% endif %}
+{% endif %}
+
+{# --- DYNAMIC PASS-THROUGH (from JSON dataset) --- #}
+{% if question %}
+{{ to_json({"text": question, "variables": {"topic": topic or "general"}}) }}
+{% endif %}

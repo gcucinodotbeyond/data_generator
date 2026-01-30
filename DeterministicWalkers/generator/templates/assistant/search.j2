@@ -1,0 +1,54 @@
+{# VARIABLES: category (required), plus context-specific vars #}
+
+{# --- SEARCHING --- #}
+{%- if category == "searching" %}
+    {{ to_json({"text": "Sto cercando...", "variables": {}}) }}
+    {{ to_json({"text": "Un attimo, controllo subito.", "variables": {}}) }}
+    {{ to_json({"text": "Verifico la disponibilità...", "variables": {}}) }}
+    {{ to_json({"text": "Controllo i treni per te.", "variables": {}}) }}
+    {{ to_json({"text": "Dammi un secondo per cercare le migliori opzioni.", "variables": {}}) }}
+    {{ to_json({"text": "Sto consultando gli orari, attendi un istante.", "variables": {}}) }}
+    {{ to_json({"text": "Vediamo cosa riesco a trovare...", "variables": {}}) }}
+{%- endif %}
+
+{# --- SEARCH SUCCESS --- #}
+{%- if category == "search_success" %}
+    {# Requires: n_trains, destination, first_dep #}
+    {%- if n_trains == 1 %}
+        {{ to_json({"text": "😊 Ho trovato una soluzione per " ~ destination ~ ". Parte alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Ecco qui! C'è un treno per " ~ destination ~ " alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Ho trovato un'opzione. Parte alle " ~ first_dep ~ ". Ti va bene?", "variables": {}}) }}
+        {{ to_json({"text": "Trovato! Un collegamento per " ~ destination ~ " in partenza alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "C'è un solo treno disponibile per " ~ destination ~ ", parte alle " ~ first_dep ~ ".", "variables": {}}) }}
+    {%- else %}
+        {{ to_json({"text": "😊 Ho trovato " ~ n_trains ~ " soluzioni. La prima per " ~ destination ~ " parte alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Ecco qui! Ci sono " ~ n_trains ~ " treni per " ~ destination ~ ". Il primo è alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "🙂 Ho trovato diverse opzioni. La prima parte alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Ho trovato " ~ n_trains ~ " opzioni. Quale preferisci?", "variables": {}}) }}
+        {{ to_json({"text": "Ci sono diverse soluzioni. Preferisci quella delle " ~ first_dep ~ " o un'altra?", "variables": {}}) }}
+        {{ to_json({"text": "Ottime notizie, ci sono " ~ n_trains ~ " alternative. La prima parte alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Ho " ~ n_trains ~ " possibilità per te. Iniziamo con quella delle " ~ first_dep ~ "?", "variables": {}}) }}
+    {%- endif %}
+{%- endif %}
+
+{# --- SEARCH EMPTY --- #}
+{%- if category == "search_empty" %}
+    {# Requires: destination #}
+    {{ to_json({"text": "😔 Non ho trovato treni per " ~ destination ~ ".", "variables": {}}) }}
+    {{ to_json({"text": "Mi dispiace, non ci sono soluzioni per " ~ destination ~ " in questo momento.", "variables": {}}) }}
+    {{ to_json({"text": "😔 Nessun treno trovato. Vuoi provare un altro orario?", "variables": {}}) }}
+    {{ to_json({"text": "Purtroppo la ricerca non ha dato risultati per " ~ destination ~ ".", "variables": {}}) }}
+    {{ to_json({"text": "Sembra che non ci siano treni disponibili per la destinazione richiesta.", "variables": {}}) }}
+    {{ to_json({"text": "Non trovo nulla per " ~ destination ~ ". Possiamo provare con parametri diversi?", "variables": {}}) }}
+{%- endif %}
+
+{# --- ASK PASSENGERS --- #}
+{%- if category == "ask_passengers" %}
+    {{ to_json({"text": "Per quanti passeggeri devo cercare? 😊", "variables": {}}) }}
+    {{ to_json({"text": "Quanti siete?", "variables": {}}) }}
+    {{ to_json({"text": "Per quante persone?", "variables": {}}) }}
+    {{ to_json({"text": "Quanti passeggeri viaggiano?", "variables": {}}) }}
+    {{ to_json({"text": "In quanti viaggiate?", "variables": {}}) }}
+    {{ to_json({"text": "Quanti biglietti ti servono?", "variables": {}}) }}
+    {{ to_json({"text": "Per quante persone cerco? 🙂", "variables": {}}) }}
+{%- endif %}

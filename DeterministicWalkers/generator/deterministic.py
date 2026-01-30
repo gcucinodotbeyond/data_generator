@@ -35,6 +35,7 @@ class DeterministicGenerator:
 
         self.dates = ["oggi", "domani", "venerdì prossimo", "il 15"]
     
+    
     def generate(self):
         all_results = []
         
@@ -71,101 +72,138 @@ class DeterministicGenerator:
         print(f"[Deterministic] Generated {len(results_sorted)} total unique utterances.")
         return results_sorted
 
+    def _get_template_path(self, basename, rudeness):
+        if rudeness == 'rude':
+            return f"user/rude/{basename}"
+        return f"user/non-rude/{basename}"
+
     def _generate_search_trains(self):
-        template = self.env.get_template('utterances.j2')
         unique_items = set()
-        
         combinations = list(itertools.product(self.destinations, self.times))
         
-        for dest, time_obj in combinations:
-            # 1. Standard search (no date)
-            rendered_block = template.render(
-                destination=dest, 
-                time=time_obj["value"],
-                time_type=time_obj["type"],
-                to_json=json.dumps
-            )
-            self._parse_and_add(rendered_block, unique_items)
-            
-            # 2. Add search with date (pick one date for variety)
-            date_val = random.choice(self.dates)
-            rendered_block_with_date = template.render(
-                destination=dest, 
-                time=time_obj["value"],
-                time_type=time_obj["type"],
-                date=date_val,
-                to_json=json.dumps
-            )
-            self._parse_and_add(rendered_block_with_date, unique_items)
+        for rudeness in ['rude', 'polite', 'neutral']:
+            tmpl_path = self._get_template_path('utterances.j2', rudeness)
+            try:
+                template = self.env.get_template(tmpl_path)
+            except jinja2.TemplateNotFound:
+                continue
+
+            for dest, time_obj in combinations:
+                # 1. Standard search (no date)
+                rendered_block = template.render(
+                    destination=dest, 
+                    time=time_obj["value"],
+                    time_type=time_obj["type"],
+                    rudeness=rudeness,
+                    verbose='standard',
+                    to_json=json.dumps
+                )
+                self._parse_and_add(rendered_block, unique_items)
+                
+                # 2. Add search with date (pick one date for variety)
+                date_val = random.choice(self.dates)
+                rendered_block_with_date = template.render(
+                    destination=dest, 
+                    time=time_obj["value"],
+                    time_type=time_obj["type"],
+                    date=date_val,
+                    rudeness=rudeness,
+                    verbose='standard',
+                    to_json=json.dumps
+                )
+                self._parse_and_add(rendered_block_with_date, unique_items)
                 
         return self._items_to_list(unique_items, "search_trains")
 
     def _generate_simple(self, template_name, intent_name):
-        template = self.env.get_template(template_name)
         unique_items = set()
-        rendered_block = template.render(to_json=json.dumps)
-        self._parse_and_add(rendered_block, unique_items)
+        for rudeness in ['rude', 'polite', 'neutral']:
+            tmpl_path = self._get_template_path(template_name, rudeness)
+            try:
+                template = self.env.get_template(tmpl_path)
+                rendered_block = template.render(rudeness=rudeness, verbose='standard', to_json=json.dumps)
+                self._parse_and_add(rendered_block, unique_items)
+            except jinja2.TemplateNotFound:
+                pass
         return self._items_to_list(unique_items, intent_name)
 
     def _generate_confirmations(self):
-        template = self.env.get_template('confirmations.j2')
         unique_items = set()
         
-        # Contextual mixes
-        # Destinations
-        for dest in self.destinations:
-            rendered = template.render(destination=dest, to_json=json.dumps)
-            self._parse_and_add(rendered, unique_items)
+        for rudeness in ['rude', 'polite', 'neutral']:
+            tmpl_path = self._get_template_path('confirmations.j2', rudeness)
+            try:
+                template = self.env.get_template(tmpl_path)
+            except jinja2.TemplateNotFound:
+                continue
             
-        # Times (subset to avoid explosion)
-        for time_obj in self.times[:4]: 
-            rendered = template.render(time=time_obj["value"], to_json=json.dumps)
-            self._parse_and_add(rendered, unique_items)
+            # Contextual mixes
+            # Destinations
+            for dest in self.destinations:
+                rendered = template.render(destination=dest, rudeness=rudeness, verbose='standard', to_json=json.dumps)
+                self._parse_and_add(rendered, unique_items)
+                
+            # Times (subset to avoid explosion)
+            for time_obj in self.times[:4]: 
+                rendered = template.render(time=time_obj["value"], rudeness=rudeness, verbose='standard', to_json=json.dumps)
+                self._parse_and_add(rendered, unique_items)
 
-        # Classes
-        classes = ["prima classe", "seconda classe", "standard", "business"]
-        for cls in classes:
-            rendered = template.render(class_type=cls, to_json=json.dumps)
+            # Classes
+            classes = ["prima classe", "seconda classe", "standard", "business"]
+            for cls in classes:
+                rendered = template.render(class_type=cls, rudeness=rudeness, verbose='standard', to_json=json.dumps)
+                self._parse_and_add(rendered, unique_items)
+                
+            # Base (no variables)
+            rendered = template.render(rudeness=rudeness, verbose='standard', to_json=json.dumps)
             self._parse_and_add(rendered, unique_items)
-            
-        # Base (no variables)
-        rendered = template.render(to_json=json.dumps)
-        self._parse_and_add(rendered, unique_items)
         
         return self._items_to_list(unique_items, "confirmation")
 
     def _generate_refusals(self):
-        template = self.env.get_template('refusals.j2')
         unique_items = set()
         
-        # Times 
-        for time_obj in self.times[:4]: 
-            rendered = template.render(time=time_obj["value"], to_json=json.dumps)
+        for rudeness in ['rude', 'polite', 'neutral']:
+            tmpl_path = self._get_template_path('refusals.j2', rudeness)
+            try:
+                template = self.env.get_template(tmpl_path)
+            except jinja2.TemplateNotFound:
+                continue
+
+            # Times 
+            for time_obj in self.times[:4]: 
+                rendered = template.render(time=time_obj["value"], rudeness=rudeness, verbose='standard', to_json=json.dumps)
+                self._parse_and_add(rendered, unique_items)
+                
+            # Base
+            rendered = template.render(rudeness=rudeness, verbose='standard', to_json=json.dumps)
             self._parse_and_add(rendered, unique_items)
-            
-        # Base
-        rendered = template.render(to_json=json.dumps)
-        self._parse_and_add(rendered, unique_items)
         
         return self._items_to_list(unique_items, "refusal")
 
     def _generate_qa(self):
-        template = self.env.get_template('qa.j2')
         unique_items = set()
         
         pets = ["cane", "gatto", "cagnolino", "animale domestico", "pappagallo"]
         luggage = ["una valigia grande", "lo zaino", "la bici", "il monopattino"]
         services = ["wifi", "ristorante", "bar", "aria condizionata", "presa elettrica"]
         
-        for p in pets:
-            self._parse_and_add(template.render(pet=p, to_json=json.dumps), unique_items)
-        for l in luggage:
-            self._parse_and_add(template.render(luggage=l, to_json=json.dumps), unique_items)
-        for s in services:
-            self._parse_and_add(template.render(service=s, to_json=json.dumps), unique_items)
-            
-        # General
-        self._parse_and_add(template.render(to_json=json.dumps), unique_items)
+        for rudeness in ['rude', 'polite', 'neutral']:
+            tmpl_path = self._get_template_path('qa.j2', rudeness)
+            try:
+                template = self.env.get_template(tmpl_path)
+            except jinja2.TemplateNotFound:
+                continue
+
+            for p in pets:
+                self._parse_and_add(template.render(pet=p, rudeness=rudeness, verbose='standard', to_json=json.dumps), unique_items)
+            for l in luggage:
+                self._parse_and_add(template.render(luggage=l, rudeness=rudeness, verbose='standard', to_json=json.dumps), unique_items)
+            for s in services:
+                self._parse_and_add(template.render(service=s, rudeness=rudeness, verbose='standard', to_json=json.dumps), unique_items)
+                
+            # General
+            self._parse_and_add(template.render(rudeness=rudeness, verbose='standard', to_json=json.dumps), unique_items)
         
         return self._items_to_list(unique_items, "qa")
 
@@ -173,50 +211,77 @@ class DeterministicGenerator:
         """
         Renders a single utterance for a specific intent using the provided context variables.
         """
-        template_name = "utterances.j2" if intent == "search_trains" else f"{intent}.j2"
-        # Map some intent nicknames if files are named differently
-        if intent == "greeting": template_name = "greetings.j2"
-        if intent == "confirmation": template_name = "confirmations.j2"
-        if intent == "refusal": template_name = "refusals.j2"
-        if intent == "farewell": template_name = "farewells.j2"
-        if intent == "qa": template_name = "qa.j2"
-        if intent == "ui_navigation": template_name = "ui_navigation.j2"
+        template_name = ""
+        
+        # 1. Assistant Responses Routing
+        if intent == "assistant_responses":
+            category = context.get("category")
+            if category in ["searching", "search_success", "search_empty", "ask_passengers"]:
+                template_name = "assistant/search.j2"
+            elif category in ["seat_prompt", "seat_ack", "selection_refinement", "class_prompt", "class_ack", "handshake", "ticket_handover", "ask_data"]:
+                template_name = "assistant/booking.j2"
+            elif category in ["greeting_response", "refusal_ack", "farewell"]:
+                template_name = "assistant/chitchat.j2"
+            else: # ui_action, show_info_response, qa_answer, ood_redirect, complaint_response
+                template_name = "assistant/info.j2"
+                
+            try:
+                template = self.env.get_template(template_name)
+                # Ensure vars present
+                render_context = context.copy()
+                rendered_block = template.render(**render_context, to_json=json.dumps)
+                unique_items = set()
+                self._parse_and_add(rendered_block, unique_items)
+                results = self._items_to_list(unique_items, "assistant_response")
+                if not results: return {"text": "[Assistant generation failed]"}
+                return random.choice(results)
+            except jinja2.TemplateNotFound:
+                return {"text": f"Error: Template {template_name} not found"}
+
+        # 2. User Intents Routing
+        # Map intent to filename
+        if intent == "search_trains": basename = "utterances.j2"
+        elif intent == "greeting": basename = "greetings.j2"
+        elif intent == "confirmation": basename = "confirmations.j2"
+        elif intent == "refusal": basename = "refusals.j2"
+        elif intent == "farewell": basename = "farewells.j2"
+        elif intent == "qa": basename = "qa.j2"
+        elif intent == "ui_navigation": basename = "ui_navigation.j2"
+        elif intent == "complaint": basename = "complaint.j2"
+        elif intent == "ood": basename = "ood.j2"
+        elif intent == "refinement": basename = "refinement.j2"
+        else: basename = f"{intent}.j2"
+        
+        rudeness = context.get("rudeness", "neutral")
+        template_path = self._get_template_path(basename, rudeness)
         
         try:
-            template = self.env.get_template(template_name)
+            template = self.env.get_template(template_path)
         except jinja2.TemplateNotFound:
-            # Fallback or error
-            return {"text": f"Error: Template {template_name} not found", "variables": context}
+            # Fallback to non-rude if rude not found (or vice versa? no, just error)
+            return {"text": f"Error: Template {template_path} not found", "variables": context}
 
-        # Render with the full context context
-        # Ensure date is always present even if empty for safe rendering in templates
+        # Render
         render_context = context.copy()
         if "date" not in render_context:
             render_context["date"] = None
 
         rendered_block = template.render(**render_context, to_json=json.dumps)
         
-        # Parse the JSON lines
         unique_items = set()
         self._parse_and_add(rendered_block, unique_items)
         
-        # Pick one random item that matches our constraints?
-        # Actually simplest is: render with specific vars implies we get specific output.
-        # But our templates iterate loops. We need to trick the template? 
-        # No, we should rely on the template variables.
-        # IF template uses "for dest in destinations", and we pass "destinations=[context.destination]", 
-        # then loop runs once.
-        
         results = self._items_to_list(unique_items, intent)
         if not results:
+            print(f"[Deterministic] Warning: Generation failed for intent '{intent}' context={context.keys()}")
             return {"text": f"[{intent} generation failed]", "variables": context}
             
-        # If we got multiple (e.g. variations in template), pick one.
-        import random
         return random.choice(results)
     
     def _parse_and_add(self, rendered_block, unique_set):
-        lines = [line.strip() for line in rendered_block.split('\n') if line.strip()]
+        # Handle concatenated JSON objects (e.g. }{ -> } \n {)
+        cleaned_block = rendered_block.replace('}{', '}\n{')
+        lines = [line.strip() for line in cleaned_block.split('\n') if line.strip()]
         for line in lines:
             unique_set.add(line)
 
@@ -229,6 +294,7 @@ class DeterministicGenerator:
                     item["intent"] = intent
                 item["generator"] = "deterministic_jinja2"
                 results.append(item)
-            except json.JSONDecodeError:
-                pass
+            except json.JSONDecodeError as e:
+                print(f"[Deterministic] JSON Error parsing line for intent '{intent}': {e} | Line: {item_str[:50]}...")
         return results
+

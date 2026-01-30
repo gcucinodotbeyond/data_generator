@@ -1,0 +1,26 @@
+{# VARIABLES: destination, time, date, origin, time_type, verbose #}
+
+{# --- PATTERN 1: SIMPLE DIRECT SEARCH (Voglio andare a Milano) --- #}
+{% if verbose != 'concise' %}
+    {%- for opener in ["Muoviti,", "Sbrigati,", "Voglio un treno per", "Devo andare a"] %}
+{{ to_json({"text": opener ~ " " ~ destination, "variables": {"destination": destination}}) }}
+    {% endfor %}
+    {{ to_json({"text": destination ~ ", ora!", "variables": {"destination": destination, "time": "ora"}}) }}
+{% endif %}
+
+{# --- CONCISE PATTERNS --- #}
+{% if verbose == 'concise' %}
+{{ to_json({"text": destination, "variables": {"destination": destination}}) }}
+{{ to_json({"text": "Treno " ~ destination, "variables": {"destination": destination}}) }}
+{{ to_json({"text": destination ~ "!", "variables": {"destination": destination}}) }}
+{% endif %}
+
+{# --- PATTERN 6: URGENT / IMPERATIVE (Specific checks) --- #}
+{% if time_type == 'relative_now' %}
+{{ to_json({"text": destination ~ " subito", "variables": {"destination": destination, "time": "subito"}}) }}
+{{ to_json({"text": destination ~ " ora", "variables": {"destination": destination, "time": "ora"}}) }}
+{{ to_json({"text": "Primo treno per " ~ destination, "variables": {"destination": destination, "time": "subito"}}) }}
+    {% if verbose != 'concise' %}
+{{ to_json({"text": "Urgente per " ~ destination, "variables": {"destination": destination, "time": "subito"}}) }}
+    {% endif %}
+{% endif %}

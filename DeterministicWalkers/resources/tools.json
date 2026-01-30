@@ -87,13 +87,28 @@
                                 "prev",
                                 "back",
                                 "status",
-                                "show_changes"
+                                "show_info"
                             ],
                             "description": "Azione di navigazione"
                         },
+                        "target": {
+                            "type": "string",
+                            "enum": [
+                                "train",
+                                "station",
+                                "city",
+                                "help",
+                                "ticket"
+                            ],
+                            "description": "Target dell'informazione richiesta"
+                        },
                         "train_position": {
                             "type": "integer",
-                            "description": "Posizione treno per show_changes"
+                            "description": "Posizione treno per show_info target=train"
+                        },
+                        "query": {
+                            "type": "string",
+                            "description": "Domanda specifica dell'utente"
                         }
                     },
                     "required": [

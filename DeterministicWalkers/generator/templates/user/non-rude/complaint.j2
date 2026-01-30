@@ -1,13 +1,5 @@
 {# VARIABLES: rudeness, verbose #}
 
-{%- set rude_phrases = [
-    "Mamma mia non funziona mai nulla siete degli idioti",
-    "Siete una manica di incompetenti, non va niente!",
-    "Che schifo di servizio, mi sono stancato di voi",
-    "Siete vergognosi, ogni volta è la stessa storia",
-    "Non sapete fare il vostro lavoro, vergogna!"
-] -%}
-
 {%- set neutral_phrases = [
     "Guarda che non sta funzionando, uff",
     "Ma perché è così difficile? Non capisco",
@@ -24,13 +16,6 @@
     "Mi scusi, ma forse la macchina ha un guasto?"
 ] -%}
 
-{# TOPIC: Delays / Strikes #}
-{%- set rude_service = [
-    "Sempre ritardi! Siete dei falliti",
-    "Ancora sciopero? Ma andate a lavorare sul serio!",
-    "Treni che non passano mai, siete ridicoli"
-] -%}
-
 {%- set neutral_service = [
     "C'è sempre sciopero, non se ne può più",
     "Un altro ritardo? Devo arrivare puntuale",
@@ -43,13 +28,6 @@
     "Speravo che oggi non ci fossero ritardi"
 ] -%}
 
-{# TOPIC: Prices #}
-{%- set rude_price = [
-    "Prezzi da furto, siete dei ladri!",
-    "Ma vi sembra il caso di far pagare così tanto? Ladri",
-    "Non pago queste cifre per un servizio così scadente"
-] -%}
-
 {%- set neutral_price = [
     "Il biglietto costa troppo, non è giusto",
     "Prezzi assurdi per questo viaggio",
@@ -60,13 +38,6 @@
     "Il costo è un po' più alto di quanto mi aspettassi",
     "Non pensavo costasse così tanto viaggiare",
     "Esistono soluzioni un po' più economiche?"
-] -%}
-
-{# TOPIC: Machine / UI difficulty #}
-{%- set rude_ui = [
-    "Questa macchina è una trappola, non funziona niente",
-    "Chi ha progettato questo schermo? È un idiota",
-    "Non si capisce nulla, cambiate interfaccia!"
 ] -%}
 
 {%- set neutral_ui = [
@@ -82,18 +53,10 @@
 ] -%}
 
 {% if verbose == 'concise' %}
-    {% if rudeness == 'rude' %}
-{{ to_json({"text": "Schifo.", "variables": {"topic": "complaint"}}) }}
-{{ to_json({"text": "Ladri!", "variables": {"topic": "complaint"}}) }}
-    {% else %}
 {{ to_json({"text": "Problemi.", "variables": {"topic": "complaint"}}) }}
 {{ to_json({"text": "Non va.", "variables": {"topic": "complaint"}}) }}
-    {% endif %}
 {% elif verbose == 'verbose' %}
-    {%- if rudeness == 'rude' %}
-{{ to_json({"text": "Sono stufo marcio di questo servizio che non funziona mai, siete una manica di incompetenti e non sapete fare il vostro lavoro!", "variables": {"topic": "complaint"}}) }}
-{{ to_json({"text": "Ogni volta che devo prendere un treno è una tragedia, prezzi da furto e ritardi ovunque. Siete veramente una vergogna nazionale!", "variables": {"topic": "complaint"}}) }}
-    {%- elif rudeness == 'polite' %}
+    {%- if rudeness == 'polite' %}
 {{ to_json({"text": "Mi scusi se mi lamento, ma sto riscontrando diverse difficoltà con l'interfaccia e temo che ci sia un problema tecnico che mi impedisce di procedere.", "variables": {"topic": "complaint"}}) }}
 {{ to_json({"text": "Purtroppo mi trovo costretto a segnalare che il servizio oggi non mi sembra all'altezza delle aspettative, soprattutto per quanto riguarda i costi.", "variables": {"topic": "complaint"}}) }}
     {%- else %}
@@ -101,11 +64,7 @@
 {{ to_json({"text": "Non è possibile che ci siano sempre tutti questi problemi tecnici, rende l'acquisto dei biglietti un'esperienza davvero frustrante per chiunque.", "variables": {"topic": "complaint"}}) }}
     {%- endif %}
 {% else %} {# standard #}
-    {% if rudeness == 'rude' %}
-        {% for p in rude_phrases + rude_service + rude_price + rude_ui %}
-{{ to_json({"text": p, "variables": {"topic": "complaint"}}) }}
-        {% endfor %}
-    {% elif rudeness == 'polite' %}
+    {% if rudeness == 'polite' %}
         {% for p in polite_phrases + polite_service + polite_price + polite_ui %}
 {{ to_json({"text": p, "variables": {"topic": "complaint"}}) }}
         {% endfor %}
