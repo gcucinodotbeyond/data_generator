@@ -117,24 +117,27 @@ class MockBackend:
             base_price = t_type["price_base"] * (1 + (self.rng.random() * 0.4 - 0.2)) # +/- 20%
             base_price = round(base_price * int(passengers), 2)
             
-            # Build Price List
-            prices = []
+            # Build Class List with granular seats
+            classes = []
             if t_type["type"] in ["Frecciarossa", "Frecciargento"]:
-                 prices = [
-                     {"class_denomination": "STANDARD", "price": f"{base_price:.2f}"},
-                     {"class_denomination": "PREMIUM", "price": f"{base_price*1.2:.2f}"},
-                     {"class_denomination": "BUSINESS", "price": f"{base_price*1.4:.2f}"},
-                     {"class_denomination": "EXECUTIVE", "price": f"{base_price*2.5:.2f}"}
+                 classes = [
+                     {"class_denomination": "STANDARD", "price": f"{base_price:.2f}", "available_seats": self.rng.randint(5, 50)},
+                     {"class_denomination": "PREMIUM", "price": f"{base_price*1.2:.2f}", "available_seats": self.rng.randint(2, 30)},
+                     {"class_denomination": "BUSINESS", "price": f"{base_price*1.4:.2f}", "available_seats": self.rng.randint(0, 20)},
+                     {"class_denomination": "EXECUTIVE", "price": f"{base_price*2.5:.2f}", "available_seats": self.rng.randint(0, 10)}
                  ]
             elif t_type["type"] == "Intercity":
-                prices = [
-                     {"class_denomination": "2ª CLASSE", "price": f"{base_price:.2f}"},
-                     {"class_denomination": "1ª CLASSE", "price": f"{base_price*1.3:.2f}"}
+                classes = [
+                     {"class_denomination": "2ª CLASSE", "price": f"{base_price:.2f}", "available_seats": self.rng.randint(10, 100)},
+                     {"class_denomination": "1ª CLASSE", "price": f"{base_price*1.3:.2f}", "available_seats": self.rng.randint(5, 40)}
                 ]
             else:
-                 prices = [
-                     {"class_denomination": "ORDINARIA", "price": f"{base_price:.2f}"}
+                 classes = [
+                     {"class_denomination": "ORDINARIA", "price": f"{base_price:.2f}", "available_seats": self.rng.randint(20, 200)}
                  ]
+
+            # Total seats is the sum of class-specific seats
+            total_seats = sum(cl["available_seats"] for cl in classes)
 
             train_id = self._generate_train_id(t_type["type"])
             dep_str = current_dt.strftime("%H:%M")
@@ -143,30 +146,15 @@ class MockBackend:
             train = {
                 "pos": i + 1,
                 "id": train_id,
-                "train_id": train_id, # Duplicate for compat with prompt
                 "dep": dep_str,
-                "departure_time": dep_str,
                 "arr": arr_str,
-                "arrival_time": arr_str,
                 "type": t_type["type"],
-                "train_type": t_type["type"],
                 "duration": duration_mins,
                 "changes": 0,
                 "stops": t_type["stops"],
-                "available_seats": self.rng.randint(10, 300),
+                "available_seats": total_seats,
                 "delay": 0,
-                "price": prices[0]["price"], # simplified flat prop for context
-                "prices": prices, # rich prop
-                "legs": [{
-                    "train_id": train_id,
-                    "train_type": t_type["type"],
-                    "departure_station": origin,
-                    "arrival_station": destination,
-                    "departure_time": dep_str,
-                    "arrival_time": arr_str
-                }],
-                "origin": origin,
-                "destination": destination
+                "classes": classes
             }
             results.append(train)
 
@@ -246,9 +234,10 @@ class MockBackend:
     def purchase_ticket(self, json_args: str) -> str:
         """
         Stateful purchase flow:
-        1. Just Train+Class -> Request Seat Selection
-        2. +Seats -> Request Personal Data
-        3. +Confirmation -> Finalize
+        1. Train Selection (Partial or Complete)
+        2. Just Train+Class -> Request Seat Selection
+        3. +Seats -> Request Personal Data
+        4. +Confirmation -> Finalize
         """
         try:
             args = json.loads(json_args)
@@ -256,11 +245,20 @@ class MockBackend:
             return json.dumps({"error": "Invalid JSON arguments"})
             
         train_id = args.get("train_id", "UNKNOWN")
-        train_class = args.get("class", "Standard")
+        train_class = args.get("class")
         seats = args.get("seats")
         carriage = args.get("carriage")
         
         # State Machine Logic
+
+        # 0. Class Selection Required (if not provided in initial call)
+        if not train_class:
+            return json.dumps({
+                "status": "class_selection_required",
+                "message": "Scegli la classe di viaggio (Standard, Premium, Business, ecc.).",
+                "train_id": train_id,
+                "instruction": "L'utente deve specificare la classe. Chiedi 'In che classe vuoi viaggiare?' se non l'ha già detto."
+            })
         
         # 1. Seat Selection Required
         if not seats:
@@ -292,9 +290,9 @@ class MockBackend:
         if found:
             # Try to match class price
             # Simplified map
-            price_list = found.get("prices", [])
+            class_list = found.get("classes", [])
             # Naive string match or default
-            p_obj = next((p for p in price_list if train_class.upper() in p["class_denomination"].upper()), price_list[0] if price_list else {})
+            p_obj = next((p for p in class_list if train_class.upper() in p["class_denomination"].upper()), class_list[0] if class_list else {})
             price = p_obj.get("price", "50.00")
 
         # Parse seats to count
@@ -305,23 +303,14 @@ class MockBackend:
         
         return json.dumps({
             "status": "OK",
+            "pnr": "PNR" + str(self.rng.randint(100000, 999999)),
             "platform": str(self.rng.randint(1, 20)),
-            "train_number": train_id,
-            "train_type": "Frecciarossa",
-            "origin": "Roma",
-            "destination": "Napoli",
-            "departure_time": "16:05",
-            "arrival_time": "17:18",
-            "travel_class": train_class.upper(),
+            "train_id": train_id,
+            "class": train_class.upper(),
             "price": f"{unit_price:.2f}",
-            "extras_cost": 15.0,
-            "total_price": f"{total_price:.2f}",
+            "total": f"{total_price:.2f}",
             "email_sent": True,
-            "phone_sent": False,
-            "passengers": {"adults": pax_count, "children": 0, "infants": 0, "total": pax_count},
-            "extras": {"bicycles": 1, "animals": {"count": 1, "size": None}, "oversizedLuggage": 1},
-            "seat": seat_list[0],
-            "car": str(carriage),
-            "all_seats": seat_list,
-            "seats_message": f"Posti assegnati: {', '.join(seat_list)} in carrozza {carriage}"
+            "passengers": pax_count,
+            "seats": seat_list,
+            "car": str(carriage)
         })

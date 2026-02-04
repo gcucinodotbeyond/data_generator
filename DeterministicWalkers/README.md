@@ -10,7 +10,8 @@ This system combines the reliability of template-based logic with the linguistic
 1.  **Hybrid Approach**: Uses Python and Jinja2 templates for core logic and slot accuracy, then optionally employs an LLM to paraphrase results for natural variety.
 2.  **Observable & Traceable**: Every generated sample includes `_meta` information detailing the scenario, seed, and parameters used.
 3.  **Dynamic Hydration**: Conversations are generated as "skeletons" and then "hydrated" with system prompts, tool definitions, and dynamic context (time, dates).
-4.  **Modular Components**: Generation logic is divided into reusable Jinja2 templates and a mock backend for consistent state transitions.
+4.  **Schema v1.5 XML**: Context is injected into the system prompt using a rich XML schema that simulates a real application's UI state and backend data.
+5.  **Modular Components**: Generation logic is divided into reusable Jinja2 templates and a mock backend for consistent state transitions.
 
 ---
 
@@ -19,16 +20,21 @@ This system combines the reliability of template-based logic with the linguistic
 ```text
 DeterministicWalkers/
 ├── data/                   # Output directory (generated & hydrated datasets)
+│   ├── predataset/         # Raw output from the generator (includes full metadata)
+│   ├── clean_predataset/   # Stripped metadata, keeps messages and logical context
+│   └── hydrated-dataset/   # Final output with rendered system prompts
 ├── generator/              # Core generation engine
-│   ├── templates/          # Jinja2 templates for different intents
+│   ├── templates/          # Jinja2 templates for different intents (search, complaint, etc.)
+│   ├── scenarios/          # Text files defining sequences of intents for variations
 │   ├── dialogue.py         # Main dialogue state machine & flow logic
 │   ├── deterministic.py    # Template renderer and base generator
+│   ├── context_formatter.py# Formats internal state into Schema v1.5 XML
 │   ├── llm_enhancer.py     # LLM integration (Ollama) for paraphrasing
 │   ├── hydrator.py         # Data hydration logic (system prompt injection)
 │   └── mock_api.py         # Mock backend for train searches and purchases
-├── judge/                  # Validation & LLM Evaluation
-│   ├── validator.py        # Logic to validate generated dialogues
-│   └── run_validation.py   # Script to run validation suite
+├── judge/                  # LLM-as-a-Judge Validation
+│   ├── validator.py        # Logic to evaluate generated dialogues using an LLM
+│   └── run_validation.py   # Script to run the LLM evaluation suite
 ├── qa/                     # QA Pair Analysis & Classification
 │   ├── qa_classifier.py    # Classifies QA pairs into taxonomy
 │   └── taxonomy.json       # Taxonomy definitions for QA
@@ -36,11 +42,11 @@ DeterministicWalkers/
 │   ├── stations.json       # List of Italian train stations
 │   ├── tools.json          # Tool/Function definitions for the assistant
 │   ├── qa_pairs.json       # Dataset for Q&A interruptions
-│   └── system_prompt.md    # System prompt template with placeholders
+│   └── system_prompt.md    # System prompt template with Jinja2 placeholders
 ├── stani_txt/              # Reference / Gold Standard Data
-│   └── right_output.txt    # Example of correct output structure and format
+│   └── right_output.txt    # Example of correct output structure and XML format
 ├── tools/                  # Utility scripts
-│   ├── validate_dataset.py # Structural and semantic validation
+│   ├── validate_dataset.py # Structural and heuristic validation (rules-based)
 │   ├── run_visualizer.py   # Local server for the data visualizer
 │   └── corpus_builder.py   # Corpus extraction and management tools
 ├── config.json             # Global configuration (LLM settings, probabilities)
@@ -65,39 +71,42 @@ Edit `config.json` to set your LLM parameters (Ollama) and the paraphrase probab
 }
 ```
 
-### 2. Configure Distributions (Optional)
-Edit `distribution_config.json` to fine-tune the mix of scenarios and user behaviors.
-```json
-{
-    "rudeness_distribution": { "polite": 0.2, "neutral": 0.3, "rude": 0.5 },
-    "scenario_distribution": { "default": 0.2, "lost_user": 0.1, ... }
-}
-```
-
-### 3. Generate Dialogues
-Run the main script to generate the pre-dataset.
+### 2. Generate Dialogues
+Run the main script to generate and hydrate the data.
 ```bash
-# Generate 10 dialogues with real-time LLM support
-python main.py --dialogues 10
+# Generate 100 dialogues using the default distributions
+python main.py --dialogues 100
+
+# Force a specific scenario (e.g., UI-heavy flow)
+python main.py --dialogues 10 --scenario ui_heavy
+
+# Skip LLM paraphrasing for fast testing
+python main.py --dialogues 5 --no-llm
 ```
-**Output**: `data/predataset/dialogue_dataset.jsonl`
+**Outputs**:
+- `data/predataset/`: Raw dialogues with all metadata.
+- `data/hydrated-dataset/`: Final dialogues with system prompts rendered.
 
-### 4. Hydrate the Dataset
-Inject the system prompt and tool definitions into the generated conversations.
-*(This is usually done automatically by main.py)*
-**Output**: `data/hydrated-dataset/dialogue_dataset.jsonl`
-
-### 5. Visualize and Validate
-Use the visualizer to inspect the quality and the validation tool for structural checks.
+### 3. Visualize
+Inspect the generated quality in a user-friendly web interface.
 ```bash
-# Start the visualizer
 python tools/run_visualizer.py
 ```
 Open [http://localhost:8000/visualizer.html](http://localhost:8000/visualizer.html) in your browser.
 
+### 4. Validate
+The system provides two levels of validation:
+
+**Structural Validation (Rules-based)**:
+Checks for sequential IDs, tool definitions, and basic logic.
 ```bash
-# Run validation
-python tools/validate_dataset.py --input data/hydrated-dataset
+python tools/validate_dataset.py --input data/hydrated-dataset/dialogue_dataset.jsonl
+```
+
+**LLM-as-a-Judge (Semantic)**:
+Uses a critic LLM to evaluate the coherence and "vibe" of the dialogues.
+```bash
+python judge/run_validation.py --file data/hydrated-dataset/dialogue_dataset.jsonl --sample 5
 ```
 
 ---
@@ -105,6 +114,7 @@ python tools/validate_dataset.py --input data/hydrated-dataset
 ## 🧠 Core Features
 
 - **Slot-First Logic**: Templates ensure that critical entities (cities, times) are always correctly placed.
+- **Contextual XML Injection**: Uses `generator/context_formatter.py` to inject `<ctx>`, `<ui>`, `<query>`, and `<trains>` tags into the system prompt, providing the LLM with a structured "screen" of the current application state.
 - **Natural Paraphrasing**: The LLM rewrites user utterances on-the-fly to ensure the training data isn't repetitive.
 - **Dynamic Context**: Simulated date/time randomization across a 2-month window.
 - **Mock Backend**: Real function-calling simulation with `search_trains` and `purchase_ticket`.
@@ -112,12 +122,20 @@ python tools/validate_dataset.py --input data/hydrated-dataset
 
 ---
 
-## 📚 References
+## 🔧 Maintenance
 
-- **[TRAINING_SCHEMA.md](TRAINING_SCHEMA.md)**: Full specification of the output data schema, token formats, and XML tags used in the dataset.
-- **`stani_txt/`**: Contains reference examples (e.g., `right_output.txt`) demonstrating the ideal structure of tools, system prompts, and conversation flow, useful as a "gold standard" for development.
+### Adding New Scenarios
+1. Create a `.txt` file in `generator/scenarios/`.
+2. List the intent sequence (one per line). These intents must match the filenames in `generator/templates/`.
+3. (Optional) Update `distribution_config.json` to include your new scenario in the random generation mix.
+
+### Updating the XML Schema
+The XML injection logic is centralized in `generator/context_formatter.py`. Refer to `stani_txt/right_output.txt` for the current gold-standard format of Schema v1.5.
 
 ---
 
-## 🔧 Maintenance
-The system corpus and templates can be found in `generator/templates/`. These use Jinja2 syntax and can be updated to add new phrasings or intents.
+## 📚 References
+
+- **[TRAINING_SCHEMA.md](TRAINING_SCHEMA.md)**: Full specification of the output data schema, token formats, and XML tags used in the dataset.
+- **`stani_txt/`**: Reference examples demonstrating the ideal structure of tools, system prompts, and conversation flow.
+

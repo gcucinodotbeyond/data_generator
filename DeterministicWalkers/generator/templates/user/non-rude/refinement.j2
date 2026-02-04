@@ -6,16 +6,19 @@
 {{ to_json({"text": count|string, "variables": {"refinement": "passengers", "count": count}}) }}
 {% elif verbose == 'verbose' %}
     {% if rudeness == 'polite' %}
-{{ to_json({"text": "Viaggiamo in " ~ count ~ " persone, se non le crea problemi.", "variables": {"refinement": "passengers", "count": count}}) }}
+        {% set p_word = "persona" if count == 1 else "persone" %}
+{{ to_json({"text": "Viaggiamo in " ~ count ~ " " ~ p_word ~ ", se non le crea problemi.", "variables": {"refinement": "passengers", "count": count}}) }}
 {{ to_json({"text": "Siamo in " ~ count ~ " in totale, spero ci siano posti disponibili.", "variables": {"refinement": "passengers", "count": count}}) }}
     {% else %}
-{{ to_json({"text": "Siamo " ~ count ~ " persone in tutto per questo viaggio.", "variables": {"refinement": "passengers", "count": count}}) }}
+        {% set p_word = "persona" if count == 1 else "persone" %}
+{{ to_json({"text": "Siamo " ~ count ~ " " ~ p_word ~ " in tutto per questo viaggio.", "variables": {"refinement": "passengers", "count": count}}) }}
 {{ to_json({"text": "In " ~ count ~ ", e vorremmo partire il prima possibile.", "variables": {"refinement": "passengers", "count": count}}) }}
     {% endif %}
 {% else %} {# standard #}
     {% if rudeness == 'polite' %}
 {{ to_json({"text": "Siamo in " ~ count, "variables": {"refinement": "passengers", "count": count}}) }}
-{{ to_json({"text": count ~ " passeggeri, grazie", "variables": {"refinement": "passengers", "count": count}}) }}
+        {% set p_word = "passeggero" if count == 1 else "passeggeri" %}
+{{ to_json({"text": count ~ " " ~ p_word ~ ", grazie", "variables": {"refinement": "passengers", "count": count}}) }}
     {% else %} {# neutral #}
 {{ to_json({"text": count|string, "variables": {"refinement": "passengers", "count": count}}) }}
 {{ to_json({"text": "Siamo in " ~ count, "variables": {"refinement": "passengers", "count": count}}) }}
@@ -66,6 +69,30 @@
 {{ to_json({"text": "Il " ~ position_word, "variables": {"refinement": "ordinal"}}) }}
     {% endif %}
 {% endif %}
+{% endif %}
+{% endif %}
+
+{# --- TRAIN + CLASS SELECTION --- #}
+{% if aspect == "train_plus_class" %}
+{% if verbose == 'concise' %}
+{{ to_json({"text": position_word ~ " in " ~ class_name, "variables": {"refinement": "train_plus_class", "class": class_name}}) }}
+{% elif verbose == 'verbose' %}
+    {% if rudeness == 'polite' %}
+{{ to_json({"text": "Prenderei gentilmente il " ~ position_word ~ " treno, quello delle " ~ train.dep ~ ", viaggiando in " ~ class_name ~ ".", "variables": {"refinement": "train_plus_class", "class": class_name}}) }}
+{{ to_json({"text": "Le chiederei di selezionare il " ~ position_word ~ " treno in " ~ class_name ~ ", grazie mille.", "variables": {"refinement": "train_plus_class", "class": class_name}}) }}
+    {% else %}
+{{ to_json({"text": "Voglio il " ~ position_word ~ " treno della lista e vorrei viaggiare in " ~ class_name ~ ".", "variables": {"refinement": "train_plus_class", "class": class_name}}) }}
+{{ to_json({"text": "Scelgo il " ~ position_word ~ " treno, quello delle " ~ train.dep ~ ", in " ~ class_name ~ ".", "variables": {"refinement": "train_plus_class", "class": class_name}}) }}
+    {% endif %}
+{% else %} {# standard #}
+    {% if rudeness == 'polite' %}
+{{ to_json({"text": "Il " ~ position_word ~ " treno in " ~ class_name ~ ", per favore.", "variables": {"refinement": "train_plus_class", "class": class_name}}) }}
+{{ to_json({"text": "Prenderei il " ~ position_word ~ " in " ~ class_name ~ ", grazie.", "variables": {"refinement": "train_plus_class", "class": class_name}}) }}
+    {% else %} {# neutral #}
+{{ to_json({"text": "Il " ~ position_word ~ " treno in " ~ class_name, "variables": {"refinement": "train_plus_class", "class": class_name}}) }}
+{{ to_json({"text": "Prendo il " ~ position_word ~ " in " ~ class_name, "variables": {"refinement": "train_plus_class", "class": class_name}}) }}
+{{ to_json({"text": "Il " ~ position_word ~ " delle " ~ train.dep ~ " in " ~ class_name, "variables": {"refinement": "train_plus_class", "class": class_name}}) }}
+    {% endif %}
 {% endif %}
 {% endif %}
 

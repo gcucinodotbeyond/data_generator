@@ -107,7 +107,7 @@ class DialogueGenerator:
         else:
             verbose = random.choice(["concise", "standard", "verbose"])
 
-        return {
+        initial_context = {
             "run_id": run_id,
             "origin": origin,
             "destination": dest,
@@ -119,14 +119,42 @@ class DialogueGenerator:
             "rudeness": rudeness, # Weighted or random choice
             "verbose": verbose, # Weighted or random choice
             
+            # Session-discovered state (to avoid leaking simulation ground truth to LLM)
+            "session_to": "",
+            "session_date": "",
+            "session_time": "",
+            "session_pax_discovered": False,
+            "session_pax": 1,
+            "session_class": None,
+            
             # Internal tracking
-            "generated_messages": [{"role": "system", "content": "{SYSTEM_PROMPT}"}],
+            "generated_messages": [],
             "current_trains": [], # Result from mock backend
             "ui_state": {"state": "idle", "can": {"next": False, "prev": False, "back": False}},
             "ctx_time": f"{random.randint(6, 22):02d}:{random.randint(0, 59):02d}", 
             "ctx_date": (datetime.now() + timedelta(days=random.randint(0, 60))).strftime("%Y-%m-%d"),
             "call_counter": 0
         }
+
+        # Inject INITIAL system prompt with context
+        from generator.context_formatter import ContextFormatter
+        initial_params = {
+            "origin": initial_context["origin"],
+            "destination": "",
+            "travel_date": "",
+            "travel_time": "",
+            "passengers": "0",
+            "ui_state": json.dumps(initial_context["ui_state"]),
+            "trains_array": "[]",
+            "ctx_time": initial_context["ctx_time"],
+            "date": initial_context["ctx_date"],
+            "ticket_info": None
+        }
+        initial_xml = ContextFormatter.format_context(initial_params)
+        full_system_content = "{SYSTEM_PROMPT}\n\n" + initial_xml
+        initial_context["generated_messages"].append({"role": "system", "content": full_system_content})
+
+        return initial_context
 
     def _get_next_call_id(self, context):
         if "call_counter" not in context:
@@ -182,6 +210,22 @@ class DialogueGenerator:
     def _render_utterance(self, intent, context, **overrides):
         return self._render_utterance_data(intent, context, **overrides)['text']
 
+    @staticmethod
+    def _clean_temporal(val):
+        if not val: return val
+        d = str(val).lower().strip()
+        prefixes = [
+            "per il ", "per l'", "per ", "il ", "l' ", 
+            "dalle ", "dopo le ", "alle ", "verso le ", "intorno alle ",
+            "per questa ", "per questo ", "per la "
+        ]
+        for p in prefixes:
+            if d.startswith(p):
+                d = d[len(p):].strip()
+        # Common redundant words or phrase endings
+        d = d.replace(" del mese", "")
+        return d
+
     def _add_turn(self, context, role, content, tool_calls=None, tool_output=None):
         msgs = context["generated_messages"]
         
@@ -232,50 +276,66 @@ class DialogueGenerator:
                     "content": tool_output
                 })
 
-    def _snapshot_meta(self, context, slice_len):
-        ctx_snapshot = {
-            "slice_length": slice_len,
-            "params": {
-                "origin": context["origin"],
-                "destination": context["destination"],
-                "passengers": context.get("passengers", 1),
-                "ui_state": json.dumps(context["ui_state"]) if isinstance(context["ui_state"], dict) else str(context["ui_state"]), 
-                "trains_array": json.dumps(context["current_trains"]),
-                "ctx_time": context["ctx_time"],
-                "date": context["ctx_date"],
-                "ticket_info": json.dumps(context.get("ticket_info", {})) if context.get("ticket_info") else None
-            }
-        }
-        return ctx_snapshot
-
     def _inject_system_context(self, context, meta_contexts):
         """
         Inject XML-formatted system message based on current context state
         Called after key interactions (tool responses, state changes)
         """
         from generator.context_formatter import ContextFormatter
-        
+
+        # Resolve travel date/time using symbolic names for Context v1.5
+        # If destination is known, we assume a search is in progress or done
+        res_date = context.get("session_date", "")
+        if not res_date and context.get("session_to"):
+            res_date = "today"
+            
+        res_time = context.get("session_time", "")
+        if not res_time and context.get("session_to"):
+            res_time = "now"
+
         # Create snapshot params
+        snapshot_pax = context.get("session_pax", 1) if context.get("session_pax_discovered") else 0
+
         snapshot_params = {
             "origin": context["origin"],
-            "ui_state": json.dumps(context["ui_state"]),
-            "trains_array": json.dumps(context["current_trains"]),
+            "destination": context.get("session_to", ""),
+            "travel_date": res_date,
+            "travel_time": res_time,
+            "passengers": str(snapshot_pax),
+            "ui_state": context["ui_state"], # Stringified in finalize
+            "trains_array": context["current_trains"], # Stringified in finalize
             "ctx_time": context["ctx_time"],
             "date": context["ctx_date"],
-            "ticket_info": json.dumps(context.get("ticket_info")) if context.get("ticket_info") else None
+            "ticket_info": context.get("ticket_info"),
+            
+            # Additional dynamic data for Formatter
+            "target_train": context.get("target_train"),
+            "session_class": context.get("session_class")
         }
         
         # Format as XML
-        system_content = ContextFormatter.format_context(snapshot_params)
+        # Note: We need to pass stringified versions to Formatter if it expects them, 
+        # but our current simplified Formatter can handle dicts/lists if we update it or stringify here.
+        # To match the simplified Formatter precisely:
+        formatter_params = snapshot_params.copy()
+        formatter_params["ui_state"] = json.dumps(snapshot_params["ui_state"])
+        formatter_params["trains_array"] = json.dumps(snapshot_params["trains_array"])
+        if snapshot_params["ticket_info"]:
+            formatter_params["ticket_info"] = json.dumps(snapshot_params["ticket_info"])
+
+        system_content = ContextFormatter.format_context(formatter_params)
         
         # Add system message
         context["generated_messages"].append({
             "role": "system",
             "content": system_content
         })
-        
+
         # Track in meta_contexts
-        meta_contexts.append(self._snapshot_meta(context, len(context["generated_messages"])))
+        meta_contexts.append({
+            "turn_index": len(context["generated_messages"]),
+            "params": snapshot_params
+        })
 
     def _get_contextual_qa(self, ctx):
         """Selects a QA pair based on the current context (train type, stations, UI state)."""
@@ -349,10 +409,10 @@ class DialogueGenerator:
         Updates context['generated_messages'] directly.
         Returns True if interrupted (and resolved), False otherwise.
         """
-        if random.random() > 0.3: # 30% chance of interruption
+        if random.random() > 0.1: # 10% chance of interruption per call point
             return False
             
-        interruption_type = random.choice(["qa", "qa", "ui", "ood"]) 
+        interruption_type = random.choice(["qa", "qa", "ood"]) 
         
         if interruption_type == "qa":
             q, a, topic = self._get_contextual_qa(context)
@@ -385,11 +445,9 @@ class DialogueGenerator:
         self._add_turn(ctx, "user", u_greet)
         resp = self._render_utterance("assistant_responses", ctx, category="greeting_response")
         self._add_turn(ctx, "assistant", resp)
-        meta_contexts.append(self._snapshot_meta(ctx, len(ctx["generated_messages"])))
 
     def _step_search(self, ctx, meta_contexts):
         # 1. User performs initial search (often without passengers in natural language)
-        # Note: We purposely exclude passengers from the first tool call to trigger the prompt
         search_data = self._render_utterance_data("search_trains", ctx)
         u_search = search_data['text']
         self._add_turn(ctx, "user", u_search)
@@ -397,25 +455,35 @@ class DialogueGenerator:
         # Tool Call 1: Initial Search
         call_id = self._get_next_call_id(ctx)
         search_vars = search_data.get("variables", {})
-        tool_time = search_vars.get("time")
-        if not tool_time or tool_time in ["mattina", "pomeriggio", "sera", "subito", "ora", "adesso"]:
-             tool_time = ctx["ctx_time"]
+        tool_time = search_vars.get("time", "now")
+        tool_date = search_vars.get("date", "today")
 
-        # Call WITHOUT passengers to force "awaiting_passengers" state
-        tool_call = {
-            "id": call_id,
-            "type": "function",
-            "function": {
-                "name": "search_trains",
-                "arguments": json.dumps({"origin": ctx["origin"], "destination": ctx["destination"], "time": tool_time})
-            }
+        tool_call_1 = {
+             "id": call_id,
+             "type": "function",
+             "function": {
+                 "name": "search_trains",
+                 "arguments": json.dumps({
+                     "origin": ctx["origin"],
+                     "destination": ctx["destination"],
+                     "time": self._clean_temporal(tool_time),
+                     "date": self._clean_temporal(tool_date)
+                 })
+             }
         }
         
-        resp_json = self.backend.search_trains(tool_call["function"]["arguments"])
-        resp_data = json.loads(resp_json)
+        # Execute tool 1
+        resp_json_1 = self.backend.search_trains(tool_call_1["function"]["arguments"])
+        resp_data_1 = json.loads(resp_json_1)
         
-        # Assistant Turn 1: Ask for passengers
-        self._add_turn(ctx, "assistant", None, tool_calls=[tool_call], tool_output=resp_json)
+        # Assistant Turn 1: Call tool AND ask for passengers
+        self._add_turn(ctx, "assistant", None, tool_calls=[tool_call_1], tool_output=resp_json_1)
+        
+        # Discover session params AFTER tool 1 but BEFORE injection if we want them in Turn 4
+        # CRITICAL: Use variables from search_data to avoid leaking simulation ground truth
+        ctx["session_to"] = search_vars.get("destination", ctx["destination"])
+        ctx["session_date"] = search_vars.get("date", "")
+        ctx["session_time"] = search_vars.get("time", "")
         
         # Update UI state for intermediate step
         ctx["ui_state"] = {"state": "search", "phase": "input_pax", "actions": "show_info"}
@@ -425,14 +493,12 @@ class DialogueGenerator:
         resp_ask_pax = self._render_utterance("assistant_responses", ctx, category="ask_passengers")
         self._add_turn(ctx, "assistant", resp_ask_pax)
         
+        # Potential interruption after verbal response
+        self._try_interruption(ctx)
+        
         # 2. User provides passenger count
-        # "Siamo in 2"
         u_pax = self._render_utterance("refinement", ctx, aspect="passengers", count=ctx["passengers"])
         self._add_turn(ctx, "user", u_pax)
-        
-        # Assistant Turn 2: Call tool again with passengers
-        # Verbal acknowledgement? "Cerco subito..." (System prompt says execute immediately)
-        # We can just do the tool call.
         
         call_id_2 = self._get_next_call_id(ctx)
         tool_call_2 = {
@@ -444,7 +510,8 @@ class DialogueGenerator:
                     "origin": ctx["origin"], 
                     "destination": ctx["destination"], 
                     "passengers": ctx["passengers"],
-                    "time": tool_time
+                    "time": self._clean_temporal(tool_time),
+                    "date": self._clean_temporal(tool_date)
                 })
             }
         }
@@ -453,6 +520,10 @@ class DialogueGenerator:
         resp_json_2 = self.backend.search_trains(tool_call_2["function"]["arguments"])
         resp_data_2 = json.loads(resp_json_2)
         ctx["current_trains"] = resp_data_2.get("trains", [])
+        
+        # Discover session pax
+        ctx["session_pax"] = ctx["passengers"]
+        ctx["session_pax_discovered"] = True
         
         # Update UI State -> Results
         ctx["ui_state"] = {
@@ -479,6 +550,9 @@ class DialogueGenerator:
             self._add_turn(ctx, "assistant", resp_empty)
             return False 
 
+        # Potential interruption after verbal results
+        self._try_interruption(ctx)
+
         return True
 
     def _step_qa(self, ctx, meta_contexts):
@@ -487,7 +561,6 @@ class DialogueGenerator:
             u_text = self._render_utterance("qa", ctx, question=q, topic=topic)
             self._add_turn(ctx, "user", u_text)
             self._add_turn(ctx, "assistant", a)
-            meta_contexts.append(self._snapshot_meta(ctx, len(ctx["generated_messages"])))
 
     def _step_ui(self, ctx, meta_contexts):
         # Determine available actions based on UI state
@@ -596,6 +669,9 @@ class DialogueGenerator:
             
         resp = self._render_utterance("assistant_responses", ctx, category=category_map.get(action, "ui_action"), **overrides)
         self._add_turn(ctx, "assistant", resp)
+        
+        # Potential interruption after UI response
+        self._try_interruption(ctx)
 
     def _step_ood(self, ctx, meta_contexts, starter=False):
         if starter:
@@ -605,7 +681,6 @@ class DialogueGenerator:
                 self._add_turn(ctx, "user", u_ood)
                 resp = self._render_utterance("assistant_responses", ctx, category="ood_redirect")
                 self._add_turn(ctx, "assistant", resp)
-                meta_contexts.append(self._snapshot_meta(ctx, len(ctx["generated_messages"])))
         else:
             if self.ood_followups:
                 q = random.choice(self.ood_followups)
@@ -614,17 +689,13 @@ class DialogueGenerator:
                 
                 resp = self._render_utterance("assistant_responses", ctx, category="ood_redirect")
                 self._add_turn(ctx, "assistant", resp)
-                meta_contexts.append(self._snapshot_meta(ctx, len(ctx["generated_messages"])))
 
     def _step_selection_purchase(self, ctx, meta_contexts):
         if not ctx.get("current_trains"):
             return
-            
-        # --- SELECTION ---
-        target_index = 0
-        if len(ctx["current_trains"]) > 1:
-            target_index = random.choice(range(len(ctx['current_trains'])))
-        
+
+        # 1. INITIALIZATION & RANDOMIZATION
+        target_index = random.choice(range(len(ctx['current_trains']))) if len(ctx["current_trains"]) > 1 else 0
         target_train = ctx["current_trains"][target_index]
         pos_map = ["primo", "secondo", "terzo"]
         pos_word = pos_map[target_index] if target_index < 3 else "questo"
@@ -632,89 +703,128 @@ class DialogueGenerator:
         ctx["target_train"] = target_train
         ctx["position_word"] = pos_word
 
-        # 1. User Selects Train
-        u_sel = self._render_utterance("refinement", ctx, train=target_train, aspect="train", position_word=pos_word)
-        self._add_turn(ctx, "user", u_sel)
-        
-        # 1b. Assistant asks class if needed (skipped for simplicity, assume standard/premium)
-        # Let's assume user picks logic class for variety
-        chosen_class = random.choice(["Standard", "Business", "Premium"])
+        # Deterministic class choice based on train prices
+        available_classes = [p["class_denomination"] for p in target_train.get("classes", [])]
+        chosen_class = random.choice(available_classes) if available_classes else "Standard"
+        # Sync context class so templates use the correct denomination
         ctx["class"] = chosen_class
         
-        # 2. Assistant Triggers Purchase Step 1 (Seat Selection Required)
-        # "Ecco i treni... procedo con X" -> Assistant: "Select seats"
-        # We simulate the Asst call automatically here
-        call_id_1 = self._get_next_call_id(ctx)
-        args_1 = {"train_id": target_train["id"], "class": chosen_class}
+        # Map to short codes for ContextFormatter if needed
+        # std, bus, prm, sil, exe
+        cls_map = {"STANDARD": "std", "PREMIUM": "prm", "BUSINESS": "bus", "EXECUTIVE": "exe", "2ª CLASSE": "std", "1ª CLASSE": "prm", "ORDINARIA": "ord"}
+        ctx["session_class"] = cls_map.get(chosen_class.upper(), "std")
+
+        # --- PHASE 1: TRAIN & CLASS SELECTION ---
+        provide_class_initially = random.random() < 0.5
         
-        tool_call_1 = {
-            "id": call_id_1, "type": "function",
-            "function": {"name": "purchase_ticket", "arguments": json.dumps(args_1)}
-        }
-        resp_json_1 = self.backend.purchase_ticket(json.dumps(args_1))
-        
-        self._add_turn(ctx, "assistant", None, tool_calls=[tool_call_1], tool_output=resp_json_1)
-        
-        # Update UI: Customize/Select Seats
-        ctx["ui_state"] = {"state": "customize", "phase": "select_seats", "actions": "back,confirm,change_class,change_seat,show_info", "page": "1/2"}
+        if provide_class_initially:
+            # Case A: User provides both at once
+            u_sel = self._render_utterance("refinement", ctx, train=target_train, aspect="train_plus_class", 
+                                           position_word=pos_word, class_name=chosen_class)
+            self._add_turn(ctx, "user", u_sel)
+            
+            call_id = self._get_next_call_id(ctx)
+            args = {"train_id": target_train["id"], "class": chosen_class}
+            tool_call = {
+                "id": call_id, "type": "function",
+                "function": {"name": "purchase_ticket", "arguments": json.dumps(args)}
+            }
+            resp_json = self.backend.purchase_ticket(json.dumps(args))
+            self._add_turn(ctx, "assistant", None, tool_calls=[tool_call], tool_output=resp_json)
+        else:
+            # Case B: Two-step selection (Train then Class)
+            u_sel = self._render_utterance("refinement", ctx, train=target_train, aspect="train", position_word=pos_word)
+            self._add_turn(ctx, "user", u_sel)
+            
+            # Initial tool call (class missing)
+            call_id = self._get_next_call_id(ctx)
+            args_init = {"train_id": target_train["id"]}
+            tool_call_init = {
+                "id": call_id, "type": "function",
+                "function": {"name": "purchase_ticket", "arguments": json.dumps(args_init)}
+            }
+            resp_json_init = self.backend.purchase_ticket(json.dumps(args_init))
+            self._add_turn(ctx, "assistant", None, tool_calls=[tool_call_init], tool_output=resp_json_init)
+            
+            # Assistant asks for class
+            resp_ask_class = self._render_utterance("assistant_responses", ctx, category="class_prompt")
+            self._add_turn(ctx, "assistant", resp_ask_class)
+            
+            # Potential interruption
+            self._try_interruption(ctx)
+            
+            # User provides class
+            u_class = self._render_utterance("refinement", ctx, aspect="class", class_name=chosen_class)
+            self._add_turn(ctx, "user", u_class)
+            
+            # Finalize Phase 1 tool call
+            call_id_fin = self._get_next_call_id(ctx)
+            args_fin = {"train_id": target_train["id"], "class": chosen_class}
+            tool_call_fin = {
+                "id": call_id_fin, "type": "function",
+                "function": {"name": "purchase_ticket", "arguments": json.dumps(args_fin)}
+            }
+            resp_json_fin = self.backend.purchase_ticket(json.dumps(args_fin))
+            self._add_turn(ctx, "assistant", None, tool_calls=[tool_call_fin], tool_output=resp_json_fin)
+
+        # --- PHASE 2: SEAT SELECTION ---
+        # Update UI: Choose Seats
+        ctx["ui_state"] = {"state": "customize", "phase": "select_seats", "actions": "confirm,change_class,change_seat,back,show_info", "page": "1/2"}
         self._inject_system_context(ctx, meta_contexts)
         
-        # Verbal: "Select seats"
+        # Assistant asks for seats
         resp_ask_seats = self._render_utterance("assistant_responses", ctx, category="seat_prompt")
         self._add_turn(ctx, "assistant", resp_ask_seats)
         
-        # 3. User Selects Seats
-        # "Ho scelto 4A, 4B"
+        # Potential interruption
+        self._try_interruption(ctx)
+        
+        # User provides seats
         u_seats = self._render_utterance("refinement", ctx, aspect="seat_multiselect") 
-        # Note: If no template for seat_multiselect, fallback to seat or manual
         if not u_seats: u_seats = f"Ho selezionato i posti 4A e 4B in carrozza 4"
         self._add_turn(ctx, "user", u_seats)
         
-        # 4. Assistant Triggers Purchase Step 2 (Personal Data Required)
-        call_id_2 = self._get_next_call_id(ctx)
-        args_2 = {"train_id": target_train["id"], "class": chosen_class, "seats": "4A,4B", "carriage": 4}
-        
-        tool_call_2 = {
-            "id": call_id_2, "type": "function",
-            "function": {"name": "purchase_ticket", "arguments": json.dumps(args_2)}
+        # Trigger tool call with seats
+        call_id_seats = self._get_next_call_id(ctx)
+        args_seats = {"train_id": target_train["id"], "class": chosen_class, "seats": "4A,4B", "carriage": 4}
+        tool_call_seats = {
+            "id": call_id_seats, "type": "function",
+            "function": {"name": "purchase_ticket", "arguments": json.dumps(args_seats)}
         }
-        resp_json_2 = self.backend.purchase_ticket(json.dumps(args_2))
-        
-        self._add_turn(ctx, "assistant", None, tool_calls=[tool_call_2], tool_output=resp_json_2)
-        
-        # Update UI: Input Contact
+        resp_json_seats = self.backend.purchase_ticket(json.dumps(args_seats))
+        self._add_turn(ctx, "assistant", None, tool_calls=[tool_call_seats], tool_output=resp_json_seats)
+
+        # --- PHASE 3: CONTACT DATA ---
+        # Update UI: Confirm / Contact Input
         ctx["ui_state"] = {"state": "confirm", "phase": "input_contact", "actions": "back,show_info", "page": "1/2"}
         self._inject_system_context(ctx, meta_contexts)
         
-        # Verbal: "Insert data"
-        resp_ask_data = self._render_utterance("assistant_responses", ctx, category="ask_data") # You might need to add this category
-        if not resp_ask_data or "{{" in resp_ask_data: resp_ask_data = "Inserisca i dati passeggeri sullo schermo per procedere."
+        # Assistant asks for contact data
+        resp_ask_data = self._render_utterance("assistant_responses", ctx, category="ask_data")
         self._add_turn(ctx, "assistant", resp_ask_data)
-
-        # 5. User Confirms / Input Done
+        
+        # Potential interruption
+        self._try_interruption(ctx)
+        
+        # User confirms they entered data
         u_confirm = self._render_utterance("confirmation", ctx)
         self._add_turn(ctx, "user", u_confirm)
 
-        # 6. Assistant Triggers Purchase Step 3 (Finalize)
-        # Note: Args identical to Step 2, but backend internal state handles it
-        call_id_3 = self._get_next_call_id(ctx)
-        
-        tool_call_3 = {
-            "id": call_id_3, "type": "function",
-            "function": {"name": "purchase_ticket", "arguments": json.dumps(args_2)}
+        # Final tool call to complete purchase
+        call_id_final = self._get_next_call_id(ctx)
+        tool_call_final = {
+            "id": call_id_final, "type": "function",
+            "function": {"name": "purchase_ticket", "arguments": json.dumps(args_seats)}
         }
-        resp_json_3 = self.backend.purchase_ticket(json.dumps(args_2))
-        resp_data_3 = json.loads(resp_json_3)
+        resp_json_final = self.backend.purchase_ticket(json.dumps(args_seats))
+        self._add_turn(ctx, "assistant", None, tool_calls=[tool_call_final], tool_output=resp_json_final)
         
-        self._add_turn(ctx, "assistant", None, tool_calls=[tool_call_3], tool_output=resp_json_3)
-        
-        # Update UI: Purchased
-        ctx["ticket_info"] = resp_data_3
+        # --- PHASE 4: COMPLETION ---
+        ctx["ticket_info"] = json.loads(resp_json_final)
         ctx["ui_state"] = {"state": "purchased", "phase": "delivery", "actions": "show_info,print,sms,email,new", "page": "1/2"}
-        
         self._inject_system_context(ctx, meta_contexts)
         
-        # Final Handover
+        # Final handover
         resp_handover = self._render_utterance("assistant_responses", ctx, category="ticket_handover")
         self._add_turn(ctx, "assistant", resp_handover)
 
@@ -723,7 +833,6 @@ class DialogueGenerator:
         self._add_turn(ctx, "user", u_complaint)
         resp = self._render_utterance("assistant_responses", ctx, category="complaint_response")
         self._add_turn(ctx, "assistant", resp)
-        meta_contexts.append(self._snapshot_meta(ctx, len(ctx["generated_messages"])))
 
     def _step_farewell(self, ctx, meta_contexts):
         is_success = ctx.get("ui_state", {}).get("state") == "purchased"
@@ -733,7 +842,6 @@ class DialogueGenerator:
         self._add_turn(ctx, "user", u_bye)
         resp_farewell = self._render_utterance("assistant_responses", ctx, category="farewell")
         self._add_turn(ctx, "assistant", resp_farewell)
-        meta_contexts.append(self._snapshot_meta(ctx, len(ctx["generated_messages"])))
 
     def _build_dynamic_flow(self, run_id):
         # Default scenario steps

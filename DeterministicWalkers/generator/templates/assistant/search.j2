@@ -27,7 +27,7 @@
         {{ to_json({"text": "Ho trovato " ~ n_trains ~ " opzioni. Quale preferisci?", "variables": {}}) }}
         {{ to_json({"text": "Ci sono diverse soluzioni. Preferisci quella delle " ~ first_dep ~ " o un'altra?", "variables": {}}) }}
         {{ to_json({"text": "Ottime notizie, ci sono " ~ n_trains ~ " alternative. La prima parte alle " ~ first_dep ~ ".", "variables": {}}) }}
-        {{ to_json({"text": "Ho " ~ n_trains ~ " possibilità per te. Iniziamo con quella delle " ~ first_dep ~ "?", "variables": {}}) }}
+        {{ to_json({"text": "Ho " ~ n_trains ~ " possibilità per te. Quale preferisci?", "variables": {}}) }}
     {%- endif %}
 {%- endif %}
 
@@ -49,6 +49,6 @@
     {{ to_json({"text": "Per quante persone?", "variables": {}}) }}
     {{ to_json({"text": "Quanti passeggeri viaggiano?", "variables": {}}) }}
     {{ to_json({"text": "In quanti viaggiate?", "variables": {}}) }}
-    {{ to_json({"text": "Quanti biglietti ti servono?", "variables": {}}) }}
-    {{ to_json({"text": "Per quante persone cerco? 🙂", "variables": {}}) }}
+    {{ to_json({"text": "In quanti siete?", "variables": {}}) }}
+    {{ to_json({"text": "Per quanti passeggeri cerco? 🙂", "variables": {}}) }}
 {%- endif %}

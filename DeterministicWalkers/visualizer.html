@@ -50,6 +50,7 @@
             margin: 0;
             background: linear-gradient(to right, #60a5fa, #a78bfa);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -351,12 +352,18 @@
         </div>
 
         <div class="upload-section">
-            <div id="folderBtn" class="upload-btn">📂 Select Data Folder</div>
-            <div id="dropZone" class="drop-zone">
-                or drop files here
+            <select id="datasetSelector" class="upload-btn"
+                style="width: 100%; appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%233b82f6%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right .7rem top 50%; background-size: .65rem auto; padding-right: 2rem;">
+                <option value="">Loading datasets...</option>
+            </select>
+            <div id="refreshBtn" class="upload-btn"
+                style="margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <span>🔄</span> Refresh List
+            </div>
+            <div id="dropZone" class="drop-zone" style="margin-top: 0.5rem;">
+                or drop local files here
             </div>
             <input type="file" id="fileInput" accept=".jsonl,.json" style="display: none;" multiple>
-            <input type="file" id="folderInput" webkitdirectory directory style="display: none;">
         </div>
 
         <div id="conversationList" class="conversation-list">
@@ -390,85 +397,91 @@
     </div>
 
     <script>
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('fileInput');
-        const folderInput = document.getElementById('folderInput');
-        const folderBtn = document.getElementById('folderBtn');
-        const conversationList = document.getElementById('conversationList');
-        const chatContainer = document.getElementById('chatContainer');
-        const metadataPanel = document.getElementById('metadataPanel');
-        const metaContent = document.getElementById('metaContent');
-        const contextContent = document.getElementById('contextContent');
+        const datasetSelector = document.getElementById('datasetSelector');
+        const refreshBtn = document.getElementById('refreshBtn');
 
         // State
         let allFilesData = {}; // filename -> [conversations]
 
         // Drag & Drop Handlers
         dropZone.addEventListener('click', () => fileInput.click());
-        folderBtn.addEventListener('click', () => folderInput.click());
 
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('active');
+        refreshBtn.addEventListener('click', () => {
+            fetchDatasets();
         });
 
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('active');
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('active');
-            handleFiles(e.dataTransfer.files);
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
-        });
-
-        folderInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
+        datasetSelector.addEventListener('change', (e) => {
+            const path = e.target.value;
+            if (path) {
+                fetchDatasetContent(path);
+            }
         });
 
         // Initialize when window loads
         window.onload = function () {
-            // Fetch the hydrated dataset directly
-            // Path is relative to the visualizer.html file
-            const dataPath = 'data/hydrated-dataset/dialogue_dataset.jsonl';
-            console.log("Fetching data from:", dataPath);
+            fetchDatasets();
+        };
 
-            fetch(dataPath)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+        function fetchDatasets() {
+            datasetSelector.innerHTML = '<option value="">Loading datasets...</option>';
+            fetch('/api/datasets')
+                .then(response => response.json())
+                .then(datasets => {
+                    datasetSelector.innerHTML = '<option value="">-- Select a dataset --</option>';
+                    if (datasets.length === 0) {
+                        datasetSelector.innerHTML = '<option value="">No datasets found</option>';
+                        return;
                     }
+
+                    datasets.forEach(ds => {
+                        const option = document.createElement('option');
+                        option.value = ds.path;
+                        option.textContent = (ds.priority ? '⭐ ' : '') + ds.name;
+                        datasetSelector.appendChild(option);
+                    });
+
+                    // Auto-load the first priority dataset if available
+                    const firstPriority = datasets.find(d => d.priority);
+                    if (firstPriority) {
+                        datasetSelector.value = firstPriority.path;
+                        fetchDatasetContent(firstPriority.path);
+                    }
+                })
+                .catch(err => {
+                    console.error("Failed to fetch datasets:", err);
+                    datasetSelector.innerHTML = '<option value="">Error loading datasets</option>';
+                    // Fallback to manual if API fails
+                    document.querySelector('.empty-state p').innerHTML = `
+                        Run <code>py tools/run_visualizer.py</code> for dynamic loading.<br>
+                        Or drop files into the zone below.
+                    `;
+                });
+        }
+
+        function fetchDatasetContent(path) {
+            console.log("Fetching dataset content from:", path);
+            const timestamp = new Date().getTime();
+            fetch(`/api/data/${path}?t=${timestamp}`)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     return response.text();
                 })
                 .then(text => {
                     const conversations = parseJSONL(text);
                     if (conversations.length > 0) {
-                        allFilesData['dialogue_dataset.jsonl'] = conversations;
+                        // We use the full path as key to avoid name collisions
+                        allFilesData = {}; // Clear previous if we only want one at a time, or keep if we want to merge
+                        allFilesData[path] = conversations;
                         renderSidebar();
-                        // Automatically select the first file's first item if available
-                        const firstFile = Object.keys(allFilesData).sort()[0];
-                        if (firstFile && allFilesData[firstFile].length > 0) {
-                            // Optional: select first item?
-                        }
                     } else {
                         console.warn("No conversations found in fetched file.");
                     }
                 })
                 .catch(e => {
-                    console.error("Failed to fetch data:", e);
-                    // Show error in empty state
-                    document.querySelector('.empty-state h2').textContent = "Could not load data";
-                    document.querySelector('.empty-state p').innerHTML = `
-                        Ensure you are running via a local server (e.g., <code>python tools/run_visualizer.py</code>)<br>
-                        and that <code>${dataPath}</code> exists.<br>
-                        <span style="font-size:0.8em; color:red;">${e.message}</span>
-                    `;
+                    console.error("Failed to fetch dataset content:", e);
+                    alert("Could not load dataset: " + e.message);
                 });
-        };
+        }
 
         function handleFiles(fileList) {
             Array.from(fileList).forEach(file => {

@@ -10,9 +10,11 @@ from pathlib import Path
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'config.json')
 BASE_DIR = os.path.join(os.path.dirname(__file__), 'data')
 PREDATASET_DIR = os.path.join(BASE_DIR, 'predataset')
+CLEAN_PREDATASET_DIR = os.path.join(BASE_DIR, 'clean_predataset')
 HYDRATED_DIR = os.path.join(BASE_DIR, 'hydrated-dataset')
 RESOURCES_DIR = os.path.join(BASE_DIR, 'resources')
 DIALOGUE_FILE = os.path.join(PREDATASET_DIR, 'dialogue_dataset.jsonl')
+CLEAN_DIALOGUE_FILE = os.path.join(CLEAN_PREDATASET_DIR, 'dialogue_dataset.jsonl')
 
 def main():
     parser = argparse.ArgumentParser(description="Deterministic + LLM Data Generator")
@@ -22,7 +24,7 @@ def main():
     args = parser.parse_args()
 
     # Ensure output dirs exist and are clean
-    for d in [PREDATASET_DIR, HYDRATED_DIR]:
+    for d in [PREDATASET_DIR, CLEAN_PREDATASET_DIR, HYDRATED_DIR]:
         if os.path.exists(d):
             shutil.rmtree(d)
         os.makedirs(d, exist_ok=True)
@@ -74,6 +76,17 @@ def main():
         with open(DIALOGUE_FILE, 'w', encoding='utf-8') as f:
             for item in dialogues:
                 f.write(json.dumps(item, ensure_ascii=False) + '\n')
+        
+        # 3. Clean Predataset (remove metadata, keep tools + messages)
+        print(f"Post-processing: Saving cleaned dialogues to {CLEAN_DIALOGUE_FILE}...")
+        with open(CLEAN_DIALOGUE_FILE, 'w', encoding='utf-8') as f:
+            for item in dialogues:
+                clean_item = {
+                    "tools": item.get("tools"),
+                    "messages": item.get("messages"),
+                    "contexts": item.get("_meta", {}).get("contexts")
+                }
+                f.write(json.dumps(clean_item, ensure_ascii=False) + '\n')
 
         # 5. Hydration
     print("Hydrating dataset...")
