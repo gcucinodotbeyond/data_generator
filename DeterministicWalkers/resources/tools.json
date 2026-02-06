@@ -30,6 +30,26 @@
                             "type": "integer",
                             "description": "Numero passeggeri",
                             "default": 1
+                        },
+                        "pet_small": {
+                            "type": "integer",
+                            "description": "Numero di animali di piccola taglia (es. gatti, cani nel trasportino)",
+                            "default": 0
+                        },
+                        "pet_big": {
+                            "type": "integer",
+                            "description": "Numero di cani di grossa taglia",
+                            "default": 0
+                        },
+                        "bike_normal": {
+                            "type": "integer",
+                            "description": "Numero di bici standard (non pieghevoli)",
+                            "default": 0
+                        },
+                        "bike_foldable": {
+                            "type": "integer",
+                            "description": "Numero di bici pieghevoli",
+                            "default": 0
                         }
                     },
                     "required": [

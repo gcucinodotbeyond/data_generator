@@ -52,3 +52,26 @@
     {{ to_json({"text": "In quanti siete?", "variables": {}}) }}
     {{ to_json({"text": "Per quanti passeggeri cerco? 🙂", "variables": {}}) }}
 {%- endif %}
+
+{# --- DISABILITY ACK --- #}
+{%- if category == "disability_ack" %}
+    {%- if disability_type == "wheelchair" %}
+        {{ to_json({"text": "Verificherò la disponibilità di posti per sedia a rotelle e l'assistenza per la salita/discesa. Quanti viaggiatori siete?", "variables": {}}) }}
+        {{ to_json({"text": "Certamente, cercherò treni con posto per carrozzina. Per quante persone?", "variables": {}}) }}
+    {%- elif disability_type in ["motor_ambulatory", "elderly", "pregnant"] %}
+        {{ to_json({"text": "Cercherò soluzioni con il minor numero di cambi e vicine ai servizi. Quanti siete?", "variables": {}}) }}
+        {{ to_json({"text": "Va bene, annotato. Cercherò una soluzione comoda. In quanti viaggiate?", "variables": {}}) }}
+    {%- elif disability_type == "visual" %}
+        {{ to_json({"text": "Ti descriverò, se vuoi, ogni dettaglio del viaggio e delle stazioni. Quante persone partono?", "variables": {}}) }}
+        {{ to_json({"text": "Ricevuto. Se serve, posso leggere tutti i dettagli. Per quanti passeggeri?", "variables": {}}) }}
+    {%- elif disability_type == "hearing" %}
+        {{ to_json({"text": "Riceverai tutte le conferme scritte e visive necessarie. In quanti siete?", "variables": {}}) }}
+        {{ to_json({"text": "Troverai tutto scritto qui. Per quante persone cerco?", "variables": {}}) }}
+    {%- elif disability_type == "cognitive" %}
+        {{ to_json({"text": "Ti fornirò indicazioni chiare e semplici passo dopo passo. Quanti siete?", "variables": {}}) }}
+        {{ to_json({"text": "Va bene, ti guiderò io con calma. In quanti viaggiate?", "variables": {}}) }}
+    {%- else %}
+        {{ to_json({"text": "Certamente, annotato. Quanti viaggiatori siete?", "variables": {}}) }}
+        {{ to_json({"text": "Va bene, ne terrò conto. Per quanti passeggeri cerco?", "variables": {}}) }}
+    {%- endif %}
+{%- endif %}

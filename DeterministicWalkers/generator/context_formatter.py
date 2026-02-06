@@ -47,15 +47,24 @@ class ContextFormatter:
 
     @staticmethod
     def _ctx(params):
-        return f'<ctx date="{params.get("date", "2026-01-29")}" time="{params.get("ctx_time", "12:00")}" station="{params.get("origin", "Unknown")}" lang="it"/>\n\n'
+        a11y = params.get("a11y")
+        a11y_instr = params.get("a11y_instruction")
+        a11y_attr = f' a11y="{a11y}"' if a11y else ''
+        a11y_instr_attr = f' a11y_instruction="{a11y_instr}"' if a11y_instr else ''
+        return f'<ctx date="{params.get("date", "2026-01-29")}" time="{params.get("ctx_time", "12:00")}" station="{params.get("origin", "Unknown")}" lang="it"{a11y_attr}{a11y_instr_attr}/>\n\n'
 
     @staticmethod
     def _booking(params, state, tag, email="false"):
         pax = params.get("passengers", "0")
         try: n = int(pax)
         except: n = 0
+    @staticmethod
+    def _booking(params, state, tag, email="false"):
+        pax = params.get("passengers", "0")
+        try: n = int(pax)
+        except: n = 0
         inner = "\n".join([f'  {tag.format(id=i)}' for i in range(1, n + 1)])
-        return f'<booking pax="{pax}" data="{state}">\n{inner}\n  <contact email="{email}" phone="false"/>\n  <extras bikes="0" pets="0" luggage="0"/>\n</booking>\n\n'
+        return f'<booking pax="{pax}" data="{state}">\n{inner}\n  <contact email="{email}" phone="false"/>\n  <extras bike_normal="{params.get("bike_normal", 0)}" bike_foldable="{params.get("bike_foldable", 0)}" pet_small="{params.get("pet_small", 0)}" pet_big="{params.get("pet_big", 0)}" luggage="0"/>\n</booking>\n\n'
 
     @staticmethod
     def _format_search(p, ui):
@@ -70,7 +79,7 @@ class ContextFormatter:
         q_time = p.get("travel_time", "").strip()
         q_pax = str(p.get("passengers", "0")).strip()
         
-        xml += f'<query from="{q_from}" to="{q_to}" date="{q_date}" time="{q_time}" pax="{q_pax}" bikes="0" pets="0"/>'
+        xml += f'<query from="{q_from}" to="{q_to}" date="{q_date}" time="{q_time}" pax="{q_pax}" bike_normal="{p.get("bike_normal", 0)}" bike_foldable="{p.get("bike_foldable", 0)}" pet_small="{p.get("pet_small", 0)}" pet_big="{p.get("pet_big", 0)}"/>'
         return xml
 
     @staticmethod
@@ -86,7 +95,7 @@ class ContextFormatter:
         q_date = p.get("travel_date", "").strip()
         q_time = p.get("travel_time", "").strip()
         q_pax = str(p.get("passengers", "0")).strip()
-        xml += f'<query from="{q_from}" to="{q_to}" date="{q_date}" time="{q_time}" pax="{q_pax}" bikes="0"/>\n\n'
+        xml += f'<query from="{q_from}" to="{q_to}" date="{q_date}" time="{q_time}" pax="{q_pax}" bike_normal="{p.get("bike_normal", 0)}" bike_foldable="{p.get("bike_foldable", 0)}" pet_small="{p.get("pet_small", 0)}" pet_big="{p.get("pet_big", 0)}"/>\n\n'
         if not t: return xml + '<trains total="0"/>'
         xml += f'<trains total="{len(t)}" page="{ui.get("page", "1/1")}">\n'
         for i, tr in enumerate(t, 1):

@@ -133,8 +133,69 @@ class DialogueGenerator:
             "ui_state": {"state": "idle", "can": {"next": False, "prev": False, "back": False}},
             "ctx_time": f"{random.randint(6, 22):02d}:{random.randint(0, 59):02d}", 
             "ctx_date": (datetime.now() + timedelta(days=random.randint(0, 60))).strftime("%Y-%m-%d"),
-            "call_counter": 0
+            "call_counter": 0,
+            
+            # Randomly assign Pet (Independent 20%)
+            "pet_object": (lambda x: {"phrase": x["phrase"], "type": x["type"]} if x else None)(random.choice([
+                {"phrase": "un cane", "type": "large"}, 
+                {"phrase": "il mio cane", "type": "large"},
+                {"phrase": "un gatto", "type": "small"},
+                {"phrase": "il trasportino con il gatto", "type": "small"},
+                {"phrase": "un cane di piccola taglia", "type": "small"},
+                {"phrase": "un cane grosso", "type": "large"},
+                {"phrase": "il mio pastore tedesco", "type": "large"},
+                {"phrase": "un cane guida", "type": "assistance"},
+                {"phrase": "il cane da assistenza", "type": "assistance"}
+            ]) if random.random() < 0.2 else None),
+
+            # Randomly assign Bike (Independent 20%)
+            "bike_object": (lambda x: {"phrase": x["phrase"], "type": x["type"]} if x else None)(random.choice([
+                {"phrase": "la bici", "type": "normal"}, 
+                {"phrase": "una bici", "type": "normal"},
+                {"phrase": "le bici", "type": "normal"},
+                {"phrase": "la bici pieghevole", "type": "foldable"},
+                {"phrase": "una pieghevole", "type": "foldable"},
+                {"phrase": "le bici pieghevoli", "type": "foldable"}
+            ]) if random.random() < 0.2 else None),
+
+            # Randomly assign Disability (Independent 20%)
+            "disability_object": (lambda x: {"phrase": x["phrase"], "type": x["type"]} if x else None)(random.choice([
+                # Wheelchair
+                {"phrase": "sono in sedia a rotelle", "type": "wheelchair"},
+                {"phrase": "uso la carrozzina", "type": "wheelchair"},
+                # Motor/Ambulatory
+                {"phrase": "ho difficoltà a camminare", "type": "motor_ambulatory"},
+                {"phrase": "faccio fatica a fare le scale", "type": "motor_ambulatory"},
+                {"phrase": "uso le stampelle", "type": "motor_ambulatory"},
+                # Elderly
+                {"phrase": "sono un po' anziano", "type": "elderly"}, 
+                {"phrase": "sono anziana", "type": "elderly"},
+                # Pregnant
+                {"phrase": "sono incinta", "type": "pregnant"},
+                {"phrase": "aspetto un bambino", "type": "pregnant"},
+                # Visual
+                {"phrase": "sono cieco", "type": "visual"}, 
+                {"phrase": "sono ipovedente", "type": "visual"},
+                # Hearing
+                {"phrase": "sono sordo", "type": "hearing"},
+                {"phrase": "ho problemi di udito", "type": "hearing"},
+                # Cognitive
+                {"phrase": "ho una disabilità cognitiva", "type": "cognitive"},
+                {"phrase": "ho bisogno di indicazioni semplici", "type": "cognitive"}
+            ]) if random.random() < 0.2 else None)
         }
+        
+        # Unpack for template easier usage
+        initial_context["pet_phrase"] = initial_context["pet_object"]["phrase"] if initial_context["pet_object"] else None
+        initial_context["pet_type"] = initial_context["pet_object"]["type"] if initial_context["pet_object"] else None
+        initial_context["pet_count"] = 1 if initial_context["pet_object"] else 0
+
+        initial_context["bike_phrase"] = initial_context["bike_object"]["phrase"] if initial_context["bike_object"] else None
+        initial_context["bike_type"] = initial_context["bike_object"]["type"] if initial_context["bike_object"] else None
+        initial_context["bike_count"] = 1 if initial_context["bike_object"] else 0
+
+        initial_context["disability_phrase"] = initial_context["disability_object"]["phrase"] if initial_context["disability_object"] else None
+        initial_context["disability_type"] = initial_context["disability_object"]["type"] if initial_context["disability_object"] else None
 
         # Inject INITIAL system prompt with context
         from generator.context_formatter import ContextFormatter
@@ -153,6 +214,7 @@ class DialogueGenerator:
         initial_xml = ContextFormatter.format_context(initial_params)
         full_system_content = "{SYSTEM_PROMPT}\n\n" + initial_xml
         initial_context["generated_messages"].append({"role": "system", "content": full_system_content})
+
 
         return initial_context
 
@@ -310,8 +372,28 @@ class DialogueGenerator:
             
             # Additional dynamic data for Formatter
             "target_train": context.get("target_train"),
-            "session_class": context.get("session_class")
+            "session_class": context.get("session_class"),
+            "pet_small": context.get("session_pet_small", 0),
+            "pet_big": context.get("session_pet_big", 0),
+            "bike_normal": context.get("session_bike_normal", 0),
+            "bike_foldable": context.get("session_bike_foldable", 0),
+            "disability_type": context.get("session_disability")
         }
+        
+        # A11Y Context injection
+        dis_type = context.get("session_disability")
+        if dis_type:
+             snapshot_params["a11y"] = dis_type
+             a11y_instr_map = {
+                 "wheelchair": "Utente in sedia a rotelle: segnala accessibilità carrozze e assistenza in stazione",
+                 "motor_ambulatory": "Utente con difficoltà motorie: segnala percorsi con pochi cambi e vicini ai servizi",
+                 "elderly": "Utente anziano: suggerisci soluzioni comode e vicine ai servizi",
+                 "pregnant": "Utente in gravidanza: suggerisci soluzioni comode",
+                 "visual": "Utente non vedente: descrivi verbalmente dettagli viaggio e stazioni",
+                 "hearing": "Utente non udente: fornisci conferme scritte e visive",
+                 "cognitive": "Utente con disabilità cognitiva: usa un linguaggio semplice e guida passo passo"
+             }
+             snapshot_params["a11y_instruction"] = a11y_instr_map.get(dis_type, "Segnala assistenza speciale")
         
         # Format as XML
         # Note: We need to pass stringified versions to Formatter if it expects them, 
@@ -446,6 +528,20 @@ class DialogueGenerator:
         resp = self._render_utterance("assistant_responses", ctx, category="greeting_response")
         self._add_turn(ctx, "assistant", resp)
 
+    def _step_disability(self, ctx, meta_contexts):
+        """
+        Handles the distinct turn where the user declares a disability
+        and the assistant acknowledges it.
+        """
+        if ctx.get("disability_phrase"):
+             u_dis = self._render_utterance("refinement", ctx, aspect="disability", 
+                                            disability_phrase=ctx.get("disability_phrase"))
+             self._add_turn(ctx, "user", u_dis)
+             
+             # Assistant Acknowledgement
+             resp = self._render_utterance("assistant_responses", ctx, category="disability_ack")
+             self._add_turn(ctx, "assistant", resp)
+
     def _step_search(self, ctx, meta_contexts):
         # 1. User performs initial search (often without passengers in natural language)
         search_data = self._render_utterance_data("search_trains", ctx)
@@ -496,8 +592,13 @@ class DialogueGenerator:
         # Potential interruption after verbal response
         self._try_interruption(ctx)
         
-        # 2. User provides passenger count
-        u_pax = self._render_utterance("refinement", ctx, aspect="passengers", count=ctx["passengers"])
+        # 2a. Disability Turn (if applicable)
+        self._step_disability(ctx, meta_contexts)
+
+        # 2b. User provides passenger count (AND pets/bikes, but NOT disability yet)
+        u_pax = self._render_utterance("refinement", ctx, aspect="passengers", count=ctx["passengers"], 
+                                      pet_phrase=ctx.get("pet_phrase"), bike_phrase=ctx.get("bike_phrase"),
+                                      disability_phrase=None) # Explicitly None to avoid mixing
         self._add_turn(ctx, "user", u_pax)
         
         call_id_2 = self._get_next_call_id(ctx)
@@ -510,6 +611,11 @@ class DialogueGenerator:
                     "origin": ctx["origin"], 
                     "destination": ctx["destination"], 
                     "passengers": ctx["passengers"],
+                    "pet_small": 1 if ctx.get("pet_type") == "small" else 0,
+                    "pet_big": 1 if ctx.get("pet_type") == "large" else 0,
+                    "bike_normal": 1 if ctx.get("bike_type") == "normal" else 0,
+                    "bike_foldable": 1 if ctx.get("bike_type") == "foldable" else 0,
+                    "disability_type": ctx.get("disability_type"), # string or None
                     "time": self._clean_temporal(tool_time),
                     "date": self._clean_temporal(tool_date)
                 })
@@ -521,9 +627,14 @@ class DialogueGenerator:
         resp_data_2 = json.loads(resp_json_2)
         ctx["current_trains"] = resp_data_2.get("trains", [])
         
-        # Discover session pax
+        # Discover session pax and pets
         ctx["session_pax"] = ctx["passengers"]
         ctx["session_pax_discovered"] = True
+        ctx["session_pet_small"] = 1 if ctx.get("pet_type") == "small" else 0
+        ctx["session_pet_big"] = 1 if ctx.get("pet_type") == "large" else 0
+        ctx["session_bike_normal"] = 1 if ctx.get("bike_type") == "normal" else 0
+        ctx["session_bike_foldable"] = 1 if ctx.get("bike_type") == "foldable" else 0
+        ctx["session_disability"] = ctx.get("disability_type")
         
         # Update UI State -> Results
         ctx["ui_state"] = {
@@ -903,6 +1014,8 @@ class DialogueGenerator:
 
                 if step == "greeting":
                     self._step_greeting(ctx, meta_contexts)
+                elif step == "disability":
+                    self._step_disability(ctx, meta_contexts)
                 elif step == "search":
                     if not self._step_search(ctx, meta_contexts):
                         break # Stop if no trains
@@ -921,8 +1034,11 @@ class DialogueGenerator:
                 elif step == "farewell":
                     self._step_farewell(ctx, meta_contexts)
         
+        # Pass scenario name to context for metadata finalization
+        ctx["scenario_name"] = scenario_name
+        
         result = self._finalize(ctx, meta_contexts)
-        result["_meta"]["scenario_name"] = scenario_name # Add to metadata
+        # result["_meta"]["scenario_name"] = scenario_name # Handled inside _finalize now
         return result
 
     def _finalize(self, ctx, meta_contexts):
@@ -935,15 +1051,40 @@ class DialogueGenerator:
             if isinstance(snap["params"]["trains_array"], list):
                  snap["params"]["trains_array"] = json.dumps(snap["params"]["trains_array"])
 
+        # Metadata Refactoring
+        metadata = {
+            "generator_version": "dynamic_v3",
+            "scenario": ctx.get("scenario_name", "default"), # Was scenario_name
+            "seed": random.randint(1000,999999), 
+            "run_id": ctx["run_id"],
+            "rudeness": ctx["rudeness"],
+            "verbose": ctx.get("verbose", "standard"),
+            
+            "interaction": {
+                "origin": ctx.get("origin", ""),
+                "destination": ctx.get("destination", ""),
+                "passengers": ctx.get("passengers", 1),
+                "passengers": ctx.get("passengers", 1),
+                # "disabled": moved to user_profile
+                "extras": {
+                    "pet_small": ctx.get("pet_count", 0) if ctx.get("pet_type") == "small" else 0,
+                    "pet_big": ctx.get("pet_count", 0) if ctx.get("pet_type") == "large" else 0,
+                    "pet_assistant": ctx.get("pet_count", 0) if ctx.get("pet_type") == "assistance" else 0,
+                    "bike_normal": ctx.get("bike_count", 0) if ctx.get("bike_type") == "normal" else 0,
+                    "bike_foldable": ctx.get("bike_count", 0) if ctx.get("bike_type") == "foldable" else 0
+                }
+            },
+            
+            "user_profile": {
+                "preferences": ctx.get("seat_preference", []), # Placeholder
+                "disabilities": ctx.get("disability_type") # Was ctx.get("assistance_required")
+            },
+
+            "contexts": meta_contexts
+        }
+
         return {
             "tools": "{{TOOL_DEFINITION}}",
             "messages": ctx["generated_messages"],
-            "_meta": {
-                "scenario": "dynamic_v3",
-                "seed": random.randint(1000,999999), 
-                "run_id": ctx["run_id"],
-                "rudeness": ctx["rudeness"],
-                "verbose": ctx.get("verbose", "standard"),
-                "contexts": meta_contexts
-            }
+            "_meta": metadata
         }

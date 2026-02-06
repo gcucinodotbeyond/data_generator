@@ -36,6 +36,13 @@ print(f'Hydrated dialogues: {len(hlines)}')
 # Sample first dialogue
 d0 = json.loads(hlines[0])
 meta = d0.get('_meta', {})
-print(f'Scenario: {meta.get("scenario_name")}')
-ctx0 = meta.get('contexts', [{}])[0].get('params', {})
-print(f'Passengers: {ctx0.get("passengers")}')
+print(f'Generator Version: {meta.get("generator_version", "N/A")}')
+print(f'Scenario: {meta.get("scenario", "N/A")}') 
+
+inter = meta.get('interaction')
+if inter:
+    print(f'Origin: {inter.get("origin")}')
+    print(f'Destination: {inter.get("destination")}')
+    print(f'Passengers: {inter.get("passengers")}')
+else:
+    print("No interaction metadata found.")

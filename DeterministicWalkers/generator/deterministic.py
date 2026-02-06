@@ -66,6 +66,10 @@ class DeterministicGenerator:
         # 7. QA
         print("[Deterministic] Generating 'qa'...")
         all_results.extend(self._generate_qa())
+
+        # 8. REFINEMENTS (Pets)
+        print("[Deterministic] Generating 'refinements'...")
+        all_results.extend(self._generate_refinements())
         
         # Sort by text for consistency
         results_sorted = sorted(all_results, key=lambda x: x['text'])
@@ -207,6 +211,103 @@ class DeterministicGenerator:
         
         return self._items_to_list(unique_items, "qa")
 
+    def _generate_refinements(self):
+        unique_items = set()
+        pet_phrases = [
+            "un cane", "il mio cane", "un gatto", "il trasportino con il gatto",
+            "un cane di piccola taglia", "un cane grosso", "il mio pastore tedesco",
+            "un cane guida", "il cane da assistenza"
+        ]
+        
+        disability_phrases = [
+             "sono in sedia a rotelle", "uso la carrozzina", # wheelchair
+             "ho difficoltà a camminare", "faccio fatica a fare le scale", "uso le stampelle", # motor_ambulatory
+             "sono un po' anziano", "sono anziana", # elderly
+             "sono incinta", "aspetto un bambino", # pregnant
+             "sono cieco", "sono ipovedente", # visual
+             "sono sordo", "ho problemi di udito", # hearing
+             "ho una disabilità cognitiva", "ho bisogno di indicazioni semplici" # cognitive
+        ]
+        
+        counts = [1, 2, 3]
+        
+        for rudeness in ['rude', 'polite', 'neutral']:
+            tmpl_path = self._get_template_path('refinement.j2', rudeness)
+            try:
+                template = self.env.get_template(tmpl_path)
+            except jinja2.TemplateNotFound:
+                continue
+
+            for count in counts:
+                # 1. Standard (no pet)
+                for verbose in ['concise', 'standard', 'verbose']:
+                    rendered = template.render(aspect="passengers", count=count, rudeness=rudeness, verbose=verbose, to_json=json.dumps)
+                    self._parse_and_add(rendered, unique_items)
+
+                # 2. With Pet
+                for pet in pet_phrases:
+                    for verbose in ['concise', 'standard', 'verbose']:
+                        rendered = template.render(
+                            aspect="passengers", 
+                            count=count, 
+                            pet_phrase=pet, 
+                            rudeness=rudeness, 
+                            verbose=verbose, 
+                            to_json=json.dumps
+                        )
+                        self._parse_and_add(rendered, unique_items)
+
+                # 3. With Bike
+                bike_phrases = [
+                    "la bici", "una bici", "le bici",
+                    "la bici pieghevole", "una pieghevole", "le bici pieghevoli"
+                ]
+                for bike in bike_phrases:
+                    for verbose in ['concise', 'standard', 'verbose']:
+                        rendered = template.render(
+                            aspect="passengers", 
+                            count=count, 
+                            bike_phrase=bike, 
+                            rudeness=rudeness, 
+                            verbose=verbose, 
+                            to_json=json.dumps
+                        )
+                        self._parse_and_add(rendered, unique_items)
+                        
+                # 4. Combined Pet + Bike
+                for pet in pet_phrases:
+                        for verbose in ['concise', 'standard', 'verbose']:
+                            rendered = template.render(
+                                aspect="passengers", 
+                                count=count, 
+                                pet_phrase=pet,
+                                bike_phrase=bike, 
+                                rudeness=rudeness, 
+                                verbose=verbose, 
+                                to_json=json.dumps
+                            )
+                            self._parse_and_add(rendered, unique_items)
+                            
+                            
+                 # 5. With Disability (Standalone)
+                for dis in disability_phrases:
+                    for verbose in ['concise', 'standard', 'verbose']:
+                        rendered = template.render(
+                            aspect="disability", # Use specific aspect
+                            disability_phrase=dis,
+                            rudeness=rudeness,
+                            verbose=verbose,
+                            to_json=json.dumps
+                        )
+                        self._parse_and_add(rendered, unique_items)
+
+               # 6. Combined Disability + Pet (Subset) -- REMOVED as we split turns
+               # We only generate passengers+pet/bike on aspect="passengers" 
+               # and Disability on aspect="disability"
+
+                            
+        return self._items_to_list(unique_items, "refinement")
+
     def render(self, intent, context):
         """
         Renders a single utterance for a specific intent using the provided context variables.
@@ -216,7 +317,7 @@ class DeterministicGenerator:
         # 1. Assistant Responses Routing
         if intent == "assistant_responses":
             category = context.get("category")
-            if category in ["searching", "search_success", "search_empty", "ask_passengers"]:
+            if category in ["searching", "search_success", "search_empty", "ask_passengers", "disability_ack"]:
                 template_name = "assistant/search.j2"
             elif category in ["seat_prompt", "seat_ack", "selection_refinement", "class_prompt", "class_ack", "handshake", "ticket_handover", "ask_data"]:
                 template_name = "assistant/booking.j2"

@@ -77,6 +77,7 @@ class MockBackend:
         origin = args.get("origin", "Roma Termini")
         destination = args.get("destination", "Napoli Centrale")
         passengers = args.get("passengers")
+        disability_type = args.get("disability_type") # e.g. "visual", "hearing", "motor"
         
         # Step 1: Check passengers
         if not passengers:
@@ -89,6 +90,18 @@ class MockBackend:
                 "time": args.get("time", "now"),
                 "next_action": "Quando l'utente dice il numero (es. 'siamo in 2'), chiama search_trains(origin='...', destination='...', passengers=N)"
             })
+            
+        # Step 1b: Acknowledge disability if present
+        disability_msg = ""
+        if disability_type:
+             map_msg = {
+                 "visual": "Servizio assistenza per disabilità visiva attivato.",
+                 "hearing": "Nota: Assistenza uditiva registrata.",
+                 "motor": "Posti riservati per carrozzina evidenziati.",
+                 "cognitive": "Assistenza cognitiva richiesta.",
+                 "other": "Assistenza speciale richiesta."
+             }
+             disability_msg = map_msg.get(disability_type, "Assistenza speciale richiesta.")
 
         # Step 2: Generate Results
         time_str = args.get("time", "now")

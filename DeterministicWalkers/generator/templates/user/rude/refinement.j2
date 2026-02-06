@@ -2,17 +2,70 @@
 
 {# --- PASSENGERS --- #}
 {% if aspect == "passengers" %}
-{% if verbose == 'concise' %}
-{{ to_json({"text": count|string, "variables": {"refinement": "passengers", "count": count}}) }}
-{% elif verbose == 'verbose' %}
-    {% set p_word = "persona" if count == 1 else "persone" %}
-{{ to_json({"text": "Siamo in " ~ count ~ " e sbrigati, non ho tutto il giorno.", "variables": {"refinement": "passengers", "count": count}}) }}
-{{ to_json({"text": count ~ " " ~ p_word ~ ", muoviti!", "variables": {"refinement": "passengers", "count": count}}) }}
-{% else %} {# standard #}
-{{ to_json({"text": count|string, "variables": {"refinement": "passengers", "count": count}}) }}
-{{ to_json({"text": "In " ~ count, "variables": {"refinement": "passengers", "count": count}}) }}
-{{ to_json({"text": count ~ ", sbrigati", "variables": {"refinement": "passengers", "count": count}}) }}
+
+{# Combined #}
+{% if pet_phrase and bike_phrase %}
+    {% if verbose == 'concise' %}
+{{ to_json({"text": count|string ~ ", " ~ pet_phrase ~ ", " ~ bike_phrase, "variables": {"refinement": "passengers", "count": count, "pet_phrase": pet_phrase, "bike_phrase": bike_phrase}}) }}
+    {% elif verbose == 'verbose' %}
+{{ to_json({"text": "Siamo in " ~ count ~ " con " ~ pet_phrase ~ " e " ~ bike_phrase ~ ", e vedi di non rompere.", "variables": {"refinement": "passengers", "count": count, "pet_phrase": pet_phrase, "bike_phrase": bike_phrase}}) }}
+{{ to_json({"text": "C'è " ~ pet_phrase ~ " e " ~ bike_phrase ~ " per " ~ count ~ " persone, chiaro?", "variables": {"refinement": "passengers", "count": count, "pet_phrase": pet_phrase, "bike_phrase": bike_phrase}}) }}
+    {% else %} {# standard #}
+{{ to_json({"text": "Ho " ~ pet_phrase ~ " e " ~ bike_phrase ~ ", siamo in " ~ count, "variables": {"refinement": "passengers", "count": count, "pet_phrase": pet_phrase, "bike_phrase": bike_phrase}}) }}
+{{ to_json({"text": count ~ ", più " ~ pet_phrase ~ " e " ~ bike_phrase ~ ", muoviti", "variables": {"refinement": "passengers", "count": count, "pet_phrase": pet_phrase, "bike_phrase": bike_phrase}}) }}
+    {% endif %}
+
+{% elif pet_phrase %}
+    {# RUDE PET REFINEMENTS #}
+    {% if verbose == 'concise' %}
+{{ to_json({"text": count|string ~ ", " ~ pet_phrase, "variables": {"refinement": "passengers", "count": count, "pet_phrase": pet_phrase}}) }}
+    {% elif verbose == 'verbose' %}
+{{ to_json({"text": "Siamo in " ~ count ~ " con " ~ pet_phrase ~ ", e non farmi storie.", "variables": {"refinement": "passengers", "count": count, "pet_phrase": pet_phrase}}) }}
+{{ to_json({"text": "Vedi di sbrigarti, ho " ~ pet_phrase ~ " e siamo in " ~ count ~ ".", "variables": {"refinement": "passengers", "count": count, "pet_phrase": pet_phrase}}) }}
+    {% else %} {# standard #}
+{{ to_json({"text": "Ho " ~ pet_phrase ~ " e siamo in " ~ count, "variables": {"refinement": "passengers", "count": count, "pet_phrase": pet_phrase}}) }}
+{{ to_json({"text": count ~ ", più " ~ pet_phrase ~ ", muoviti", "variables": {"refinement": "passengers", "count": count, "pet_phrase": pet_phrase}}) }}
+    {% endif %}
+
+{% elif bike_phrase %}
+    {# BIKE REFINEMENTS #}
+    {% if verbose == 'concise' %}
+{{ to_json({"text": count|string ~ ", " ~ bike_phrase, "variables": {"refinement": "passengers", "count": count, "bike_phrase": bike_phrase}}) }}
+    {% elif verbose == 'verbose' %}
+{{ to_json({"text": "Siamo in " ~ count ~ " con la " ~ bike_phrase ~ ", e vedi di non farmi problemi.", "variables": {"refinement": "passengers", "count": count, "bike_phrase": bike_phrase}}) }}
+{{ to_json({"text": "Ho " ~ bike_phrase ~ " e siamo in " ~ count ~ ".", "variables": {"refinement": "passengers", "count": count, "bike_phrase": bike_phrase}}) }}
+    {% else %} {# standard #}
+{{ to_json({"text": "Ho " ~ bike_phrase ~ " e siamo in " ~ count, "variables": {"refinement": "passengers", "count": count, "bike_phrase": bike_phrase}}) }}
+{{ to_json({"text": count ~ ", più " ~ bike_phrase ~ ", muoviti", "variables": {"refinement": "passengers", "count": count, "bike_phrase": bike_phrase}}) }}
+    {% endif %}
+
+{% else %}
+    {# STANDARD PASSENGERS #}
+    {% if verbose == 'concise' %}
+    {{ to_json({"text": count|string, "variables": {"refinement": "passengers", "count": count}}) }}
+    {% elif verbose == 'verbose' %}
+        {% set p_word = "persona" if count == 1 else "persone" %}
+    {{ to_json({"text": "Siamo in " ~ count ~ " e sbrigati, non ho tutto il giorno.", "variables": {"refinement": "passengers", "count": count}}) }}
+    {{ to_json({"text": count ~ " " ~ p_word ~ ", muoviti!", "variables": {"refinement": "passengers", "count": count}}) }}
+    {% else %} {# standard #}
+    {{ to_json({"text": count|string, "variables": {"refinement": "passengers", "count": count}}) }}
+    {{ to_json({"text": "In " ~ count, "variables": {"refinement": "passengers", "count": count}}) }}
+    {{ to_json({"text": count ~ ", sbrigati", "variables": {"refinement": "passengers", "count": count}}) }}
+    {% endif %}
 {% endif %}
+{% endif %}
+
+{# --- DISABILITY ALONE --- #}
+{% if aspect == "disability" %}
+    {% if verbose == 'concise' %}
+{{ to_json({"text": disability_phrase, "variables": {"refinement": "disability", "disability_phrase": disability_phrase}}) }}
+    {% elif verbose == 'verbose' %}
+{{ to_json({"text": "Inoltre " ~ disability_phrase ~ ", quindi vedi di darmi assistenza.", "variables": {"refinement": "disability", "disability_phrase": disability_phrase}}) }}
+{{ to_json({"text": "Tenga conto che " ~ disability_phrase ~ ", quindi non farmi perdere tempo.", "variables": {"refinement": "disability", "disability_phrase": disability_phrase}}) }}
+    {% else %} {# standard #}
+{{ to_json({"text": "Ah, " ~ disability_phrase, "variables": {"refinement": "disability", "disability_phrase": disability_phrase}}) }}
+{{ to_json({"text": disability_phrase, "variables": {"refinement": "disability", "disability_phrase": disability_phrase}}) }}
+    {% endif %}
 {% endif %}
 
 {# --- TIME / TRAIN SELECTION --- #}
