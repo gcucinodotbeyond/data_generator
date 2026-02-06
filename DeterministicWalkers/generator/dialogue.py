@@ -857,6 +857,9 @@ class DialogueGenerator:
             resp_json_init = self.backend.purchase_ticket(json.dumps(args_init))
             self._add_turn(ctx, "assistant", None, tool_calls=[tool_call_init], tool_output=resp_json_init)
             
+            # Inject context after tool output
+            self._inject_system_context(ctx, meta_contexts)
+            
             # Assistant asks for class
             resp_ask_class = self._render_utterance("assistant_responses", ctx, category="class_prompt")
             self._add_turn(ctx, "assistant", resp_ask_class)
@@ -876,28 +879,75 @@ class DialogueGenerator:
                 "function": {"name": "purchase_ticket", "arguments": json.dumps(args_fin)}
             }
             resp_json_fin = self.backend.purchase_ticket(json.dumps(args_fin))
+            resp_data_fin = json.loads(resp_json_fin)
             self._add_turn(ctx, "assistant", None, tool_calls=[tool_call_fin], tool_output=resp_json_fin)
 
         # --- PHASE 2: SEAT SELECTION ---
         # Update UI: Choose Seats
-        ctx["ui_state"] = {"state": "customize", "phase": "select_seats", "actions": "confirm,change_class,change_seat,back,show_info", "page": "1/2"}
+        ctx["ui_state"] = {"state": "customize", "phase": "select_seats", "actions": "next,back,confirm,change_class,change_seat,show_info", "page": "1/2"}
         self._inject_system_context(ctx, meta_contexts)
         
-        # Assistant asks for seats
-        resp_ask_seats = self._render_utterance("assistant_responses", ctx, category="seat_prompt")
+        # Check if seats were auto-assigned (from tool output in resp_data_fin)
+        auto_assigned = False
+        if "resp_data_fin" in locals() and resp_data_fin.get("auto_assigned_seats"):
+            auto_assigned = True
+            assigned_seats = resp_data_fin.get("auto_assigned_seats")
+            # Update context for ContextFormatter
+            ctx["assigned_seats"] = assigned_seats
+            # Infer carriage from tool output message or logic?
+            # mock_api msg says "...in carrozza 5" or "carrozza X"
+            # It's better if mock_api returns 'carriage' key in json.
+            # But we can assume it returns default or parse it?
+            # Let's assume default "5" for context if not present, but mock_api has simple logic.
+            ctx["assigned_carriage"] = "5" 
+            
+        # Assistant asks for seats or confirmation
+        if auto_assigned:
+            # "Posto 1A in carrozza 5. Confermi?"
+            if len(assigned_seats) > 1:
+                seats_str = ", ".join(assigned_seats)
+                resp_ask_seats = f"Posti {seats_str} in carrozza 5.\nConfermi? 😊"
+            else:
+                resp_ask_seats = f"Posto {assigned_seats[0]} in carrozza 5.\nConfermi? 😊"
+        else:
+            resp_ask_seats = self._render_utterance("assistant_responses", ctx, category="seat_prompt")
+            
         self._add_turn(ctx, "assistant", resp_ask_seats)
         
         # Potential interruption
         self._try_interruption(ctx)
         
-        # User provides seats
-        u_seats = self._render_utterance("refinement", ctx, aspect="seat_multiselect") 
-        if not u_seats: u_seats = f"Ho selezionato i posti 4A e 4B in carrozza 4"
+        # User provides seats OR confirmation
+        if auto_assigned:
+            u_seats = "Sì va bene." # User confirms
+            chosen_seats = ",".join(assigned_seats)
+        else:
+            # Manual selection: must match passenger count
+            n_pax = ctx.get("passengers", 1)
+            # Default fallback logic
+            sel_seats = []
+            letters = ["A", "B", "C", "D"]
+            start = random.randint(1, 10)
+            for i in range(n_pax):
+                 sel_seats.append(f"{start}{letters[i%4]}")
+            chosen_seats = ",".join(sel_seats)
+            
+            u_seats = self._render_utterance("refinement", ctx, aspect="seat_multiselect") 
+            # If template returns generic, override or ensure it mentions seats
+            if not u_seats or "posto" not in u_seats.lower(): 
+                 if n_pax > 1:
+                     u_seats = f"Ho selezionato i posti {', '.join(sel_seats)} in carrozza 4"
+                 else:
+                     u_seats = f"Ho selezionato il posto {sel_seats[0]} in carrozza 4"
+            
         self._add_turn(ctx, "user", u_seats)
         
         # Trigger tool call with seats
         call_id_seats = self._get_next_call_id(ctx)
-        args_seats = {"train_id": target_train["id"], "class": chosen_class, "seats": "4A,4B", "carriage": 4}
+        args_seats = {"train_id": target_train["id"], "class": chosen_class, "seats": chosen_seats}
+        if not auto_assigned:
+             args_seats["carriage"] = 4
+             
         tool_call_seats = {
             "id": call_id_seats, "type": "function",
             "function": {"name": "purchase_ticket", "arguments": json.dumps(args_seats)}

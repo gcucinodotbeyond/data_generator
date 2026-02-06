@@ -10,7 +10,7 @@ This system combines the reliability of template-based logic with the linguistic
 1.  **Hybrid Approach**: Uses Python and Jinja2 templates for core logic and slot accuracy, then optionally employs an LLM to paraphrase results for natural variety.
 2.  **Observable & Traceable**: Every generated sample includes `_meta` information detailing the scenario, seed, and parameters used.
 3.  **Dynamic Hydration**: Conversations are generated as "skeletons" and then "hydrated" with system prompts, tool definitions, and dynamic context (time, dates).
-4.  **Schema v1.5 XML**: Context is injected into the system prompt using a rich XML schema that simulates a real application's UI state and backend data.
+4.  **Schema v1.7 XML**: Context is injected into the system prompt using a rich XML schema that simulates a real application's UI state and backend data.
 5.  **Modular Components**: Generation logic is divided into reusable Jinja2 templates and a mock backend for consistent state transitions.
 
 ---
@@ -130,7 +130,7 @@ python judge/run_validation.py --file data/hydrated-dataset/dialogue_dataset.jso
 3. (Optional) Update `distribution_config.json` to include your new scenario in the random generation mix.
 
 ### Updating the XML Schema
-The XML injection logic is centralized in `generator/context_formatter.py`. Refer to `stani_txt/right_output.txt` for the current gold-standard format of Schema v1.5.
+The XML injection logic is centralized in `generator/context_formatter.py`. Refer to `stani_txt/right_output.txt` for the current gold-standard format of Schema v1.7.
 
 ---
 

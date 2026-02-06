@@ -2,6 +2,7 @@ import json
 import random
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
+import zlib
 
 class MockBackend:
     """
@@ -17,6 +18,7 @@ class MockBackend:
         
         # Purchase flow state
         self.purchase_phase = "init" # init -> selected -> data_input -> complete
+        self.current_passengers = 1
         
         # Heuristics for realistic generation
         self.train_types = [
@@ -76,7 +78,13 @@ class MockBackend:
 
         origin = args.get("origin", "Roma Termini")
         destination = args.get("destination", "Napoli Centrale")
+        destination = args.get("destination", "Napoli Centrale")
         passengers = args.get("passengers")
+        if passengers:
+            try:
+                self.current_passengers = int(passengers)
+            except:
+                pass
         disability_type = args.get("disability_type") # e.g. "visual", "hearing", "motor"
         
         # Step 1: Check passengers
@@ -134,23 +142,23 @@ class MockBackend:
             classes = []
             if t_type["type"] in ["Frecciarossa", "Frecciargento"]:
                  classes = [
-                     {"class_denomination": "STANDARD", "price": f"{base_price:.2f}", "available_seats": self.rng.randint(5, 50)},
-                     {"class_denomination": "PREMIUM", "price": f"{base_price*1.2:.2f}", "available_seats": self.rng.randint(2, 30)},
-                     {"class_denomination": "BUSINESS", "price": f"{base_price*1.4:.2f}", "available_seats": self.rng.randint(0, 20)},
-                     {"class_denomination": "EXECUTIVE", "price": f"{base_price*2.5:.2f}", "available_seats": self.rng.randint(0, 10)}
+                     {"class_denomination": "STANDARD", "price": f"{base_price:.2f}"},
+                     {"class_denomination": "PREMIUM", "price": f"{base_price*1.2:.2f}"},
+                     {"class_denomination": "BUSINESS", "price": f"{base_price*1.4:.2f}"},
+                     {"class_denomination": "EXECUTIVE", "price": f"{base_price*2.5:.2f}"}
                  ]
             elif t_type["type"] == "Intercity":
                 classes = [
-                     {"class_denomination": "2ª CLASSE", "price": f"{base_price:.2f}", "available_seats": self.rng.randint(10, 100)},
-                     {"class_denomination": "1ª CLASSE", "price": f"{base_price*1.3:.2f}", "available_seats": self.rng.randint(5, 40)}
+                     {"class_denomination": "2ª CLASSE", "price": f"{base_price:.2f}"},
+                     {"class_denomination": "1ª CLASSE", "price": f"{base_price*1.3:.2f}"}
                 ]
             else:
                  classes = [
-                     {"class_denomination": "ORDINARIA", "price": f"{base_price:.2f}", "available_seats": self.rng.randint(20, 200)}
+                     {"class_denomination": "ORDINARIA", "price": f"{base_price:.2f}"}
                  ]
 
-            # Total seats is the sum of class-specific seats
-            total_seats = sum(cl["available_seats"] for cl in classes)
+            # Total seats (random simulation since detailed seats are gone)
+            total_seats = self.rng.randint(20, 300)
 
             train_id = self._generate_train_id(t_type["type"])
             dep_str = current_dt.strftime("%H:%M")
@@ -176,6 +184,12 @@ class MockBackend:
         
         # Return first page similar to prompt format
         page_slice = results[0:self.page_size]
+        
+        # Rename classes to price for the output to match simple_llm_session.txt
+        for r in page_slice:
+            if "classes" in r:
+                r["price"] = r.pop("classes")
+                
         return json.dumps({"trains": page_slice})
 
     def ui_control(self, json_args: str) -> str:
@@ -276,12 +290,85 @@ class MockBackend:
         # 1. Seat Selection Required
         if not seats:
             self.purchase_phase = "seat_selection"
+            # Auto-assign logic to match simple_llm_session.txt
+            # Auto-assign logic: Deterministic based on Train ID + Carriage
+            # Default to carriage 5 if not specified
+            target_carriage = carriage or "5"
+            
+            # Seed generation: Stable hash of train + carriage
+            seed_str = f"{train_id}_carriage_{target_carriage}"
+            # Use zlib.adler32 for simple stable integer hash across runs
+            seed_val = zlib.adler32(seed_str.encode('utf-8'))
+            
+            # Use a separate RNG for this carriage to be deterministic
+            carriage_rng = random.Random(seed_val)
+            
+            # Generate Layout & Availability (Rows 1-15, A-D)
+            free_seats = []
+            seat_map = [] # List of seats in order
+            
+            rows = 15
+            cols = ["A", "B", "C", "D"]
+            
+            for r in range(1, rows + 1):
+                for c in cols:
+                    seat_code = f"{r}{c}"
+                    seat_map.append(seat_code)
+                    # Check status
+                    val = carriage_rng.random()
+                    if val < 0.7:
+                        free_seats.append(seat_code)
+            
+            # Select N Adjacent Seats
+            # Simple adjacency strategy: slide a window of size N over the full map
+            # checking if all in window are in free_seats set
+            
+            needed = self.current_passengers
+            assigned_seats = []
+            
+            # Heuristic: Try to find N contiguous free seats
+            # If not found, just take first N free seats
+            
+            free_set = set(free_seats)
+            found_block = False
+            
+            # iterate window
+            for i in range(len(seat_map) - needed + 1):
+                candidate_block = seat_map[i : i + needed]
+                
+                # Check 1: All must be free
+                if all(s in free_set for s in candidate_block):
+                    # Check 2: Must be in same row (heuristic for adjacency)
+                    # e.g. 1A, 1B is good. 1D, 2A is technically adjacent in list but usually not preferred?
+                    # Let's assume strict row adjacency OR just strictly list adjacency for simplicity as per "find adjacent"
+                    # For simplicity: list adjacency is enough for this mock
+                    
+                    # Refinement: Don't span rows if possible? 
+                    # 1A 1B 1C 1D | 2A... 
+                    # 1D and 2A are neighbors? physically maybe back-to-back.
+                    # Let's check row consistency just to be nice
+                    rows_in_block = {s[:-1] for s in candidate_block}
+                    if len(rows_in_block) == 1:
+                        assigned_seats = candidate_block
+                        found_block = True
+                        break
+                        
+            if not found_block:
+                # Fallback: Just take first N free seats
+                assigned_seats = free_seats[:needed]
+                if len(assigned_seats) < needed:
+                     # Emergency fallback if train full: generate N fake seats using high row logic
+                     # This shouldn't really happen with 0.7 free rate on 60 seats (42 free) and small N
+                     start_fake = 20
+                     assigned_seats = [f"{start_fake}{cols[i%4]}" for i in range(needed)]
+
             return json.dumps({
                 "status": "seat_selection_required",
-                "message": "Seleziona il posto sullo schermo.",
+                "message": f"Ho assegnato i posti {', '.join(assigned_seats)} in carrozza {target_carriage}. Conferma o scegli altri posti sullo schermo.",
                 "train_id": train_id,
                 "train_type": "Frecciarossa",
-                "instruction": "Attendi che l'utente selezioni i posti, poi chiedi i dati personali. Per multi-passeggero, passa TUTTI i posti scelti separati da virgola (es. seats='5A,5B')."
+                "auto_assigned_seats": assigned_seats,
+                "instruction": "Attendi che l'utente confermi o modifichi i posti, poi chiedi i dati personali. Quando conferma, RICHIAMA purchase_ticket con gli stessi parametri."
             })
             
         # 2. Personal Data Required (First time receiving seats)
