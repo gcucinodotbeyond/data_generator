@@ -3,6 +3,9 @@ import random
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
 import zlib
+from generator.logger import get_logger
+
+logger = get_logger(__name__)
 
 class MockBackend:
     """
@@ -61,8 +64,9 @@ class MockBackend:
                 h = int(parts[0])
                 m = int(parts[1]) if len(parts) > 1 else 0
                 base_date = base_date.replace(hour=h, minute=m)
-            except:
-                pass 
+            except (ValueError, IndexError, AttributeError) as e:
+                logger.warning(f"Failed to parse time '{time_str}': {e}. Using current time.")
+                # base_date already initialized to now
         
         return base_date
 
@@ -83,8 +87,9 @@ class MockBackend:
         if passengers:
             try:
                 self.current_passengers = int(passengers)
-            except:
-                pass
+            except (ValueError, TypeError) as e:
+                logger.debug(f"Failed to parse passengers count: {e}. Keeping previous value.")
+                # Keep self.current_passengers as-is (default 1 from __init__)
         disability_type = args.get("disability_type") # e.g. "visual", "hearing", "motor"
         
         # Step 1: Check passengers

@@ -2,6 +2,9 @@ import json
 import os
 from pathlib import Path
 from typing import Dict, Any, Optional
+from generator.logger import get_logger
+
+logger = get_logger(__name__)
 
 class DataSetHydrator:
     """
@@ -102,7 +105,8 @@ class DataSetHydrator:
         if "ui_state" in p and isinstance(p["ui_state"], str):
             try:
                 p["ui_state_raw"] = json.loads(p["ui_state"])
-            except:
+            except (json.JSONDecodeError, TypeError, ValueError) as e:
+                logger.warning(f"Failed to parse ui_state JSON: {e}. Using default.")
                 p["ui_state_raw"] = {"state": "unknown"}
         elif "ui_state" in p and isinstance(p["ui_state"], dict):
             p["ui_state_raw"] = p["ui_state"]
@@ -112,11 +116,12 @@ class DataSetHydrator:
 
         # ticket_info
         if "ticket_info" in p and isinstance(p["ticket_info"], str):
-             try:
-                 p["ticket_info"] = json.loads(p["ticket_info"])
-             except:
-                 pass
-                 
+            try:
+                p["ticket_info"] = json.loads(p["ticket_info"])
+            except (json.JSONDecodeError, TypeError) as e:
+                logger.debug(f"ticket_info not JSON-parseable: {e}. Keeping as-is.")
+                # Leave as string if not parseable
+                
         return p
 
     def process_file(self, input_path: Path, output_path: Path) -> int:

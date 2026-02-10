@@ -150,8 +150,8 @@ class CorpusBuilder:
                         tool_name = tc["function"]["name"]
                         try:
                             tool_args = json.loads(tc["function"]["arguments"])
-                        except:
-                            tool_args = {}
+                        except (json.JSONDecodeError, TypeError, KeyError):
+                            tool_args = {}  # Use empty dict as fallback
 
                 # --- CATEGORIZATION ---
                 

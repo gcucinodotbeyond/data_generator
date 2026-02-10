@@ -130,8 +130,8 @@ def check_coherence_and_logic(sample: Dict) -> Tuple[bool, str]:
                 
                 try:
                     args = json.loads(args_str)
-                except:
-                    return False, f"Msg {i}: Tool arguments not valid JSON string"
+                except (json.JSONDecodeError, TypeError) as e:
+                    return False, f"Msg {i}: Tool arguments not valid JSON string - {e}"
 
                 # 1. search_trains logic
                 if name == "search_trains":

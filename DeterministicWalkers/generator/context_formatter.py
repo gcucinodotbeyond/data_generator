@@ -6,6 +6,9 @@ following the schema v1.7 defined in right_context.txt.
 """
 
 import json
+from generator.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 class ContextFormatter:
@@ -61,8 +64,11 @@ class ContextFormatter:
         train_info: dict with train details (train, type, class, dep, arr, route, unit)
         """
         pax = params.get("passengers", "0")
-        try: n = int(pax)
-        except: n = 0
+        try:
+            n = int(pax)
+        except (ValueError, TypeError) as e:
+            logger.warning(f"Invalid passengers value '{pax}': {e}. Defaulting to 0.")
+            n = 0
         
         # Build inner tags (passengers/seats)
         inner_lines = []
@@ -112,8 +118,11 @@ class ContextFormatter:
         # Subtotal (mock logic)
         subtotal = "0.00"
         if train_info and train_info.get("unit"):
-             try: subtotal = f"{float(train_info['unit']) * n:.2f}"
-             except: pass
+            try:
+                subtotal = f"{float(train_info['unit']) * n:.2f}"
+            except (ValueError, TypeError, KeyError) as e:
+                logger.warning(f"Failed to calculate subtotal: {e}. Using 0.00.")
+                # subtotal already initialized to "0.00"
 
         return (
             f'<booking{train_attrs} pax="{pax}" data="{state}" subtotal="{subtotal}">\n'
@@ -317,8 +326,11 @@ class ContextFormatter:
                 xml += f'  <seat n="{s}" car="{car_val}"/>\n'
         else:
             # Fallback for len(n)
-            try: n = int(pax)
-            except: n = 1
+            try:
+                n = int(pax)
+            except (ValueError, TypeError) as e:
+                logger.debug(f"Cannot parse pax for seat fallback: {e}. Using 1.")
+                n = 1
             for i in range(1, n+1):
                 xml += f'  <seat n="{5+i}A" car="{car_val}"/>\n'
             
