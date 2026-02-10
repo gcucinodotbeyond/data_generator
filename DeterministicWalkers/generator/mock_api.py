@@ -368,6 +368,7 @@ class MockBackend:
                 "train_id": train_id,
                 "train_type": "Frecciarossa",
                 "auto_assigned_seats": assigned_seats,
+                "auto_assigned_carriage": target_carriage,
                 "instruction": "Attendi che l'utente confermi o modifichi i posti, poi chiedi i dati personali. Quando conferma, RICHIAMA purchase_ticket con gli stessi parametri."
             })
             

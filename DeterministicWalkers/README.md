@@ -60,6 +60,19 @@ DeterministicWalkers/
 
 ## 🛠️ Usage
 
+### 0. Installation
+**Quick Start:**
+```bash
+pip install -r requirements.txt
+```
+
+**For Development (with testing and linting tools):**
+```bash
+pip install -e .[dev]
+```
+
+See [INSTALL.md](INSTALL.md) for detailed installation instructions and troubleshooting.
+
 ### 1. Configure the Generator
 Edit `config.json` to set your LLM parameters (Ollama) and the paraphrase probability.
 ```json

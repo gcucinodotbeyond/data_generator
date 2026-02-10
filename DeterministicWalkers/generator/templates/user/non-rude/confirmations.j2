@@ -1,8 +1,20 @@
-{# VARIABLES: destination, time, class_type, rudeness, verbose #}
-
+{# VARIABLES: destination, time, class_type, rudeness, verbose, ui_state #}
+{%- if ui_state is defined and ui_state.phase == "input_contact" -%}
+    {# --- INPUT CONTACT CONFIRMATIONS --- #}
+    {% if rudeness == 'polite' %}
+        {{ to_json({"text": "Ecco fatto, ho inserito tutto.", "variables": {}}) }}
+        {{ to_json({"text": "Procedi pure, dati inseriti.", "variables": {}}) }}
+        {{ to_json({"text": "Ho completato l'inserimento, grazie.", "variables": {}}) }}
+    {% else %}
+        {{ to_json({"text": "Procedi", "variables": {}}) }}
+        {{ to_json({"text": "Okay ho fatto", "variables": {}}) }}
+        {{ to_json({"text": "Fatto", "variables": {}}) }}
+        {{ to_json({"text": "Dati inseriti", "variables": {}}) }}
+        {{ to_json({"text": "Vai pure avanti", "variables": {}}) }}
+    {% endif %}
+{%- else -%}
 {%- set affirmatives = ["Sì", "Si", "Certamente", "Certo", "Va bene", "Ok", "Okay", "D'accordo", "Affermativo", "Perfetto", "Ottimo"] -%}
 {%- set procedurals = ["Procedi", "Vai avanti", "Confermo", "Prenota", "Acquista", "Fallo"] -%}
-
 {# --- SIMPLE AFFIRMATIVE --- #}
 {% if verbose == 'concise' %}
     {% for aff in ["Sì", "Ok", "Certamente"] %}
@@ -28,7 +40,6 @@
         {% endfor %}
     {% endif %}
 {% endif %}
-
 {# --- AFFIRMATIVE + PROCEDURAL --- #}
 {% if verbose != 'concise' %}
     {% for aff in affirmatives %}
@@ -42,7 +53,6 @@
     {% endfor %}
     {% endfor %}
 {% endif %}
-
 {# --- BASE CONFIRMATIONS --- #}
 {% if verbose != 'concise' %}
     {% if rudeness == 'polite' %}
@@ -55,7 +65,6 @@
         {% endfor %}
     {% endif %}
 {% endif %}
-
 {# --- CONTEXTUAL CONFIRMATION --- #}
 {% if time %}
 {{ to_json({"text": "Va bene quello delle " ~ time, "variables": {"time": time}}) }}
@@ -64,18 +73,17 @@
 {{ to_json({"text": "Ok per le " ~ time, "variables": {"time": time}}) }}
     {% endif %}
 {% endif %}
-
 {% if destination %}
 {{ to_json({"text": "Sì, per " ~ destination ~ " va bene", "variables": {"destination": destination}}) }}
     {% if verbose != 'concise' %}
 {{ to_json({"text": "Confermo " ~ destination, "variables": {"destination": destination}}) }}
     {% endif %}
 {% endif %}
-
 {% if class %}
 {{ to_json({"text": "In " ~ class, "variables": {"class": class}}) }}
     {% if verbose != 'concise' %}
 {{ to_json({"text": "Va bene in " ~ class, "variables": {"class": class}}) }}
 {{ to_json({"text": "Ok " ~ class, "variables": {"class": class}}) }}
     {% endif %}
+{% endif %}
 {% endif %}

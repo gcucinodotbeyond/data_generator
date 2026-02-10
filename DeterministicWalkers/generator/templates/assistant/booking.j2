@@ -71,13 +71,10 @@
     {% endif %}
 {%- endif %}
 
+
 {# --- ASK DATA --- #}
 {%- if category == "ask_data" %}
-    {% if rudeness == "rude" %}
-        {{ to_json({"text": "Inserisci i dati sullo schermo.", "variables": {}}) }}
-    {% else %}
-        {{ to_json({"text": "Inserisci i dati passeggeri sullo schermo per procedere.", "variables": {}}) }}
-        {{ to_json({"text": "Ora tocca a te! Inserisci i dati sullo schermo. 😊", "variables": {}}) }}
-        {{ to_json({"text": "Procedi con l'inserimento dei dati personali sullo schermo.", "variables": {}}) }}
-    {% endif %}
+    {{ to_json({"text": "Ora tocca a te! Inserisci i dati sullo schermo. 😊", "variables": {}}) }}
+    {{ to_json({"text": "Per procedere, inserisci i dati dei passeggeri sullo schermo.", "variables": {}}) }}
+    {{ to_json({"text": "Complila pure i campi sullo schermo per completare.", "variables": {}}) }}
 {%- endif %}

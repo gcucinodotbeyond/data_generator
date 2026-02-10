@@ -67,7 +67,7 @@ class ContextFormatter:
         # Build inner tags (passengers/seats)
         inner_lines = []
         
-        assigned = params.get("assigned_seats", [])
+        assigned = params.get("assigned_seats") or []
         carriage = params.get("assigned_carriage", "4") # Default mock if unknown
         
         # If we have assigned seats, use them. 
@@ -237,7 +237,7 @@ class ContextFormatter:
         # Or maybe LLM assumes if I have 1A, it's mine.
         # User request: "nel contesto i posti assegnati non risultano liberi" -> They SHOULD be listed as free/available.
         
-        assigned = p.get("assigned_seats", [])
+        assigned = p.get("assigned_seats") or []
         # Mock base list
         base_free = ["1A","1B","1C","1D","2A","2B","3A","3C","4A","4B","4D","5A","6B"]
         # Union
@@ -308,10 +308,19 @@ class ContextFormatter:
         )
         
         # Nested seats
-        try: n = int(pax)
-        except: n = 1
-        for i in range(1, n+1):
-            xml += f'  <seat n="{5+i}A" car="4"/>\n'
+        seat_list = ti.get("seats", [])
+        car_val = ti.get("car", "4")
+        if car_val == "None": car_val = "4" # Fallback if tool didn't return it
+        
+        if seat_list:
+            for s in seat_list:
+                xml += f'  <seat n="{s}" car="{car_val}"/>\n'
+        else:
+            # Fallback for len(n)
+            try: n = int(pax)
+            except: n = 1
+            for i in range(1, n+1):
+                xml += f'  <seat n="{5+i}A" car="{car_val}"/>\n'
             
         # Nested extras
         extras_list = []

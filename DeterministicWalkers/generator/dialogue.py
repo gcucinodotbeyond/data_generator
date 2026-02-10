@@ -377,7 +377,9 @@ class DialogueGenerator:
             "pet_big": context.get("session_pet_big", 0),
             "bike_normal": context.get("session_bike_normal", 0),
             "bike_foldable": context.get("session_bike_foldable", 0),
-            "disability_type": context.get("session_disability")
+            "disability_type": context.get("session_disability"),
+            "assigned_seats": context.get("assigned_seats"),
+            "assigned_carriage": context.get("assigned_carriage")
         }
         
         # A11Y Context injection
@@ -841,6 +843,7 @@ class DialogueGenerator:
                 "function": {"name": "purchase_ticket", "arguments": json.dumps(args)}
             }
             resp_json = self.backend.purchase_ticket(json.dumps(args))
+            resp_data_fin = json.loads(resp_json)
             self._add_turn(ctx, "assistant", None, tool_calls=[tool_call], tool_output=resp_json)
         else:
             # Case B: Two-step selection (Train then Class)
@@ -885,7 +888,7 @@ class DialogueGenerator:
         # --- PHASE 2: SEAT SELECTION ---
         # Update UI: Choose Seats
         ctx["ui_state"] = {"state": "customize", "phase": "select_seats", "actions": "next,back,confirm,change_class,change_seat,show_info", "page": "1/2"}
-        self._inject_system_context(ctx, meta_contexts)
+
         
         # Check if seats were auto-assigned (from tool output in resp_data_fin)
         auto_assigned = False
@@ -895,11 +898,11 @@ class DialogueGenerator:
             # Update context for ContextFormatter
             ctx["assigned_seats"] = assigned_seats
             # Infer carriage from tool output message or logic?
-            # mock_api msg says "...in carrozza 5" or "carrozza X"
-            # It's better if mock_api returns 'carriage' key in json.
-            # But we can assume it returns default or parse it?
-            # Let's assume default "5" for context if not present, but mock_api has simple logic.
-            ctx["assigned_carriage"] = "5" 
+            # mock_api now returns 'auto_assigned_carriage' key in json.
+            ctx["assigned_carriage"] = resp_data_fin.get("auto_assigned_carriage", "5") 
+
+        # Injection MUST happen after assigned seats are put in context
+        self._inject_system_context(ctx, meta_contexts) 
             
         # Assistant asks for seats or confirmation
         if auto_assigned:
@@ -945,7 +948,9 @@ class DialogueGenerator:
         # Trigger tool call with seats
         call_id_seats = self._get_next_call_id(ctx)
         args_seats = {"train_id": target_train["id"], "class": chosen_class, "seats": chosen_seats}
-        if not auto_assigned:
+        if auto_assigned:
+             args_seats["carriage"] = ctx.get("assigned_carriage", 4)
+        else:
              args_seats["carriage"] = 4
              
         tool_call_seats = {

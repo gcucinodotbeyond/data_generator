@@ -1,8 +1,11 @@
-{# VARIABLES: destination, time, class_type, verbose #}
-
+{# VARIABLES: destination, time, class_type, verbose, ui_state #}
+{%- if ui_state is defined and ui_state.phase == "input_contact" -%}
+    {{ to_json({"text": "Fatto, muoviti", "variables": {}}) }}
+    {{ to_json({"text": "Ho inserito i dati, basta perdere tempo", "variables": {}}) }}
+    {{ to_json({"text": "Era ora, fatto", "variables": {}}) }}
+{%- else -%}
 {%- set affirmatives = ["Sì", "Si", "Va bene", "Ok", "Okay", "D'accordo"] -%}
 {%- set procedurals = ["Procedi", "Vai avanti", "Confermo", "Prenota", "Acquista", "Fallo"] -%}
-
 {# --- SIMPLE AFFIRMATIVE --- #}
 {% if verbose == 'concise' %}
     {% for aff in ["Ok", "Si", "Vbb"] %}
@@ -16,7 +19,6 @@
 {{ to_json({"text": aff, "variables": {}}) }}
     {% endfor %}
 {% endif %}
-
 {# --- AFFIRMATIVE + PROCEDURAL --- #}
 {% if verbose != 'concise' %}
     {# In rude mode we might skip polite combinations or just make them blunt #}
@@ -27,14 +29,12 @@
     {% endfor %}
     {% endfor %}
 {% endif %}
-
 {# --- BASE CONFIRMATIONS --- #}
 {% if verbose != 'concise' %}
     {% for ok in ["Vabbè", "Ok", "Si", "Procedi", "Muoviti"] %}
 {{ to_json({"text": ok, "variables": {}}) }}
     {% endfor %}
 {% endif %}
-
 {# --- CONTEXTUAL CONFIRMATION --- #}
 {% if time %}
 {{ to_json({"text": "Va bene quello delle " ~ time, "variables": {"time": time}}) }}
@@ -43,18 +43,17 @@
 {{ to_json({"text": "Ok per le " ~ time, "variables": {"time": time}}) }}
     {% endif %}
 {% endif %}
-
 {% if destination %}
 {{ to_json({"text": "Sì, per " ~ destination ~ " va bene", "variables": {"destination": destination}}) }}
     {% if verbose != 'concise' %}
 {{ to_json({"text": "Confermo " ~ destination, "variables": {"destination": destination}}) }}
     {% endif %}
 {% endif %}
-
 {% if class %}
 {{ to_json({"text": "In " ~ class, "variables": {"class": class}}) }}
     {% if verbose != 'concise' %}
 {{ to_json({"text": "Va bene in " ~ class, "variables": {"class": class}}) }}
 {{ to_json({"text": "Ok " ~ class, "variables": {"class": class}}) }}
     {% endif %}
+{% endif %}
 {% endif %}
