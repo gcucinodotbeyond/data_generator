@@ -3,22 +3,26 @@
 {%- set farewells = [
     "Arrivederci", "Addio", "A presto", "Ciao", "Buona giornata", "Buona serata", 
     "Alla prossima", "Ci vediamo", "Stammi bene", "Saluti", "Buon proseguimento", 
-    "È tutto per ora", "Chiudo qui", "Buon lavoro"
+    "È tutto per ora", "Chiudo qui", "Buon lavoro", "Ci sentiamo", "A più tardi",
+    "Stacca pure", "Grazie ciao", "Saluti a tutti", "Buon viaggio anche a te"
 ] -%}
 
 {%- set thanks = [
     "Grazie", "Grazie mille", "Grazie di tutto", "Ti ringrazio", "Molto gentile", 
-    "Gentilissimo", "Grazie infinite", "Perfetto grazie", "Ok grazie", "Grazie del supporto"
+    "Gentilissimo", "Grazie infinite", "Perfetto grazie", "Ok grazie", "Grazie del supporto",
+    "Grazie dell'aiuto", "Tante grazie", "Davvero gentile"
 ] -%}
 
 {%- set pos_feedback = [
     "Sei stato molto utile", "Ottimo servizio", "Veloce e preciso", "Funziona bene", 
-    "Molto efficiente", "Mi hai aiutato molto", "Servizio eccellente", "Tutto perfetto"
+    "Molto efficiente", "Mi hai aiutato molto", "Servizio eccellente", "Tutto perfetto",
+    "Sei un grande", "Mitico", "Bravissimo", "Assistenza top"
 ] -%}
 
 {%- set neg_feedback = [
     "Non funziona mai nulla", "Pessimo servizio", "Troppo lento", "Non ho capito niente", 
-    "È stato difficile", "Interfaccia confusa", "Non sei d'aiuto", "Esperienza negativa"
+    "È stato difficile", "Interfaccia confusa", "Non sei d'aiuto", "Esperienza negativa",
+    "Che fatica", "Inutile", "Sistema scadente"
 ] -%}
 
 {# --- CONCISE FAREWELL --- #}
@@ -26,9 +30,12 @@
     {% if sentiment == 'positive' %}
 {{ to_json({"text": "Grazie", "variables": {}}) }}
 {{ to_json({"text": "Ok", "variables": {}}) }}
+{{ to_json({"text": "Top", "variables": {}}) }}
+{{ to_json({"text": "Bene", "variables": {}}) }}
     {% else %}
 {{ to_json({"text": "Ciao", "variables": {}}) }}
 {{ to_json({"text": "Arrivederci", "variables": {}}) }}
+{{ to_json({"text": "Basta", "variables": {}}) }}
     {% endif %}
 {% endif %}
 
@@ -37,9 +44,11 @@
     {% if sentiment == 'positive' %}
 {{ to_json({"text": "Ti ringrazio davvero di cuore per tutto l'aiuto che mi hai dato oggi, sei stato prezioso. Buona giornata!", "variables": {}}) }}
 {{ to_json({"text": "Tutto perfetto, grazie mille ancora per la pazienza e per le informazioni dettagliate. Alla prossima!", "variables": {}}) }}
+{{ to_json({"text": "Sei stato gentilissimo, ho risolto tutti i miei dubbi. Grazie e buon lavoro!", "variables": {}}) }}
     {% else %}
 {{ to_json({"text": "D'accordo, per ora direi che ho tutte le informazioni di cui avevo bisogno. Grazie e a risentirci presto.", "variables": {}}) }}
 {{ to_json({"text": "Va bene così, non aggiungere altro. Ti ringrazio per il supporto e ti auguro un buon proseguimento di giornata.", "variables": {}}) }}
+{{ to_json({"text": "Onestamente mi aspettavo di fare prima, ma ok, grazie lo stesso.", "variables": {}}) }}
     {% endif %}
 {% endif %}
 
@@ -83,8 +92,10 @@
     {% if rudeness == 'polite' %}
 {{ to_json({"text": "Grazie infinite per l'aiuto, buona giornata!", "variables": {}}) }}
 {{ to_json({"text": "La ringrazio molto, arrivederci.", "variables": {}}) }}
+{{ to_json({"text": "Molto gentile, a presto.", "variables": {}}) }}
     {% else %} {# neutral #}
 {{ to_json({"text": "Basta così", "variables": {}}) }}
 {{ to_json({"text": "Non mi serve altro", "variables": {}}) }}
+{{ to_json({"text": "Ho finito", "variables": {}}) }}
     {% endif %}
 {% endif %}

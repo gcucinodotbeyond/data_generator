@@ -12,6 +12,7 @@ BASE_DIR = os.path.join(os.path.dirname(__file__), 'data')
 PREDATASET_DIR = os.path.join(BASE_DIR, 'predataset')
 CLEAN_PREDATASET_DIR = os.path.join(BASE_DIR, 'clean_predataset')
 HYDRATED_DIR = os.path.join(BASE_DIR, 'hydrated-dataset')
+CLEAN_HYDRATED_DIR = os.path.join(BASE_DIR, 'clean_hydrated-dataset')
 RESOURCES_DIR = os.path.join(BASE_DIR, 'resources')
 DIALOGUE_FILE = os.path.join(PREDATASET_DIR, 'dialogue_dataset.jsonl')
 CLEAN_DIALOGUE_FILE = os.path.join(CLEAN_PREDATASET_DIR, 'dialogue_dataset.jsonl')
@@ -24,7 +25,7 @@ def main():
     args = parser.parse_args()
 
     # Ensure output dirs exist and are clean
-    for d in [PREDATASET_DIR, CLEAN_PREDATASET_DIR, HYDRATED_DIR]:
+    for d in [PREDATASET_DIR, CLEAN_PREDATASET_DIR, HYDRATED_DIR, CLEAN_HYDRATED_DIR]:
         if os.path.exists(d):
             shutil.rmtree(d)
         os.makedirs(d, exist_ok=True)
@@ -95,10 +96,15 @@ def main():
     
     hydrated_data = [] # To store for visualizer
     if template_path.exists():
+        # Regular hydration (with contexts)
         hydrator = DataSetHydrator(template_path, tools_path=tools_path)
-        # Hydrate everything in predataset
         hydrator.process_directory(Path(PREDATASET_DIR), Path(HYDRATED_DIR))
         print(f"Hydrated dataset available in {HYDRATED_DIR}")
+        
+        # Clean hydration (without _meta)
+        clean_hydrator = DataSetHydrator(template_path, tools_path=tools_path, remove_meta=True)
+        clean_hydrator.process_directory(Path(PREDATASET_DIR), Path(CLEAN_HYDRATED_DIR))
+        print(f"Clean hydrated dataset available in {CLEAN_HYDRATED_DIR}")
         
         # Load hydrated data for visualizer
         hydrated_file = Path(HYDRATED_DIR) / "dialogue_dataset.jsonl"

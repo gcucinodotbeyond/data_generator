@@ -5,34 +5,41 @@
         {{ to_json({"text": "Ecco fatto, ho inserito tutto.", "variables": {}}) }}
         {{ to_json({"text": "Procedi pure, dati inseriti.", "variables": {}}) }}
         {{ to_json({"text": "Ho completato l'inserimento, grazie.", "variables": {}}) }}
+        {{ to_json({"text": "Tutto pronto, ho compilato i campi.", "variables": {}}) }}
     {% else %}
         {{ to_json({"text": "Procedi", "variables": {}}) }}
         {{ to_json({"text": "Okay ho fatto", "variables": {}}) }}
         {{ to_json({"text": "Fatto", "variables": {}}) }}
         {{ to_json({"text": "Dati inseriti", "variables": {}}) }}
         {{ to_json({"text": "Vai pure avanti", "variables": {}}) }}
+        {{ to_json({"text": "Inserito", "variables": {}}) }}
+        {{ to_json({"text": "Ok vai", "variables": {}}) }}
+        {{ to_json({"text": "Ho scritto tutto", "variables": {}}) }}
     {% endif %}
 {%- else -%}
-{%- set affirmatives = ["Sì", "Si", "Certamente", "Certo", "Va bene", "Ok", "Okay", "D'accordo", "Affermativo", "Perfetto", "Ottimo"] -%}
-{%- set procedurals = ["Procedi", "Vai avanti", "Confermo", "Prenota", "Acquista", "Fallo"] -%}
+{%- set affirmatives = ["Sì", "Si", "Certamente", "Certo", "Va bene", "Ok", "Okay", "D'accordo", "Affermativo", "Perfetto", "Ottimo", "Benissimo", "Esatto", "Okkey", "Giusto", "Corretto", "Top", "Bene"] -%}
+{%- set procedurals = ["Procedi", "Vai avanti", "Confermo", "Prenota", "Acquista", "Fallo", "Chiudi", "Concludi", "Prendilo", "Bloccalo"] -%}
 {# --- SIMPLE AFFIRMATIVE --- #}
 {% if verbose == 'concise' %}
-    {% for aff in ["Sì", "Ok", "Certamente"] %}
+    {% for aff in ["Sì", "Ok", "Certamente", "Certo", "Vai"] %}
 {{ to_json({"text": aff, "variables": {}}) }}
     {% endfor %}
 {% elif verbose == 'verbose' %}
     {%- if rudeness == 'polite' %}
 {{ to_json({"text": "Sì, direi che è perfetto, procediamo pure come suggerito. La ringrazio molto.", "variables": {}}) }}
 {{ to_json({"text": "Certamente, mi sembra un'ottima soluzione per il mio viaggio. Mi aiuti con la prenotazione?", "variables": {}}) }}
+{{ to_json({"text": "Confermo tutto quanto, possiamo andare alla fase successiva senza problemi.", "variables": {}}) }}
     {%- else %}
 {{ to_json({"text": "Sì, va benissimo così, è proprio quello che stavo cercando per oggi.", "variables": {}}) }}
 {{ to_json({"text": "D'accordo, procediamo pure con questa opzione che mi sembra la migliore.", "variables": {}}) }}
+{{ to_json({"text": "Ok, non ho altre domande, puoi confermare e chiudere l'acquisto.", "variables": {}}) }}
     {%- endif %}
 {% else %} {# standard #}
     {% if rudeness == 'polite' %}
         {% for aff in affirmatives %}
 {{ to_json({"text": aff ~ " grazie", "variables": {}}) }}
 {{ to_json({"text": "Certamente, proceda pure", "variables": {}}) }}
+{{ to_json({"text": "Sì, la prego", "variables": {}}) }}
         {% endfor %}
     {% else %} {# neutral #}
         {% for aff in affirmatives %}
@@ -56,11 +63,11 @@
 {# --- BASE CONFIRMATIONS --- #}
 {% if verbose != 'concise' %}
     {% if rudeness == 'polite' %}
-        {% for ok in ["Sì, la ringrazio", "Molto bene, proceda", "Perfetto, va benissimo"] %}
+        {% for ok in ["Sì, la ringrazio", "Molto bene, proceda", "Perfetto, va benissimo", "Ottimo, andiamo avanti"] %}
 {{ to_json({"text": ok, "variables": {}}) }}
         {% endfor %}
     {% else %} {# neutral #}
-        {% for ok in ["Sì", "Perfetto", "Va bene", "Confermo", "Ok grazie"] %}
+        {% for ok in ["Sì", "Perfetto", "Va bene", "Confermo", "Ok grazie", "Tutto ok", "Procediamo"] %}
 {{ to_json({"text": ok, "variables": {}}) }}
         {% endfor %}
     {% endif %}
@@ -68,22 +75,25 @@
 {# --- CONTEXTUAL CONFIRMATION --- #}
 {% if time %}
 {{ to_json({"text": "Va bene quello delle " ~ time, "variables": {"time": time}}) }}
+{{ to_json({"text": "Ok per le " ~ time, "variables": {"time": time}}) }}
     {% if verbose != 'concise' %}
 {{ to_json({"text": "Prendo quello delle " ~ time, "variables": {"time": time}}) }}
-{{ to_json({"text": "Ok per le " ~ time, "variables": {"time": time}}) }}
+{{ to_json({"text": "Confermo orario " ~ time, "variables": {"time": time}}) }}
     {% endif %}
 {% endif %}
 {% if destination %}
 {{ to_json({"text": "Sì, per " ~ destination ~ " va bene", "variables": {"destination": destination}}) }}
+{{ to_json({"text": "Per " ~ destination ~ " è ok", "variables": {"destination": destination}}) }}
     {% if verbose != 'concise' %}
 {{ to_json({"text": "Confermo " ~ destination, "variables": {"destination": destination}}) }}
     {% endif %}
 {% endif %}
 {% if class %}
 {{ to_json({"text": "In " ~ class, "variables": {"class": class}}) }}
+{{ to_json({"text": "Ok " ~ class, "variables": {"class": class}}) }}
     {% if verbose != 'concise' %}
 {{ to_json({"text": "Va bene in " ~ class, "variables": {"class": class}}) }}
-{{ to_json({"text": "Ok " ~ class, "variables": {"class": class}}) }}
+{{ to_json({"text": "Sì, classe " ~ class, "variables": {"class": class}}) }}
     {% endif %}
 {% endif %}
 {% endif %}

@@ -4,77 +4,94 @@
 {# --- SEAT PROMPT --- #}
 {%- if category == "seat_prompt" %}
     {% if rudeness == "rude" %}
-        {{ to_json({"text": "Quale posto vuoi? Finestrino o corridoio?", "variables": {}}) }}
-        {{ to_json({"text": "Scegli: finestrino o corridoio.", "variables": {}}) }}
+        {{ to_json({"text": "Scegli il posto: finestrino o corridoio?", "variables": {}}) }}
+        {{ to_json({"text": "Finestrino o corridoio?", "variables": {}}) }}
+        {{ to_json({"text": "Che posto vuoi? Muoviti.", "variables": {}}) }}
     {% else %}
         {{ to_json({"text": "Preferisci un posto al finestrino o vicino al corridoio?", "variables": {}}) }}
         {{ to_json({"text": "Vuoi sederti al finestrino o preferisci il corridoio?", "variables": {}}) }}
-        {{ to_json({"text": "Per questo treno puoi scegliere il posto. Finestrino o corridoio?", "variables": {}}) }}
         {{ to_json({"text": "Hai preferenze per il posto? Finestrino o corridoio?", "variables": {}}) }}
+        {{ to_json({"text": "Dove ti piace sedere? Finestrino o corridoio?", "variables": {}}) }}
+        {{ to_json({"text": "Ti piace guardare fuori (finestrino) o stare comodo (corridoio)?", "variables": {}}) }}
+        {{ to_json({"text": "Seleziona la preferenza: finestrino o corridoio.", "variables": {}}) }}
     {% endif %}
 {%- endif %}
 
 {# --- SEAT ACK --- #}
 {%- if category == "seat_ack" %}
-    {% set filler = ["Perfetto", "Ottimo", "D'accordo", "Bene"]|random %}
+    {# Expected vars: seat_type (window/aisle) #}
     {% if seat_type == "window" %}
-        {{ to_json({"text": filler ~ ", posto al finestrino selezionato.", "variables": {"seat_type": "window"}}) }}
         {{ to_json({"text": "Ottimo, adoro guardare il panorama. Finestrino confermato.", "variables": {"seat_type": "window"}}) }}
-        {{ to_json({"text": filler ~ ", ti ho assegnato un posto vicino al finestrino.", "variables": {"seat_type": "window"}}) }}
+        {{ to_json({"text": "Perfetto, posto al finestrino selezionato.", "variables": {"seat_type": "window"}}) }}
+        {{ to_json({"text": "Finestrino bloccato. Ottima scelta!", "variables": {"seat_type": "window"}}) }}
+        {{ to_json({"text": "D'accordo, vista panoramica per te.", "variables": {"seat_type": "window"}}) }}
+        {{ to_json({"text": "Segnato: finestrino.", "variables": {"seat_type": "window"}}) }}
     {% else %}
-        {{ to_json({"text": filler ~ ", corridoio selezionato.", "variables": {"seat_type": "aisle"}}) }}
         {{ to_json({"text": "D'accordo, posto lato corridoio confermato.", "variables": {"seat_type": "aisle"}}) }}
-        {{ to_json({"text": filler ~ ", corridoio per te.", "variables": {"seat_type": "aisle"}}) }}
+        {{ to_json({"text": "Bene, corridoio selezionato.", "variables": {"seat_type": "aisle"}}) }}
+        {{ to_json({"text": "Ok, vada per il corridoio.", "variables": {"seat_type": "aisle"}}) }}
+        {{ to_json({"text": "Più libertà di movimento, ottimo. Corridoio confermato.", "variables": {"seat_type": "aisle"}}) }}
+        {{ to_json({"text": "Segnato: corridoio.", "variables": {"seat_type": "aisle"}}) }}
     {% endif %}
 {%- endif %}
 
 {# --- CLASS PROMPT --- #}
 {%- if category == "class_prompt" %}
-    {% if rudeness == "rude" %}
-        {{ to_json({"text": "Che classe? Standard, Prima o Business?", "variables": {}}) }}
-        {{ to_json({"text": "Dimmi la classe: Standard, Prima o Business.", "variables": {}}) }}
-    {% else %}
-        {{ to_json({"text": "Serve la classe: Standard, Prima o Business?", "variables": {}}) }}
-        {{ to_json({"text": "In che classe vuoi viaggiare? Standard, Prima o Business?", "variables": {}}) }}
-        {{ to_json({"text": "Il treno prevede diverse classi. Preferisci Standard, Prima o Business?", "variables": {}}) }}
-        {{ to_json({"text": "Per questo treno ho Standard, Prima e Business. Cosa preferisci?", "variables": {}}) }}
-    {% endif %}
+    {{ to_json({"text": "Il treno prevede diverse classi. Preferisci Standard, Prima o Business?", "variables": {}}) }}
+    {{ to_json({"text": "In che classe vuoi viaggiare? Standard, Prima o Business?", "variables": {}}) }}
+    {{ to_json({"text": "Per questo treno ho Standard, Prima e Business. Cosa preferisci?", "variables": {}}) }}
+    {{ to_json({"text": "Scegli la classe: Standard, Prima o Business.", "variables": {}}) }}
+    {{ to_json({"text": "Quale livello di servizio preferisci tra Standard, Prima e Business?", "variables": {}}) }}
+    {{ to_json({"text": "Standard, Prima o Business: dimmi tu.", "variables": {}}) }}
 {%- endif %}
 
 {# --- CLASS ACK --- #}
 {%- if category == "class_ack" %}
-    {% set filler = ["Perfetto", "Ricevuto", "Bene", "Ottimo"]|random %}
-    {{ to_json({"text": filler ~ ", classe " ~ class_name ~ " impostata.", "variables": {}}) }}
-    {{ to_json({"text": "D'accordo, " ~ class_name ~ ".", "variables": {}}) }}
-    {{ to_json({"text": filler ~ ", vada per la " ~ class_name ~ ".", "variables": {}}) }}
+    {# Expected vars: class_name #}
+    {{ to_json({"text": "Perfetto, classe " ~ class_name ~ " impostata.", "variables": {}}) }}
+    {{ to_json({"text": "D'accordo, procediamo con la " ~ class_name ~ ".", "variables": {}}) }}
+    {{ to_json({"text": "Ottimo, vada per la " ~ class_name ~ ".", "variables": {}}) }}
+    {{ to_json({"text": "Confermato: " ~ class_name ~ ".", "variables": {}}) }}
+    {{ to_json({"text": "Classe " ~ class_name ~ " selezionata.", "variables": {}}) }}
 {%- endif %}
 
-{# --- HANDSHAKE --- #}
+{# --- SEAT ASSIGNMENT (Implicit Handshake) --- #}
+{%- if category == "seat_assignment" %}
+    {# Expected vars: seats (list or string), carriage #}
+    {{ to_json({"text": "Posti " ~ seats ~ " in carrozza " ~ carriage ~ ".\nConfermi? 😊", "variables": {}}) }}
+    {{ to_json({"text": "Ho assegnato i posti " ~ seats ~ " (carrozza " ~ carriage ~ "). Va bene?", "variables": {}}) }}
+    {{ to_json({"text": "Ecco i tuoi posti: " ~ seats ~ ", carrozza " ~ carriage ~ ". Procediamo?", "variables": {}}) }}
+    {{ to_json({"text": "Siete seduti ai posti " ~ seats ~ " della carrozza " ~ carriage ~ ". Confermate?", "variables": {}}) }}
+    {{ to_json({"text": "Posti riservati: " ~ seats ~ " (carr. " ~ carriage ~ "). Tutto ok?", "variables": {}}) }}
+{%- endif %}
+
+
+{# --- HANDSHAKE (Price Confirmation) --- #}
 {%- if category == "handshake" %}
-    {% if rudeness == "rude" %}
-        {{ to_json({"text": "Prezzo: " ~ price ~ "€. Procedo?", "variables": {}}) }}
-    {% else %}
-        {{ to_json({"text": "Tutto pronto. Il prezzo è " ~ price ~ "€. Posso procedere all'acquisto?", "variables": {}}) }}
-        {{ to_json({"text": "Siamo pronti. Costo totale: " ~ price ~ "€. Procedo?", "variables": {}}) }}
-        {{ to_json({"text": "Perfetto. Sono " ~ price ~ "€. Vuoi acquistare?", "variables": {}}) }}
-    {% endif %}
+    {# Expected vars: price #}
+    {{ to_json({"text": "Tutto pronto. Il prezzo è " ~ price ~ "€. Posso procedere all'acquisto?", "variables": {}}) }}
+    {{ to_json({"text": "Siamo pronti. Costo totale: " ~ price ~ "€. Procedo?", "variables": {}}) }}
+    {{ to_json({"text": "Il totale viene " ~ price ~ "€. Confermi l'acquisto?", "variables": {}}) }}
+    {{ to_json({"text": "Se ti va bene, il prezzo finale è " ~ price ~ "€. Vado?", "variables": {}}) }}
+    {{ to_json({"text": "Totale: " ~ price ~ "€. Procedere con il pagamento?", "variables": {}}) }}
 {%- endif %}
-
-{# --- TICKET HANDOVER --- #}
-{%- if category == "ticket_handover" %}
-    {% if rudeness == "rude" %}
-        {{ to_json({"text": "Ecco il biglietto.", "variables": {}}) }}
-    {% else %}
-        {{ to_json({"text": "Ecco il tuo biglietto. Buon viaggio! 😊", "variables": {}}) }}
-        {{ to_json({"text": "Acquisto completato! Buon viaggio. 🚄", "variables": {}}) }}
-        {{ to_json({"text": "Fatto! Ecco il biglietto. Grazie e buon viaggio!", "variables": {}}) }}
-    {% endif %}
-{%- endif %}
-
 
 {# --- ASK DATA --- #}
 {%- if category == "ask_data" %}
     {{ to_json({"text": "Ora tocca a te! Inserisci i dati sullo schermo. 😊", "variables": {}}) }}
     {{ to_json({"text": "Per procedere, inserisci i dati dei passeggeri sullo schermo.", "variables": {}}) }}
     {{ to_json({"text": "Complila pure i campi sullo schermo per completare.", "variables": {}}) }}
+    {{ to_json({"text": "Dati passeggeri: inseriscili pure qui sotto.", "variables": {}}) }}
+    {{ to_json({"text": "Ci siamo quasi, mancano solo i dati dei passeggeri.", "variables": {}}) }}
+    {{ to_json({"text": "Inserisci nome e cognome sullo schermo, grazie.", "variables": {}}) }}
+{%- endif %}
+
+{# --- TICKET HANDOVER --- #}
+{%- if category == "ticket_handover" %}
+    {{ to_json({"text": "Acquisto completato! Buon viaggio. 🚄", "variables": {}}) }}
+    {{ to_json({"text": "Fatto! Ecco il biglietto. Grazie e buon viaggio!", "variables": {}}) }}
+    {{ to_json({"text": "Ecco il tuo biglietto. Buon viaggio! 😊", "variables": {}}) }}
+    {{ to_json({"text": "Tutto fatto. Ecco i biglietti, e buon viaggio!", "variables": {}}) }}
+    {{ to_json({"text": "Transazione completata. I biglietti sono tuoi. A presto!", "variables": {}}) }}
+    {{ to_json({"text": "Ecco qui i biglietti. Grazie di aver viaggiato con noi.", "variables": {}}) }}
 {%- endif %}

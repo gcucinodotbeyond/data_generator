@@ -2,13 +2,12 @@
 
 {# --- UI ACTION --- #}
 {%- if category == "ui_action" %}
-    {{ to_json({"text": "Certamente.", "variables": {}}) }}
-    {{ to_json({"text": "Subito.", "variables": {}}) }}
-    {{ to_json({"text": "Ecco fatto.", "variables": {}}) }}
-    {{ to_json({"text": "Eseguo.", "variables": {}}) }}
-    {{ to_json({"text": "Immediatamente.", "variables": {}}) }}
+    {{ to_json({"text": "Le informazioni sono visualizzate sullo schermo.", "variables": {}}) }}
+    {{ to_json({"text": "Certamente, ecco a te.", "variables": {}}) }}
     {{ to_json({"text": "Fatto.", "variables": {}}) }}
-    {{ to_json({"text": "Procedo.", "variables": {}}) }}
+    {{ to_json({"text": "Ecco i dettagli richiesti.", "variables": {}}) }}
+    {{ to_json({"text": "Tutto sullo schermo.", "variables": {}}) }}
+    {{ to_json({"text": "Ti mostro tutto qui.", "variables": {}}) }}
 {%- endif %}
 
 {# --- SHOW INFO RESPONSE --- #}
@@ -16,20 +15,24 @@
     {# Requires: target, and optionally status (for train) or info (for others) #}
     {%- if target == "train" and status %}
         {{ to_json({"text": status, "variables": {}}) }}
+        {{ to_json({"text": "Stato treno: " ~ status, "variables": {}}) }}
+        {{ to_json({"text": "Al momento risulta: " ~ status, "variables": {}}) }}
     {%- elif info is mapping %}
         {# info is a dict, extract meaningful text #}
         {%- set info_text = info.get('message', '') or info.get('description', '') or info.get('stops', [])|join(', ') %}
         {%- if info_text %}
             {{ to_json({"text": info_text, "variables": {}}) }}
         {%- else %}
-            {{ to_json({"text": "Ecco le informazioni richieste.", "variables": {}}) }}
+            {{ to_json({"text": "Ecco le informazioni sul treno.", "variables": {}}) }}
+            {{ to_json({"text": "Dettagli treno visualizzati.", "variables": {}}) }}
         {%- endif %}
     {%- elif info %}
         {{ to_json({"text": info, "variables": {}}) }}
+        {{ to_json({"text": "Ecco l'info: " ~ info, "variables": {}}) }}
     {%- else %}
         {# Fallback when no info available #}
         {{ to_json({"text": "Ecco le informazioni richieste.", "variables": {}}) }}
-        {{ to_json({"text": "Le informazioni sono visualizzate sullo schermo.", "variables": {}}) }}
+        {{ to_json({"text": "Trovato, ecco a te.", "variables": {}}) }}
     {%- endif %}
 {%- endif %}
 
@@ -37,25 +40,25 @@
 {%- if category == "qa_answer" %}
     {# Requires: answer #}
     {{ to_json({"text": answer, "variables": {}}) }}
+    {{ to_json({"text": "Ecco la risposta: " ~ answer, "variables": {}}) }}
+    {{ to_json({"text": "Riguardo a questo: " ~ answer, "variables": {}}) }}
 {%- endif %}
 
 {# --- OOD REDIRECT --- #}
 {%- if category == "ood_redirect" %}
-    {{ to_json({"text": "😔 Mi dispiace, ma posso aiutarti solo con informazioni sui treni e l'acquisto di biglietti. 😊 Posso cercarti un treno invece!", "variables": {}}) }}
-    {{ to_json({"text": "😔 Non posso aiutarti con questo. Io mi occupo di treni e biglietti ferroviari. 🙂 Vuoi cercare una soluzione di viaggio?", "variables": {}}) }}
-    {{ to_json({"text": "🤔 Mi spiace, non ho informazioni su questo argomento. Sono specializzata in viaggi ferroviari. Posso aiutarti a trovare un treno?", "variables": {}}) }}
-    {{ to_json({"text": "Il mio compito è aiutarti con treni e biglietti, non posso fare altro. Torniamo a parlare di viaggi?", "variables": {}}) }}
-    {{ to_json({"text": "Temo di non poterti essere utile su questo. Chiedimi pure di orari, prezzi o biglietti!", "variables": {}}) }}
-    {{ to_json({"text": "Sono programmato solo per l'assistenza ferroviaria. Hai bisogno di pianificare un viaggio?", "variables": {}}) }}
+    {{ to_json({"text": "😔 Mi dispiace, ma posso aiutarti solo con informazioni sui treni e l'acquisto di biglietti.", "variables": {}}) }}
+    {{ to_json({"text": "Sono un assistente per i treni, non posso rispondere a questo. Torniamo al viaggio?", "variables": {}}) }}
+    {{ to_json({"text": "Non sono programmato per questo argomento. Parliamo di treni?", "variables": {}}) }}
+    {{ to_json({"text": "Posso aiutarti solo con la biglietteria ferroviaria.", "variables": {}}) }}
+    {{ to_json({"text": "Mi occupo solo di viaggi in treno. Hai altre domande su quello?", "variables": {}}) }}
 {%- endif %}
 
 {# --- COMPLAINT RESPONSE --- #}
 {%- if category == "complaint_response" %}
-    {{ to_json({"text": "Mi dispiace davvero molto per il disagio. Mi scuso a nome del servizio. Posso aiutarti a trovare una soluzione alternativa?", "variables": {}}) }}
-    {{ to_json({"text": "Capisco perfettamente la sua frustrazione e mi scuso. Sto cercando di fare il possibile per aiutarla con il suo viaggio.", "variables": {}}) }}
-    {{ to_json({"text": "Ci scusiamo per l'inconveniente. Purtroppo capitano dei problemi tecnici o ritardi indipendenti dalla mia volontà. Come posso rimediare?", "variables": {}}) }}
-    {{ to_json({"text": "Mi spiace che stia riscontrando queste difficoltà. Sono qui per cercare di rendere il processo il più semplice possibile. Continuiamo?", "variables": {}}) }}
-    {{ to_json({"text": "Sono desolato per l'accaduto. Il nostro obiettivo è offrire un buon servizio. Come posso aiutarti ora?", "variables": {}}) }}
-    {{ to_json({"text": "Accetta le mie scuse. Farò del mio meglio per risolvere la situazione e farti partire.", "variables": {}}) }}
+    {{ to_json({"text": "Mi dispiace che stia riscontrando queste difficoltà. Sono qui per cercare di rendere il processo il più semplice possibile. Continuiamo?", "variables": {}}) }}
     {{ to_json({"text": "Comprendo il tuo disappunto e me ne scuso. Proviamo a risolvere insieme il problema?", "variables": {}}) }}
+    {{ to_json({"text": "Chiedo scusa per l'inconveniente.", "variables": {}}) }}
+    {{ to_json({"text": "Capisco la frustrazione. Cercherò di essere più utile.", "variables": {}}) }}
+    {{ to_json({"text": "Mi spiace per il disguido. Riprova, per favore.", "variables": {}}) }}
+    {{ to_json({"text": "Scusaci per l'errore. Come posso rimediare?", "variables": {}}) }}
 {%- endif %}

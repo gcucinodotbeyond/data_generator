@@ -5,10 +5,11 @@
     {{ to_json({"text": "Sto cercando...", "variables": {}}) }}
     {{ to_json({"text": "Un attimo, controllo subito.", "variables": {}}) }}
     {{ to_json({"text": "Verifico la disponibilità...", "variables": {}}) }}
-    {{ to_json({"text": "Controllo i treni per te.", "variables": {}}) }}
-    {{ to_json({"text": "Dammi un secondo per cercare le migliori opzioni.", "variables": {}}) }}
-    {{ to_json({"text": "Sto consultando gli orari, attendi un istante.", "variables": {}}) }}
-    {{ to_json({"text": "Vediamo cosa riesco a trovare...", "variables": {}}) }}
+    {{ to_json({"text": "Controllo cosa ho trovato...", "variables": {}}) }}
+    {{ to_json({"text": "Dammi un secondo per cercare.", "variables": {}}) }}
+    {{ to_json({"text": "Interrrogo il database...", "variables": {}}) }}
+    {{ to_json({"text": "Vediamo quali treni ci sono.", "variables": {}}) }}
+    {{ to_json({"text": "Ricerca in corso...", "variables": {}}) }}
 {%- endif %}
 
 {# --- SEARCH SUCCESS --- #}
@@ -18,16 +19,19 @@
         {{ to_json({"text": "😊 Ho trovato una soluzione per " ~ destination ~ ". Parte alle " ~ first_dep ~ ".", "variables": {}}) }}
         {{ to_json({"text": "Ecco qui! C'è un treno per " ~ destination ~ " alle " ~ first_dep ~ ".", "variables": {}}) }}
         {{ to_json({"text": "Ho trovato un'opzione. Parte alle " ~ first_dep ~ ". Ti va bene?", "variables": {}}) }}
-        {{ to_json({"text": "Trovato! Un collegamento per " ~ destination ~ " in partenza alle " ~ first_dep ~ ".", "variables": {}}) }}
-        {{ to_json({"text": "C'è un solo treno disponibile per " ~ destination ~ ", parte alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Trovato! Un treno per " ~ destination ~ " in partenza alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "C'è una soluzione perfetta: partenza alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Eccolo: treno per " ~ destination ~ " alle " ~ first_dep ~ ".", "variables": {}}) }}
     {%- else %}
         {{ to_json({"text": "😊 Ho trovato " ~ n_trains ~ " soluzioni. La prima per " ~ destination ~ " parte alle " ~ first_dep ~ ".", "variables": {}}) }}
         {{ to_json({"text": "Ecco qui! Ci sono " ~ n_trains ~ " treni per " ~ destination ~ ". Il primo è alle " ~ first_dep ~ ".", "variables": {}}) }}
         {{ to_json({"text": "🙂 Ho trovato diverse opzioni. La prima parte alle " ~ first_dep ~ ".", "variables": {}}) }}
-        {{ to_json({"text": "Ho trovato " ~ n_trains ~ " opzioni. Quale preferisci?", "variables": {}}) }}
-        {{ to_json({"text": "Ci sono diverse soluzioni. Preferisci quella delle " ~ first_dep ~ " o un'altra?", "variables": {}}) }}
         {{ to_json({"text": "Ottime notizie, ci sono " ~ n_trains ~ " alternative. La prima parte alle " ~ first_dep ~ ".", "variables": {}}) }}
         {{ to_json({"text": "Ho " ~ n_trains ~ " possibilità per te. Quale preferisci?", "variables": {}}) }}
+        {{ to_json({"text": "Ci sono diverse soluzioni. Preferisci quella delle " ~ first_dep ~ " o un'altra?", "variables": {}}) }}
+        {{ to_json({"text": "Ho " ~ n_trains ~ " opzioni disponibili. La più veloce parte alle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Trovate " ~ n_trains ~ " corse per " ~ destination ~ ". Si inizia con quella delle " ~ first_dep ~ ".", "variables": {}}) }}
+        {{ to_json({"text": "Vedo " ~ n_trains ~ " treni. Il prossimo parte alle " ~ first_dep ~ ".", "variables": {}}) }}
     {%- endif %}
 {%- endif %}
 
@@ -37,41 +41,45 @@
     {{ to_json({"text": "😔 Non ho trovato treni per " ~ destination ~ ".", "variables": {}}) }}
     {{ to_json({"text": "Mi dispiace, non ci sono soluzioni per " ~ destination ~ " in questo momento.", "variables": {}}) }}
     {{ to_json({"text": "😔 Nessun treno trovato. Vuoi provare un altro orario?", "variables": {}}) }}
-    {{ to_json({"text": "Purtroppo la ricerca non ha dato risultati per " ~ destination ~ ".", "variables": {}}) }}
-    {{ to_json({"text": "Sembra che non ci siano treni disponibili per la destinazione richiesta.", "variables": {}}) }}
-    {{ to_json({"text": "Non trovo nulla per " ~ destination ~ ". Possiamo provare con parametri diversi?", "variables": {}}) }}
+    {{ to_json({"text": "Purtroppo non risulta nulla per " ~ destination ~ ". Proviamo a cambiare orario?", "variables": {}}) }}
+    {{ to_json({"text": "Non vedo treni disponibili. Vuoi cercare per un'altra destinazione?", "variables": {}}) }}
+    {{ to_json({"text": "Niente da fare, la ricerca non ha dato risultati per " ~ destination ~ ".", "variables": {}}) }}
+    {{ to_json({"text": "Spiacente, nessun collegamento trovato al momento.", "variables": {}}) }}
 {%- endif %}
 
 {# --- ASK PASSENGERS --- #}
 {%- if category == "ask_passengers" %}
     {{ to_json({"text": "Per quanti passeggeri devo cercare? 😊", "variables": {}}) }}
-    {{ to_json({"text": "Quanti siete?", "variables": {}}) }}
+    {{ to_json({"text": "In quanti siete?", "variables": {}}) }}
     {{ to_json({"text": "Per quante persone?", "variables": {}}) }}
     {{ to_json({"text": "Quanti passeggeri viaggiano?", "variables": {}}) }}
-    {{ to_json({"text": "In quanti viaggiate?", "variables": {}}) }}
-    {{ to_json({"text": "In quanti siete?", "variables": {}}) }}
-    {{ to_json({"text": "Per quanti passeggeri cerco? 🙂", "variables": {}}) }}
+    {{ to_json({"text": "Quanti siamo?", "variables": {}}) }}
+    {{ to_json({"text": "Numero di viaggiatori?", "variables": {}}) }}
+    {{ to_json({"text": "Per quante persone prenoto?", "variables": {}}) }}
+    {{ to_json({"text": "Quanti biglietti servono?", "variables": {}}) }}
 {%- endif %}
 
 {# --- DISABILITY ACK --- #}
 {%- if category == "disability_ack" %}
     {%- if disability_type == "wheelchair" %}
         {{ to_json({"text": "Verificherò la disponibilità di posti per sedia a rotelle e l'assistenza per la salita/discesa. Quanti viaggiatori siete?", "variables": {}}) }}
-        {{ to_json({"text": "Certamente, cercherò treni con posto per carrozzina. Per quante persone?", "variables": {}}) }}
+        {{ to_json({"text": "Cerco subito posti accessibili per sedia a rotelle. In quanti viaggiate?", "variables": {}}) }}
+        {{ to_json({"text": "D'accordo, filtro per accessibilità sedia a rotelle. Quante persone?", "variables": {}}) }}
     {%- elif disability_type in ["motor_ambulatory", "elderly", "pregnant"] %}
         {{ to_json({"text": "Cercherò soluzioni con il minor numero di cambi e vicine ai servizi. Quanti siete?", "variables": {}}) }}
-        {{ to_json({"text": "Va bene, annotato. Cercherò una soluzione comoda. In quanti viaggiate?", "variables": {}}) }}
+        {{ to_json({"text": "Tengo conto delle esigenze di mobilità. Quanti passeggeri?", "variables": {}}) }}
+        {{ to_json({"text": "Ok, cerco soluzioni comode e accessibili. In quanti siete?", "variables": {}}) }}
     {%- elif disability_type == "visual" %}
         {{ to_json({"text": "Ti descriverò, se vuoi, ogni dettaglio del viaggio e delle stazioni. Quante persone partono?", "variables": {}}) }}
-        {{ to_json({"text": "Ricevuto. Se serve, posso leggere tutti i dettagli. Per quanti passeggeri?", "variables": {}}) }}
+        {{ to_json({"text": "Ricevuto. Ti fornirò assistenza vocale per ogni dettaglio. Quanti siete?", "variables": {}}) }}
     {%- elif disability_type == "hearing" %}
         {{ to_json({"text": "Riceverai tutte le conferme scritte e visive necessarie. In quanti siete?", "variables": {}}) }}
-        {{ to_json({"text": "Troverai tutto scritto qui. Per quante persone cerco?", "variables": {}}) }}
+        {{ to_json({"text": "Certamente, tutto sarà comunicato via testo sullo schermo. Quanti viaggiatori?", "variables": {}}) }}
     {%- elif disability_type == "cognitive" %}
         {{ to_json({"text": "Ti fornirò indicazioni chiare e semplici passo dopo passo. Quanti siete?", "variables": {}}) }}
-        {{ to_json({"text": "Va bene, ti guiderò io con calma. In quanti viaggiate?", "variables": {}}) }}
+        {{ to_json({"text": "Va bene, useremo istruzioni semplificate. In quanti partite?", "variables": {}}) }}
     {%- else %}
         {{ to_json({"text": "Certamente, annotato. Quanti viaggiatori siete?", "variables": {}}) }}
-        {{ to_json({"text": "Va bene, ne terrò conto. Per quanti passeggeri cerco?", "variables": {}}) }}
+        {{ to_json({"text": "Capito, tengo conto della richiesta. Quanti passeggeri?", "variables": {}}) }}
     {%- endif %}
 {%- endif %}

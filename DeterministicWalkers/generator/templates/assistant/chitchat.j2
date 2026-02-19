@@ -2,33 +2,31 @@
 
 {# --- GREETING RESPONSE --- #}
 {%- if category == "greeting_response" %}
-    {{ to_json({"text": "Ciao! Dove vuoi andare oggi?", "variables": {}}) }}
-    {{ to_json({"text": "Salve! Come posso aiutarti?", "variables": {}}) }}
-    {{ to_json({"text": "Ciao! Hai già in mente una destinazione?", "variables": {}}) }}
-    {{ to_json({"text": "Buongiorno! Dove ti porto?", "variables": {}}) }}
-    {{ to_json({"text": "Ehilà! Pronto per un nuovo viaggio? Dove andiamo?", "variables": {}}) }}
     {{ to_json({"text": "Ciao, sono qui per aiutarti coi treni. Dimmi tutto.", "variables": {}}) }}
-    {{ to_json({"text": "Benvenuto! Qual è la tua meta oggi?", "variables": {}}) }}
+    {{ to_json({"text": "Ciao! Hai già in mente una destinazione?", "variables": {}}) }}
+    {{ to_json({"text": "Benvenuto! Dove vuoi andare oggi?", "variables": {}}) }}
+    {{ to_json({"text": "Ciao! Pronto a partire?", "variables": {}}) }}
+    {{ to_json({"text": "Salve. In cosa posso esserti utile per il tuo viaggio?", "variables": {}}) }}
+    {{ to_json({"text": "Ehilà! Cerchi un treno?", "variables": {}}) }}
+    {{ to_json({"text": "Ciao, dimmi dove vuoi andare.", "variables": {}}) }}
 {%- endif %}
 
 {# --- REFUSAL ACK --- #}
 {%- if category == "refusal_ack" %}
     {{ to_json({"text": "Capisco. Posso cercare altro?", "variables": {}}) }}
-    {{ to_json({"text": "Va bene. Vuoi cercare un'altra destinazione?", "variables": {}}) }}
-    {{ to_json({"text": "Nessun problema. Dimmi se vuoi cambiare ricerca.", "variables": {}}) }}
-    {{ to_json({"text": "Ok. Posso aiutarti con altro?", "variables": {}}) }}
-    {{ to_json({"text": "Ricevuto. Come preferisci procedere?", "variables": {}}) }}
-    {{ to_json({"text": "D'accordo, annulliamo questo. Altre richieste?", "variables": {}}) }}
-    {{ to_json({"text": "Nessun problema. Sono qui se cambi idea o vuoi altro.", "variables": {}}) }}
+    {{ to_json({"text": "Va bene, annulliamo. Serve altro?", "variables": {}}) }}
+    {{ to_json({"text": "Ricevuto. Vuoi fare una nuova ricerca?", "variables": {}}) }}
+    {{ to_json({"text": "D'accordo, nessun problema. Altro?", "variables": {}}) }}
+    {{ to_json({"text": "Ok, tralasciamo questo. Dimmi pure.", "variables": {}}) }}
 {%- endif %}
 
 {# --- FAREWELL --- #}
 {%- if category == "farewell" %}
-    {{ to_json({"text": "A presto!", "variables": {}}) }}
-    {{ to_json({"text": "Ciao, alla prossima!", "variables": {}}) }}
     {{ to_json({"text": "Arrivederci!", "variables": {}}) }}
-    {{ to_json({"text": "A presto, buon viaggio!", "variables": {}}) }}
     {{ to_json({"text": "Grazie e buon viaggio!", "variables": {}}) }}
-    {{ to_json({"text": "Alla prossima. Fai buon viaggio!", "variables": {}}) }}
     {{ to_json({"text": "Ciao! Spero di rivederti presto sui nostri treni.", "variables": {}}) }}
+    {{ to_json({"text": "Alla prossima! 👋", "variables": {}}) }}
+    {{ to_json({"text": "Buona giornata!", "variables": {}}) }}
+    {{ to_json({"text": "Grazie a te, a presto.", "variables": {}}) }}
+    {{ to_json({"text": "Fai buon viaggio!", "variables": {}}) }}
 {%- endif %}

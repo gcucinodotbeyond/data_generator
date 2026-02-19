@@ -34,6 +34,14 @@ class DeterministicGenerator:
         ]
 
         self.dates = ["oggi", "domani", "venerdì prossimo", "il 15"]
+
+    def _safe_json_dumps(self, obj, **kwargs):
+        from jinja2 import Undefined
+        def handle_undefined(o):
+            if isinstance(o, Undefined):
+                return None
+            return str(o)
+        return json.dumps(obj, default=handle_undefined, **kwargs)
     
     
     def generate(self):
@@ -100,7 +108,7 @@ class DeterministicGenerator:
                     time_type=time_obj["type"],
                     rudeness=rudeness,
                     verbose='standard',
-                    to_json=json.dumps
+                    to_json=self._safe_json_dumps
                 )
                 self._parse_and_add(rendered_block, unique_items)
                 
@@ -113,7 +121,7 @@ class DeterministicGenerator:
                     date=date_val,
                     rudeness=rudeness,
                     verbose='standard',
-                    to_json=json.dumps
+                    to_json=self._safe_json_dumps
                 )
                 self._parse_and_add(rendered_block_with_date, unique_items)
                 
@@ -125,7 +133,7 @@ class DeterministicGenerator:
             tmpl_path = self._get_template_path(template_name, rudeness)
             try:
                 template = self.env.get_template(tmpl_path)
-                rendered_block = template.render(rudeness=rudeness, verbose='standard', to_json=json.dumps)
+                rendered_block = template.render(rudeness=rudeness, verbose='standard', to_json=self._safe_json_dumps)
                 self._parse_and_add(rendered_block, unique_items)
             except jinja2.TemplateNotFound:
                 pass
@@ -144,22 +152,22 @@ class DeterministicGenerator:
             # Contextual mixes
             # Destinations
             for dest in self.destinations:
-                rendered = template.render(destination=dest, rudeness=rudeness, verbose='standard', to_json=json.dumps)
+                rendered = template.render(destination=dest, rudeness=rudeness, verbose='standard', to_json=self._safe_json_dumps)
                 self._parse_and_add(rendered, unique_items)
                 
             # Times (subset to avoid explosion)
             for time_obj in self.times[:4]: 
-                rendered = template.render(time=time_obj["value"], rudeness=rudeness, verbose='standard', to_json=json.dumps)
+                rendered = template.render(time=time_obj["value"], rudeness=rudeness, verbose='standard', to_json=self._safe_json_dumps)
                 self._parse_and_add(rendered, unique_items)
 
             # Classes
             classes = ["prima classe", "seconda classe", "standard", "business"]
             for cls in classes:
-                rendered = template.render(class_type=cls, rudeness=rudeness, verbose='standard', to_json=json.dumps)
+                rendered = template.render(class_type=cls, rudeness=rudeness, verbose='standard', to_json=self._safe_json_dumps)
                 self._parse_and_add(rendered, unique_items)
                 
             # Base (no variables)
-            rendered = template.render(rudeness=rudeness, verbose='standard', to_json=json.dumps)
+            rendered = template.render(rudeness=rudeness, verbose='standard', to_json=self._safe_json_dumps)
             self._parse_and_add(rendered, unique_items)
         
         return self._items_to_list(unique_items, "confirmation")
@@ -176,11 +184,11 @@ class DeterministicGenerator:
 
             # Times 
             for time_obj in self.times[:4]: 
-                rendered = template.render(time=time_obj["value"], rudeness=rudeness, verbose='standard', to_json=json.dumps)
+                rendered = template.render(time=time_obj["value"], rudeness=rudeness, verbose='standard', to_json=self._safe_json_dumps)
                 self._parse_and_add(rendered, unique_items)
                 
             # Base
-            rendered = template.render(rudeness=rudeness, verbose='standard', to_json=json.dumps)
+            rendered = template.render(rudeness=rudeness, verbose='standard', to_json=self._safe_json_dumps)
             self._parse_and_add(rendered, unique_items)
         
         return self._items_to_list(unique_items, "refusal")
@@ -200,14 +208,14 @@ class DeterministicGenerator:
                 continue
 
             for p in pets:
-                self._parse_and_add(template.render(pet=p, rudeness=rudeness, verbose='standard', to_json=json.dumps), unique_items)
+                self._parse_and_add(template.render(pet=p, rudeness=rudeness, verbose='standard', to_json=self._safe_json_dumps), unique_items)
             for l in luggage:
-                self._parse_and_add(template.render(luggage=l, rudeness=rudeness, verbose='standard', to_json=json.dumps), unique_items)
+                self._parse_and_add(template.render(luggage=l, rudeness=rudeness, verbose='standard', to_json=self._safe_json_dumps), unique_items)
             for s in services:
-                self._parse_and_add(template.render(service=s, rudeness=rudeness, verbose='standard', to_json=json.dumps), unique_items)
+                self._parse_and_add(template.render(service=s, rudeness=rudeness, verbose='standard', to_json=self._safe_json_dumps), unique_items)
                 
             # General
-            self._parse_and_add(template.render(rudeness=rudeness, verbose='standard', to_json=json.dumps), unique_items)
+            self._parse_and_add(template.render(rudeness=rudeness, verbose='standard', to_json=self._safe_json_dumps), unique_items)
         
         return self._items_to_list(unique_items, "qa")
 
@@ -241,7 +249,7 @@ class DeterministicGenerator:
             for count in counts:
                 # 1. Standard (no pet)
                 for verbose in ['concise', 'standard', 'verbose']:
-                    rendered = template.render(aspect="passengers", count=count, rudeness=rudeness, verbose=verbose, to_json=json.dumps)
+                    rendered = template.render(aspect="passengers", count=count, rudeness=rudeness, verbose=verbose, to_json=self._safe_json_dumps)
                     self._parse_and_add(rendered, unique_items)
 
                 # 2. With Pet
@@ -253,7 +261,7 @@ class DeterministicGenerator:
                             pet_phrase=pet, 
                             rudeness=rudeness, 
                             verbose=verbose, 
-                            to_json=json.dumps
+                            to_json=self._safe_json_dumps
                         )
                         self._parse_and_add(rendered, unique_items)
 
@@ -270,7 +278,7 @@ class DeterministicGenerator:
                             bike_phrase=bike, 
                             rudeness=rudeness, 
                             verbose=verbose, 
-                            to_json=json.dumps
+                            to_json=self._safe_json_dumps
                         )
                         self._parse_and_add(rendered, unique_items)
                         
@@ -284,7 +292,7 @@ class DeterministicGenerator:
                                 bike_phrase=bike, 
                                 rudeness=rudeness, 
                                 verbose=verbose, 
-                                to_json=json.dumps
+                                to_json=self._safe_json_dumps
                             )
                             self._parse_and_add(rendered, unique_items)
                             
@@ -297,7 +305,7 @@ class DeterministicGenerator:
                             disability_phrase=dis,
                             rudeness=rudeness,
                             verbose=verbose,
-                            to_json=json.dumps
+                            to_json=self._safe_json_dumps
                         )
                         self._parse_and_add(rendered, unique_items)
 
@@ -330,7 +338,7 @@ class DeterministicGenerator:
                 template = self.env.get_template(template_name)
                 # Ensure vars present
                 render_context = context.copy()
-                rendered_block = template.render(**render_context, to_json=json.dumps)
+                rendered_block = template.render(**render_context, to_json=self._safe_json_dumps)
                 unique_items = set()
                 self._parse_and_add(rendered_block, unique_items)
                 results = self._items_to_list(unique_items, "assistant_response")
@@ -367,7 +375,7 @@ class DeterministicGenerator:
         if "date" not in render_context:
             render_context["date"] = None
 
-        rendered_block = template.render(**render_context, to_json=json.dumps)
+        rendered_block = template.render(**render_context, to_json=self._safe_json_dumps)
         
         unique_items = set()
         self._parse_and_add(rendered_block, unique_items)

@@ -1,25 +1,33 @@
 {# VARIABLES: destination, time, date, origin, time_type, rudeness, verbose #}
 
+{# --- OPENERS --- #}
 {%- set polite_openers = [
-    "Vorrei", "Voglio", "Desidero", "Avrei bisogno di", "Mi serve", "Devo", "Potresti", "Puoi", "Sapresti", "Mi cerchi"
+    "Vorrei", "Voglio", "Desidero", "Avrei bisogno di", "Mi serve", "Devo", "Potresti", "Puoi", "Sapresti", "Mi cerchi",
+    "Per cortesia, vorrei", "Le chiedo se può trovarmi", "Mi farebbe un favore se cercasse", "Avrei la necessità di prenotare",
+    "Gentilmente, mi serve", "Sarebbe possibile avere", "Mi occorre"
 ] -%}
 
 {%- set search_verbs = [
-    "cercare", "trovare", "vedere", "prenotare", "acquistare", "comprare", "prendere"
+    "cercare", "trovare", "vedere", "prenotare", "acquistare", "comprare", "prendere",
+    "individuare", "bloccare", "riservare", "selezionare", "verificare"
 ] -%}
 
 {%- set train_synonyms = [
-    "un treno", "il treno", "un biglietto", "il biglietto", "una soluzione", "un viaggio", "un collegamento"
+    "un treno", "il treno", "un biglietto", "il biglietto", "una soluzione", "un viaggio", "un collegamento",
+    "una corsa", "un passaggio", "un posto", "un itinerario"
 ] -%}
 
 {# Prepositions for numeric times (alle 8, dopo le 8) #}
-{%- set numeric_prepositions = ["alle", "per le", "verso le", "intorno alle", "dopo le", "prima delle"] -%}
+{%- set numeric_prepositions = ["alle", "per le", "verso le", "intorno alle", "dopo le", "prima delle", "a partire dalle", "non prima delle"] -%}
 
 {# --- PATTERN 0: CONCISE SEARCH (Roma 10:00) --- #}
 {% if verbose == 'concise' %}
 {{ to_json({"text": destination, "variables": {"destination": destination}}) }}
+{{ to_json({"text": "Treno " ~ destination, "variables": {"destination": destination}}) }}
+{{ to_json({"text": destination ~ " grazie", "variables": {"destination": destination}}) }}
     {% if time %}
 {{ to_json({"text": destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
+{{ to_json({"text": time ~ " " ~ destination, "variables": {"destination": destination, "time": time}}) }}
     {% endif %}
     {% if date %}
 {{ to_json({"text": destination ~ " " ~ date, "variables": {"destination": destination, "date": date}}) }}
@@ -41,14 +49,15 @@
 {# --- PATTERN 1: SIMPLE DIRECT SEARCH (Voglio andare a Milano) --- #}
 {% if verbose != 'concise' %}
     {% if rudeness == 'polite' %}
-        {%- for opener in ["Potrebbe gentilmente cercarmi un treno per", "Sarebbe così gentile da trovarmi un treno per", "Avrei la necessità di andare a"] %}
+        {%- for opener in ["Potrebbe gentilmente cercarmi un treno per", "Sarebbe così gentile da trovarmi un treno per", "Avrei la necessità di andare a", "Le chiedo cortesemente un biglietto per"] %}
 {{ to_json({"text": opener ~ " " ~ destination ~ ", per favore?", "variables": {"destination": destination}}) }}
         {% endfor %}
     {% else %} {# neutral #}
-        {%- for opener in ["Voglio", "Vorrei", "Devo", "Posso"] %}
+        {%- for opener in ["Voglio", "Vorrei", "Devo", "Posso", "Mi serve", "Cerco"] %}
 {{ to_json({"text": opener ~ " andare a " ~ destination, "variables": {"destination": destination}}) }}
 {{ to_json({"text": opener ~ " partire per " ~ destination, "variables": {"destination": destination}}) }}
 {{ to_json({"text": opener ~ " raggiungere " ~ destination, "variables": {"destination": destination}}) }}
+{{ to_json({"text": opener ~ " un treno verso " ~ destination, "variables": {"destination": destination}}) }}
         {% if date %}
 {{ to_json({"text": opener ~ " andare a " ~ destination ~ " " ~ date, "variables": {"destination": destination, "date": date}}) }}
             {% if time %}
@@ -78,6 +87,7 @@
     {%- for verb in search_verbs %}
     {%- for obj in train_synonyms %}
 {{ to_json({"text": opener ~ " " ~ verb ~ " " ~ obj ~ " per " ~ destination, "variables": {"destination": destination}}) }}
+{{ to_json({"text": opener ~ " " ~ verb ~ " " ~ obj ~ " diretto a " ~ destination, "variables": {"destination": destination}}) }}
     {% endfor %}
     {% endfor %}
     {% endfor %}
@@ -91,6 +101,7 @@
 {{ to_json({"text": "Un treno per " ~ destination ~ " " ~ prep ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": destination ~ " " ~ prep ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Partenza per " ~ destination ~ " " ~ prep ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
+{{ to_json({"text": "Voglio partire per " ~ destination ~ " " ~ prep ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
             {% if date %}
                 {% if date not in ["oggi", "per oggi"] %}
 {{ to_json({"text": destination ~ " " ~ date ~ " " ~ prep ~ " " ~ time, "variables": {"destination": destination, "date": date, "time": time}}) }}
@@ -107,6 +118,7 @@
 {{ to_json({"text": destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Partenza per " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Mi serve un biglietto per " ~ destination ~ " per " ~ time, "variables": {"destination": destination, "time": time}}) }}
+{{ to_json({"text": "Qualcosa per " ~ destination ~ " " ~ time ~ "?", "variables": {"destination": destination, "time": time}}) }}
 
     {% elif time_type == 'relative_future' %}
 {{ to_json({"text": "Un treno per " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
@@ -115,6 +127,7 @@
 {{ to_json({"text": "Partenza per " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Qualcosa per " ~ destination ~ " prima di " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Qualcosa per " ~ destination ~ " dopo " ~ time, "variables": {"destination": destination, "time": time}}) }}
+{{ to_json({"text": "Devo andare a " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
         {% if date %}
             {% if time_type == 'relative_now' or date in time or (date == 'oggi' and 'domani' in time) %}
 {{ to_json({"text": "Andare a " ~ destination ~ " " ~ time, "variables": {"destination": destination, "time": time}}) }}
@@ -130,10 +143,11 @@
 {# --- PATTERN 4: FULL SENTENCE WITH TIME --- #}
 {% if verbose == 'verbose' %}
     {% if time_type == 'numeric' %}
-        {%- for opener in ["Devo essere", "Voglio arrivare", "Devo arrivare"] %}
+        {%- for opener in ["Devo essere", "Voglio arrivare", "Devo arrivare", "Ho un appuntamento", "Mi serve essere"] %}
         {%- set prep = (numeric_prepositions)|random %}
 {{ to_json({"text": "Senti, " ~ opener ~ " a " ~ destination ~ " " ~ prep ~ " " ~ time ~ " perché ho un appuntamento importante.", "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Siccome ho fretta, " ~ opener ~ " a " ~ destination ~ " " ~ prep ~ " " ~ time ~ ". Cosa mi consigli?", "variables": {"destination": destination, "time": time}}) }}
+{{ to_json({"text": "Per favore, " ~ opener ~ " a " ~ destination ~ " " ~ prep ~ " " ~ time ~ ". È fondamentale.", "variables": {"destination": destination, "time": time}}) }}
         {% endfor %}
     {% elif time_type == 'relative_future' %}
         {%- for opener in ["Devo essere", "Voglio arrivare", "Devo arrivare"] %}
@@ -161,6 +175,8 @@
 {{ to_json({"text": "Quali treni ci sono per " ~ destination ~ "?", "variables": {"destination": destination}}) }}
 {{ to_json({"text": "A che ora parte il prossimo treno per " ~ destination ~ "?", "variables": {"destination": destination}}) }}
 {{ to_json({"text": "Quando parte il primo treno per " ~ destination ~ "?", "variables": {"destination": destination}}) }}
+{{ to_json({"text": "Mi dici se ci sono corse per " ~ destination ~ "?", "variables": {"destination": destination}}) }}
+{{ to_json({"text": "Vorrei sapere gli orari per " ~ destination ~ ".", "variables": {"destination": destination}}) }}
     {% if date %}
 {{ to_json({"text": "Che treni ci sono per " ~ destination ~ " " ~ date ~ "?", "variables": {"destination": destination, "date": date}}) }}
 {{ to_json({"text": "Cosa c'è per " ~ destination ~ " " ~ date ~ "?", "variables": {"destination": destination, "date": date}}) }}
@@ -188,4 +204,5 @@
 {{ to_json({"text": "Qualcosa per " ~ destination ~ " dopo le " ~ time ~ "?", "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Cerco una soluzione per " ~ destination ~ " prima delle " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {{ to_json({"text": "Non voglio partire prima delle " ~ time ~ " per " ~ destination, "variables": {"destination": destination, "time": time}}) }}
+{{ to_json({"text": "Trovami un convoglio per " ~ destination ~ " non oltre le " ~ time, "variables": {"destination": destination, "time": time}}) }}
 {% endif %}

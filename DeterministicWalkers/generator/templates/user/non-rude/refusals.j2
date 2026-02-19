@@ -1,10 +1,10 @@
 {# VARIABLES: destination, time, count, rudeness, verbose, refused_time #}
 
-{%- set negatives = ["No", "Assolutamente no", "Sbagliato", "Ferma", "Fermati", "Stop", "Annulla", "Cancella", "Lascia stare", "Non voglio"] -%}
+{%- set negatives = ["No", "Assolutamente no", "Sbagliato", "Ferma", "Fermati", "Stop", "Annulla", "Cancella", "Lascia stare", "Non voglio", "Neanche per sogno", "Mai", "Negativo", "Macché"] -%}
 
 {# --- CONCISE REFUSAL --- #}
 {% if verbose == 'concise' %}
-    {% for neg in ["No", "Stop", "Annulla"] %}
+    {% for neg in ["No", "Stop", "Annulla", "Reset", "Indietro", "Errato", "Basta"] %}
 {{ to_json({"text": neg, "variables": {}}) }}
     {% endfor %}
 
@@ -13,9 +13,13 @@
     {% if rudeness == 'polite' %}
 {{ to_json({"text": "Mi scusi, ma temo che questa opzione non faccia al caso mio, preferirei non procedere oltre.", "variables": {}}) }}
 {{ to_json({"text": "La ringrazio per la proposta, ma non mi convince del tutto, quindi preferirei cercare qualcos'altro.", "variables": {}}) }}
+{{ to_json({"text": "Purtroppo devo dirti di no, non è esattamente quello che avevo in mente per questo viaggio.", "variables": {}}) }}
+{{ to_json({"text": "Non credo che questa soluzione sia adatta alle mie esigenze, possiamo provare a cambiare?", "variables": {}}) }}
     {% else %}
 {{ to_json({"text": "No, guarda, ho cambiato idea e non sono più interessato a questa soluzione per il mio viaggio.", "variables": {}}) }}
 {{ to_json({"text": "In realtà non mi sembra quello che stavo cercando, quindi è meglio se ci fermiamo qui e annulliamo.", "variables": {}}) }}
+{{ to_json({"text": "Ma anche no, questa opzione non mi piace per niente. Cambiamo tutto.", "variables": {}}) }}
+{{ to_json({"text": "Assolutamente no, non è quello che volevo. Torna indietro.", "variables": {}}) }}
     {% endif %}
 
 {# --- STANDARD REFUSAL (Existing Logic) --- #}
@@ -28,7 +32,7 @@
 
     {# --- SINGULAR CONTEXT (count == 1 or undefined) --- #}
     {% if count is not defined or count == 1 %}
-        {%- set corrections_singular = ["Non mi interessa", "Ho cambiato idea", "Non va bene", "È troppo caro", "È troppo tardi", "È troppo presto", "Non mi convince"] -%}
+        {%- set corrections_singular = ["Non mi interessa", "Ho cambiato idea", "Non va bene", "È troppo caro", "È troppo tardi", "È troppo presto", "Non mi convince", "Non lo voglio", "Non mi piace"] -%}
         {%- for neg in negatives %}
         {%- for corr in corrections_singular %}
 {{ to_json({"text": neg ~ ", " ~ corr, "variables": {}}) }}
@@ -40,12 +44,13 @@
         {% if refused_time %}
 {{ to_json({"text": "No, non quello delle " ~ refused_time, "variables": {"time": refused_time}}) }}
 {{ to_json({"text": "Quello delle " ~ refused_time ~ " non va bene", "variables": {"time": refused_time}}) }}
+{{ to_json({"text": "Evita " ~ refused_time, "variables": {"time": refused_time}}) }}
         {% endif %}
     {% endif %}
 
     {# --- PLURAL CONTEXT (count > 1) --- #}
     {% if count is defined and count > 1 %}
-        {%- set corrections_plural = ["Non mi interessano", "Ho cambiato idea", "Non vanno bene", "Non mi convincono", "Non ce n'è uno buono"] -%}
+        {%- set corrections_plural = ["Non mi interessano", "Ho cambiato idea", "Non vanno bene", "Non mi convincono", "Non ce n'è uno buono", "Non li voglio"] -%}
         {%- for neg in negatives %}
         {%- for corr in corrections_plural %}
 {{ to_json({"text": neg ~ ", " ~ corr, "variables": {}}) }}

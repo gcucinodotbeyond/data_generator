@@ -6,21 +6,26 @@
             {{ to_json({"text": "Avanti grazie", "variables": {}}) }}
             {{ to_json({"text": "Altro per favore", "variables": {}}) }}
             {{ to_json({"text": "Prossimi", "variables": {}}) }}
+            {{ to_json({"text": "Giù per favore", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Avanti", "variables": {}}) }}
             {{ to_json({"text": "Altri", "variables": {}}) }}
             {{ to_json({"text": "Successivi", "variables": {}}) }}
             {{ to_json({"text": "Più giù", "variables": {}}) }}
+            {{ to_json({"text": "Scorri", "variables": {}}) }}
+            {{ to_json({"text": "Seguenti", "variables": {}}) }}
         {% endif %}
     {% elif verbose == 'verbose' %}
         {% if rudeness == 'polite' %}
             {{ to_json({"text": "Saresti così gentile da mostrarmi le opzioni successive della lista?", "variables": {}}) }}
             {{ to_json({"text": "Per favore, potresti farmi vedere se ci sono altre soluzioni dopo queste?", "variables": {}}) }}
             {{ to_json({"text": "Vorrei vedere i prossimi treni nell'elenco, se possibile.", "variables": {}}) }}
+            {{ to_json({"text": "Mi mostri gentilmente cos'altro c'è più avanti?", "variables": {}}) }}
         {% else %}
             {{ to_json({"text": "Fammi vedere i prossimi treni perché questi non mi convincono molto.", "variables": {}}) }}
             {{ to_json({"text": "Sposta la pagina in avanti per vedere le partenze successive.", "variables": {}}) }}
             {{ to_json({"text": "Mostrami i risultati dopo questi, voglio vedere cos'altro c'è.", "variables": {}}) }}
+            {{ to_json({"text": "Scorri la lista, voglio vedere le opzioni seguenti.", "variables": {}}) }}
         {% endif %}
     {% else %} {# standard #}
         {% if rudeness == 'polite' %}
@@ -32,6 +37,7 @@
             {{ to_json({"text": "Mostrami i prossimi risultati", "variables": {}}) }}
             {{ to_json({"text": "Scendi ancora", "variables": {}}) }}
             {{ to_json({"text": "Fammi vedere altri treni", "variables": {}}) }}
+            {{ to_json({"text": "Pagina seguente", "variables": {}}) }}
         {% endif %}
     {% endif %}
 
@@ -47,6 +53,7 @@
             {{ to_json({"text": "Pagina precedente", "variables": {}}) }}
             {{ to_json({"text": "Quelli di prima", "variables": {}}) }}
             {{ to_json({"text": "Quelle di prima", "variables": {}}) }}
+            {{ to_json({"text": "Torna su", "variables": {}}) }}
         {% endif %}
     {% elif verbose == 'verbose' %}
         {% if rudeness == 'polite' %}
@@ -82,6 +89,7 @@
             {{ to_json({"text": "Inizio", "variables": {}}) }}
             {{ to_json({"text": "Reset", "variables": {}}) }}
             {{ to_json({"text": "Esci", "variables": {}}) }}
+            {{ to_json({"text": "Home", "variables": {}}) }}
         {% endif %}
     {% elif verbose == 'verbose' %}
         {% if rudeness == 'polite' %}
@@ -103,6 +111,7 @@
             {{ to_json({"text": "Torna all'inizio", "variables": {}}) }}
             {{ to_json({"text": "Ricomincia da capo", "variables": {}}) }}
             {{ to_json({"text": "Voglio rifare la ricerca", "variables": {}}) }}
+            {{ to_json({"text": "Reset completo", "variables": {}}) }}
         {% endif %}
     {% endif %}
 
@@ -148,6 +157,7 @@
                 {{ to_json({"text": "Cambi grazie", "variables": {}}) }}
                 {{ to_json({"text": "Diretto per favore?", "variables": {}}) }}
                 {{ to_json({"text": "Fermate", "variables": {}}) }}
+                {{ to_json({"text": "Info treno", "variables": {}}) }}
             {% else %}
                 {{ to_json({"text": "Cambi?", "variables": {}}) }}
                 {{ to_json({"text": "Diretto?", "variables": {}}) }}
@@ -203,6 +213,7 @@
             {{ to_json({"text": "Dove sono i bagni?", "variables": {}}) }}
             {{ to_json({"text": "Dov'è la biglietteria?", "variables": {}}) }}
             {{ to_json({"text": "Info stazione", "variables": {}}) }}
+            {{ to_json({"text": "Servizi stazione", "variables": {}}) }}
         {% endif %}
 
     {%- elif target == "city" %}
@@ -214,6 +225,7 @@
             {{ to_json({"text": "Come arrivo in centro?", "variables": {}}) }}
             {{ to_json({"text": "Cosa posso vedere?", "variables": {}}) }}
             {{ to_json({"text": "Dov'è l'ufficio turistico?", "variables": {}}) }}
+            {{ to_json({"text": "Info città", "variables": {}}) }}
         {% endif %}
 
     {%- elif target == "help" %}
@@ -223,6 +235,7 @@
         {% else %}
             {{ to_json({"text": "Come funziona?", "variables": {}}) }}
             {{ to_json({"text": "Aiuto", "variables": {}}) }}
+            {{ to_json({"text": "Istruzioni", "variables": {}}) }}
         {% endif %}
 
     {%- elif target == "ticket" %}
@@ -232,6 +245,7 @@
         {% else %}
             {{ to_json({"text": "Mostra il biglietto", "variables": {}}) }}
             {{ to_json({"text": "Dettagli acquisto", "variables": {}}) }}
+            {{ to_json({"text": "Vedi biglietto", "variables": {}}) }}
         {% endif %}
     {%- endif %}
 

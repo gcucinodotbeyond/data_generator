@@ -285,6 +285,57 @@
             margin-bottom: 2rem;
         }
 
+        /* View Toolbar */
+        .view-toolbar {
+            display: flex;
+            background-color: var(--sidebar-bg);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .view-btn.active {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        #rawContainer {
+            flex: 1;
+            padding: 2rem;
+            overflow: auto;
+            display: none;
+        }
+
+        .raw-pre {
+            background-color: #1e1e1e;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: #d1d5db;
+            margin: 0;
+            white-space: pre-wrap;
+            border: 1px solid var(--border-color);
+        }
+
         .meta-title {
             font-size: 0.85rem;
             text-transform: uppercase;
@@ -340,6 +391,32 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #64748b;
         }
+
+        /* Context Box within message */
+        .context-box {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: #d1d5db;
+        }
+
+        .context-box-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-color);
+            margin-bottom: 0.4rem;
+            font-weight: 700;
+        }
+
+        .context-content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 
@@ -373,6 +450,12 @@
 
     <!-- Main Chat Area -->
     <div class="main-content">
+        <div class="view-toolbar">
+            <button class="view-btn active" onclick="switchView('current')">🏠 current</button>
+            <button class="view-btn" onclick="switchView('last_user')">🧪 context in last user</button>
+            <button class="view-btn" onclick="switchView('all_user')">🧪 context in all user</button>
+            <button class="view-btn" onclick="switchView('tool_to_user')">🛠️ tool -> user</button>
+        </div>
         <div id="chatContainer" class="chat-container">
             <div class="empty-state">
                 <div style="font-size: 3rem;">👋</div>
@@ -399,9 +482,12 @@
     <script>
         const datasetSelector = document.getElementById('datasetSelector');
         const refreshBtn = document.getElementById('refreshBtn');
+        const chatContainer = document.getElementById('chatContainer');
 
         // State
         let allFilesData = {}; // filename -> [conversations]
+        let currentConv = null;
+        let currentView = 'current';
 
         // Drag & Drop Handlers
         dropZone.addEventListener('click', () => fileInput.click());
@@ -554,7 +640,8 @@
                         // clear active class from all
                         document.querySelectorAll('.conversation-item').forEach(i => i.classList.remove('active'));
                         el.classList.add('active');
-                        renderChat(conv);
+                        currentConv = conv;
+                        renderCurrentSelection();
                         renderMetadata(conv);
                     });
                     fileGroup.appendChild(el);
@@ -562,6 +649,112 @@
 
                 conversationList.appendChild(fileGroup);
             });
+        }
+
+        function switchView(view) {
+            currentView = view;
+
+            // Update UI buttons
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.toggle('active',
+                    (view === 'current' && btn.textContent.includes('current')) ||
+                    (view === 'last_user' && btn.textContent.includes('context in last user')) ||
+                    (view === 'all_user' && btn.textContent.includes('context in all user'))
+                );
+            });
+
+            renderCurrentSelection();
+        }
+
+        function renderCurrentSelection() {
+            if (!currentConv) return;
+
+            const reformatted = reformatConversation(currentConv, currentView);
+            renderChat(reformatted);
+        }
+
+        function reformatConversation(conv, strategy) {
+            if (strategy === 'current') return conv;
+
+            const newMessages = [];
+            let pendingContext = "";
+
+            // Strategy: context in ALL user
+            if (strategy === 'all_user') {
+                conv.messages.forEach((msg, idx) => {
+                    // Always preserve initial system prompt
+                    if (idx === 0 && msg.role === 'system') {
+                        newMessages.push(msg);
+                        return;
+                    }
+
+                    if (msg.role === 'system' && msg.content && (msg.content.includes('<ctx') || msg.content.includes('<context'))) {
+                        pendingContext += msg.content + "\n\n";
+                    } else if (msg.role === 'user') {
+                        newMessages.push({
+                            ...msg,
+                            injected_context: pendingContext || null
+                        });
+                        pendingContext = "";
+                    } else {
+                        newMessages.push(msg);
+                    }
+                });
+                return { ...conv, messages: newMessages };
+            }
+
+            // Strategy: context in LAST user
+            if (strategy === 'last_user') {
+                let lastContext = "";
+                let lastUserIndex = -1;
+
+                // Find last user index and last context content
+                conv.messages.forEach((msg, idx) => {
+                    if (msg.role === 'system' && idx > 0 && msg.content && (msg.content.includes('<ctx') || msg.content.includes('<context'))) {
+                        lastContext = msg.content; // Keep overwriting to get the last one
+                    } else if (msg.role === 'user') {
+                        lastUserIndex = idx;
+                    }
+                });
+
+                if (lastUserIndex === -1) return conv;
+
+                conv.messages.forEach((msg, idx) => {
+                    // Always preserve initial system prompt
+                    if (idx === 0 && msg.role === 'system') {
+                        newMessages.push(msg);
+                        return;
+                    }
+
+                    // Skip other system messages (intermediate context updates)
+                    if (msg.role === 'system' && idx > 0) {
+                        return;
+                    }
+
+                    if (idx === lastUserIndex) {
+                        newMessages.push({
+                            ...msg,
+                            injected_context: lastContext || null
+                        });
+                    } else {
+                        newMessages.push(msg);
+                    }
+                });
+                return { ...conv, messages: newMessages };
+            }
+
+            // Strategy: tool -> user
+            if (strategy === 'tool_to_user') {
+                conv.messages.forEach(msg => {
+                    newMessages.push({
+                        ...msg,
+                        role: msg.role === 'tool' ? 'user' : msg.role
+                    });
+                });
+                return { ...conv, messages: newMessages };
+            }
+
+            return conv;
         }
 
         function renderChat(conv) {
@@ -575,7 +768,18 @@
                 if (msg.role === 'system') {
                     header = `<div class="message-header">🖥️ SYSTEM PROMPT</div>`;
                 }
+
                 let content = '';
+
+                // Render injected context if present
+                if (msg.injected_context) {
+                    content += `
+                        <div class="context-box">
+                            <div class="context-box-title">Injected Context</div>
+                            <div class="context-content">${escapeHtml(msg.injected_context.trim())}</div>
+                        </div>
+                    `;
+                }
 
                 // Handle text content
                 if (msg.content) {

@@ -402,13 +402,17 @@ class MockBackend:
             price = p_obj.get("price", "50.00")
 
         # Parse seats to count
-        seat_list = [s.strip() for s in seats.split(",")]
+        if isinstance(seats, list):
+            seat_list = seats
+        else:
+            seat_list = [s.strip() for s in seats.split(",")]
+        
         pax_count = len(seat_list)
         unit_price = float(price)
         total_price = unit_price * pax_count + 15.0 # Add some extras cost as in example
         
         return json.dumps({
-            "status": "OK",
+            "status": "success",
             "pnr": "PNR" + str(self.rng.randint(100000, 999999)),
             "platform": str(self.rng.randint(1, 20)),
             "train_id": train_id,

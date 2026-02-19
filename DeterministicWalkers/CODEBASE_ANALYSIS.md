@@ -1,552 +1,93 @@
-# DeterministicWalkers - Analisi Codebase e Raccomandazioni di Miglioramento
+# Analisi e Revisione del Codebase
 
-## 📊 Executive Summary
-
-**Progetto**: DeterministicWalkers - Hybrid Deterministic + LLM Data Generator  
-**Stato Generale**: ⚠️ **Buono con Aree di Miglioramento**  
-**Dimensioni**: ~36 file Python, ~1146 linee nel file principale
-
-### Punti di Forza ✅
-- Architettura ben pensata e modulare
-- Documentazione eccellente (README, TRAINING_SCHEMA)
-- Sistema ibrido innovativo (templates + LLM)
-- Separazione chiara delle responsabilità
-
-### Criticità 🚨
-- **Nessun test automatizzato**
-- Error handling troppo generico (9 bare `except:`)
-- Mancanza di type hints consistenti
-- File `dialogue.py` troppo grande (1146 linee)
-- Nessun file requirements.txt/pyproject.toml
+**Data**: 2026-02-18
+**Oggetto**: Revisione architetturale del progetto `DeterministicWalkers`
 
 ---
 
-## 🏗️ 1. Architettura & Design
+## 1. Analisi dei Punti di Forza
 
-### 1.1 Struttura Modulare
-**Rating**: ⭐⭐⭐⭐☆ (4/5)
+*   **Architettura Modulare**: L'implementazione del `DialogueGenerator` come facade che delega ai singoli `Steps` (es. `SearchStep`, `SelectionPurchaseStep`) è un eccellente esempio del pattern **Strategy**. Questo design permette di aggiungere o modificare fasi del dialogo senza impattare il flusso principale, rendendo il sistema altamente estensibile.
+*   **Gestione Centralizzata del Contesto**: La classe `ContextFormatter` astrae efficacemente la logica di formattazione XML. Mantenere questa logica separata dal codice di business assicura che le modifiche allo schema dei dati (v1.7) siano isolate e non richiedano refactoring diffusi.
+*   **Determinismo Controllato**: La soluzione adottata in `MockBackend`, che utilizza un seeding deterministico (basato su `zlib.adler32` di TrainID + Carriage), garantisce la consistenza dei dati generati (es. posti disponibili) attraverso diverse esecuzioni, fondamentale per il testing e la riproducibilità.
+*   **Logging Strutturato**: L'utilizzo pervasivo del modulo `generator.logger` permette un tracciamento efficace del flusso di esecuzione, essenziale per il debugging in un sistema a stati complessi.
 
-**Punti Forti:**
-- Separazione netta tra `generator/`, `judge/`, `qa/`, `tools/`
-- Pattern chiaro: `dialogue.py` orchestra, `mock_api.py` simula backend, `context_formatter.py` prepara XML
-- Template Jinja2 ben organizzati
+## 2. Criticità e Debolezze
 
-**Aree di Miglioramento:**
+### 🔴 Violazione OCP nel FlowBuilder
+Il metodo `DialogueFlowBuilder.build_dynamic_flow` presenta una lunga catena di `if/elif` per istanziare ed eseguire gli step. Questo viola l'Open/Closed Principle: ogni volta che viene aggiunto un nuovo tipo di step, è necessario modificare questa classe, aumentando il rischio di regressioni.
 
-#### 🔴 ALTA PRIORITÀ: Refactoring `dialogue.py`
-Il file principale è di **1146 linee** - viola il principio Single Responsibility.
+### 🔴 Assenza di Test di Integrazione
+Sebbene siano presenti unit test, la directory `tests/integration` risulta vuota o inefficace. Manca completamente una verifica End-to-End che assicuri che i vari componenti (`DialogueGenerator`, `Steps`, `MockBackend`, `ContextFormatter`) collaborino correttamente in uno scenario reale.
 
-**Raccomandazione:**
-```
-generator/
-├── dialogue.py (orchestrator principale, ~300 linee)
-├── dialogue_steps/
-│   ├── __init__.py
-│   ├── greeting.py
-│   ├── search.py
-│   ├── disability.py
-│   ├── purchase.py
-│   └── ui_navigation.py
-├── context_manager.py (gestione context/state)
-└── interruption_handler.py (QA/OOD interruptions)
-```
+### 🟡 Responsabilità Mista nel Backend
+`MockBackend` soffre di una parziale violazione del Single Responsibility Principle (SRP). Attualmente gestisce sia la logica di generazione dati (treni, orari, prezzi) sia lo stato della sessione utente (`purchase_phase`). Sarebbe opportuno disaccoppiare lo stato della sessione in un'entità dedicata.
 
-#### 🟡 MEDIA PRIORITÀ: Dependency Injection
-Attualmente il `MockBackend` è istanziato hard-coded:
+### 🟡 Gestione Errori Generica
+In `dialogue.py`, l'uso di clausole `except Exception as e:` generiche con semplice `print` rischia di sopprimere errori critici, rendendo difficile l'identificazione di bug in produzione o durante generazioni massive.
+
+### 🟡 Hardcoding dei Valori
+Dati come prezzi base, tipologie di treni e configurazioni orarie sono definiti direttamente nel codice di `MockBackend`.
+
+## 3. Refactoring Suggerito
+
+### A. Risoluzione OCP nel FlowBuilder (Polimorfismo)
+Attualmente, il `DialogueFlowBuilder` decide esplicitamente quale metodo chiamare per ogni step. Si suggerisce di uniformare l'interfaccia degli Step affinché accettino un set comune di argomenti (usando `**kwargs`), permettendo un'esecuzione polimorfica.
+
+**Prima:**
 ```python
-# dialogue.py:14
-self.backend = MockBackend()
+if step == "greeting":
+    self.steps["greeting"].execute(ctx, meta_contexts)
+elif step == "search":
+    # logica specifica...
 ```
 
-**Miglioria:**
+**Dopo (Refactoring):**
 ```python
-def __init__(self, corpus=None, enhancer=None, distribution=None, backend=None):
-    self.backend = backend or MockBackend()
-```
-Benefici: facilita testing con mock, permette backend reali in futuro.
-
----
-
-## 🐛 2. Code Quality
-
-### 2.1 Error Handling
-**Rating**: ⭐⭐☆☆☆ (2/5)
-
-#### 🔴 CRITICO: Bare Except Statements
-Trovate **9 occorrenze** di `except:` senza specificare eccezioni:
-
-| File | Linea | Impatto |
-|------|-------|---------|
-| `validate_dataset.py` | 133 | Nasconde errori JSON |
-| `corpus_builder.py` | 153 | Ignora failures silenti |
-| `hydrator.py` | 105, 117 | Errori Jinja2 ignorati |
-| `mock_api.py` | 64, 86 | Parsing time fallisce silente |
-| `context_formatter.py` | 65, 116, 321 | Conversioni fallite |
-
-**Miglioria Raccomandata:**
-```diff
-# mock_api.py:64 (ESEMPIO)
-- except:
--     return datetime.now().replace(hour=12, minute=0)
-+ except (ValueError, AttributeError) as e:
-+     logger.warning(f"Failed to parse time '{time_str}': {e}")
-+     return datetime.now().replace(hour=12, minute=0)
+# In DialogueFlowBuilder
+def build_dynamic_flow(self, ...):
+    # ...
+    for step_name in scenario_steps:
+        if step_name in self.steps:
+            # Lo step estrarrà dai kwargs solo ciò che gli serve
+            self.steps[step_name].execute(
+                ctx, 
+                meta_contexts, 
+                try_interruption=try_interruption_cb,
+                ood_starters=ood_starters,
+                ood_followups=ood_followups
+            )
 ```
 
-#### 🟡 MEDIA PRIORITÀ: Logging Strutturato
-Attualmente si usa `print()` per logging:
+### B. Estrazione Configurazione Backend
+Spostare i dati statici in un file di configurazione esterno JSON o YAML.
+
+**Configurazione (`config/trains.json`):**
+```json
+{
+  "types": [
+    {"type": "Frecciarossa", "speed": 1.5, "price_base": 50},
+    {"type": "Intercity", "speed": 1.0, "price_base": 30}
+  ]
+}
+```
+
+**Iniezione in `MockBackend`:**
 ```python
-print(f"[Dialogue] Generating {count} dynamic dialogues...")
+class MockBackend:
+    def __init__(self, config_path="config/trains.json"):
+        self.config = json.load(open(config_path))
+        self.train_types = self.config["types"]
 ```
 
-**Raccomandazione:**
-```python
-import logging
-logger = logging.getLogger(__name__)
-
-logger.info(f"Generating {count} dialogues", extra={
-    "count": count,
-    "scenario": scenario_name
-})
-```
-
-Benefici: livelli di log configurabili, integrazione con sistemi di monitoring.
-
-### 2.2 Type Hints
-**Rating**: ⭐⭐☆☆☆ (2/5)
-
-**Problema**: Solo alcuni file (`hydrator.py`, `mock_api.py`) usano type hints in modo consistente.
-
-**Esempio - Prima:**
-```python
-def _render_utterance(self, intent, context, **overrides):
-    return self._render_utterance_data(intent, context, **overrides)['text']
-```
-
-**Dopo:**
-```python
-def _render_utterance(
-    self, 
-    intent: str, 
-    context: Dict[str, Any], 
-    **overrides: Any
-) -> str:
-    return self._render_utterance_data(intent, context, **overrides)['text']
-```
-
-#### 🟢 BASSA PRIORITÀ: Integrazione mypy
-Aggiungere al workflow:
-```bash
-# pyproject.toml
-[tool.mypy]
-python_version = "3.10"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-```
-
----
-
-## 🧪 3. Testing & Quality Assurance
-
-### 3.1 Test Coverage
-**Rating**: ⭐☆☆☆☆ (1/5) - **CRITICISSIMO**
-
-**Problema**: **ZERO test automatizzati** trovati.  
-Solo validation scripts (`validate_dataset.py`, `verify_*.py`) che sono checkers post-hoc.
-
-#### 🔴 ALTISSIMA PRIORITÀ: Test Suite Minima
-
-**Struttura Raccomandata:**
-```
-tests/
-├── __init__.py
-├── conftest.py (pytest fixtures)
-├── unit/
-│   ├── test_context_formatter.py
-│   ├── test_mock_api.py
-│   ├── test_llm_enhancer.py
-│   └── test_deterministic.py
-├── integration/
-│   ├── test_dialogue_generation.py
-│   └── test_hydration_pipeline.py
-└── fixtures/
-    ├── sample_contexts.json
-    └── expected_outputs.json
-```
-
-**Esempio Test - `test_context_formatter.py`:**
-```python
-import pytest
-from generator.context_formatter import ContextFormatter
-
-def test_format_search_state():
-    params = {
-        "origin": "Milano Centrale",
-        "destination": "Roma Termini",
-        "ui_state": '{"state": "search"}',
-        "passengers": "2",
-        "trains_array": "[]",
-        "ctx_time": "14:30",
-        "date": "2026-05-10"
-    }
-    
-    result = ContextFormatter.format_context(params)
-    
-    assert "<ctx>" in result
-    assert "Milano Centrale" in result
-    assert "<ui>" in result
-    assert 'state="search"' in result
-```
-
-**Esempio Test - `test_mock_api.py`:**
-```python
-def test_search_trains_deterministic():
-    backend1 = MockBackend(seed=42)
-    backend2 = MockBackend(seed=42)
-    
-    args = json.dumps({"origin": "Milano", "destination": "Roma", "passengers": 1})
-    
-    result1 = json.loads(backend1.search_trains(args))
-    result2 = json.loads(backend2.search_trains(args))
-    
-    assert result1 == result2, "Same seed should produce identical results"
-    assert len(result1["trains"]) > 0
-```
-
-### 3.2 Continuous Integration
-**Raccomandazione**: Creare `.github/workflows/test.yml`:
-```yaml
-name: Tests
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - run: pip install -e .[dev]
-      - run: pytest tests/ --cov=generator --cov-report=xml
-      - run: mypy generator/
-```
-
----
-
-## ⚡ 4. Performance & Scalability
-
-### 4.1 Bottlenecks Identificati
-**Rating**: ⭐⭐⭐☆☆ (3/5)
-
-#### 🟡 MEDIA PRIORITÀ: LLM Paraphrasing
-```python
-# dialogue.py:258
-if random.random() < prob:
-    new_text = self.enhancer.paraphrase_utterance(...)  # Blocking HTTP call
-```
-
-**Problema**: Ogni paraphrase è una chiamata HTTP sincrona a Ollama.
-
-**Raccomandazione - Batching Asincrono:**
-```python
-import asyncio
-import aiohttp
-
-class AsyncLLMEnhancer:
-    async def paraphrase_batch(self, texts: List[str]) -> List[str]:
-        async with aiohttp.ClientSession() as session:
-            tasks = [self._paraphrase_one(session, txt) for txt in texts]
-            return await asyncio.gather(*tasks)
-```
-
-Beneficio stimato: **3-5x speedup** per generazione di 100+ dialoghi.
-
-#### 🟡 MEDIA PRIORITÀ: Caching Templates
-```python
-# deterministic.py - attualmente rende ogni volta
-result = self.renderer.render(intent, render_vars)
-```
-
-**Raccomandazione:**
-```python
-from functools import lru_cache
-
-@lru_cache(maxsize=128)
-def _load_template(self, template_path: str):
-    return self.jinja_env.get_template(template_path)
-```
-
-### 4.2 Memory Management
-**Rating**: ⭐⭐⭐⭐☆ (4/5)
-
-✅ **Bene**: Generazione iterativa, no caricamento completo dataset in RAM  
-⚠️ **Attenzione**: `dialogue.py:74-86` accumula tutti i dialogues in lista prima di scrivere.
-
-**Raccomandazione per Dataset Grandi (10k+):**
-```python
-def generate_dialogues_streaming(self, count=100, output_file=None):
-    """Generate and immediately write to disk."""
-    with open(output_file, 'w', encoding='utf-8') as f:
-        for i in range(count):
-            dialogue = self._build_dynamic_flow(i)
-            f.write(json.dumps(dialogue, ensure_ascii=False) + '\n')
-            yield dialogue  # For progress tracking
-```
-
----
-
-## 📚 5. Documentation
-
-### 5.1 User Documentation
-**Rating**: ⭐⭐⭐⭐⭐ (5/5) - **ECCELLENTE**
-
-✅ README completo con esempi  
-✅ TRAINING_SCHEMA.md dettagliatissimo  
-✅ File `stani_txt/` come gold standard
-
-### 5.2 Code Documentation
-**Rating**: ⭐⭐⭐☆☆ (3/5)
-
-**Punti Forti:**
-- Docstrings nelle classi principali
-- Commenti inline nei punti critici
-
-**Aree di Miglioramento:**
-
-#### 🟢 BASSA PRIORITÀ: API Documentation
-Generare documentazione HTML con Sphinx:
-
-```bash
-pip install sphinx sphinx-rtd-theme
-sphinx-quickstart docs/
-sphinx-apidoc -o docs/source/ generator/
-```
-
-Configurare `docs/conf.py`:
-```python
-extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',  # Google/NumPy docstring style
-    'sphinx.ext.viewcode',
-]
-```
-
----
-
-## 🔒 6. Security & Best Practices
-
-### 6.1 Dependency Management
-**Rating**: ⭐☆☆☆☆ (1/5) - **CRITICO**
-
-#### 🔴 ALTA PRIORITÀ: Manca Gestione Dipendenze
-
-**Problema**: Nessun `requirements.txt` o `pyproject.toml`.  
-Dipendenze implicite: `jinja2`, `fastapi`, `uvicorn`, `urllib.request` (stdlib)
-
-**Raccomandazione - Creare `pyproject.toml`:**
-```toml
-[project]
-name = "deterministic-walkers"
-version = "1.0.0"
-description = "Hybrid Deterministic + LLM Data Generator"
-requires-python = ">=3.10"
-dependencies = [
-    "jinja2>=3.1.0",
-    "fastapi>=0.100.0",
-    "uvicorn>=0.23.0",
-]
-
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.4.0",
-    "pytest-cov>=4.1.0",
-    "mypy>=1.5.0",
-    "black>=23.7.0",
-    "ruff>=0.0.285",
-]
-
-[tool.black]
-line-length = 100
-
-[tool.ruff]
-line-length = 100
-select = ["E", "F", "I", "N", "W"]
-```
-
-**Installazione:**
-```bash
-pip install -e .            # Produzione
-pip install -e .[dev]       # Sviluppo
-```
-
-### 6.2 Configuration Management
-**Rating**: ⭐⭐⭐☆☆ (3/5)
-
-✅ **Bene**: `config.json` separato  
-⚠️ **Migliorabile**: Hard-coded paths, nessuna override via ENV
-
-**Raccomandazione:**
-```python
-# config.py
-from pathlib import Path
-import os
-import json
-
-class Config:
-    BASE_DIR = Path(__file__).parent
-    OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
-    OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen3:4b-instruct")
-    
-    @classmethod
-    def from_file(cls, path: str = "config.json"):
-        with open(path) as f:
-            data = json.load(f)
-        cls.OLLAMA_URL = data.get("llm", {}).get("base_url", cls.OLLAMA_URL)
-        return cls
-```
-
-Uso:
-```python
-config = Config.from_file()
-enhancer = LLMEnhancer(config)
-```
-
-### 6.3 Secrets Management
-**Rating**: ⭐⭐⭐⭐☆ (4/5)
-
-✅ Nessun secret hardcoded visibile  
-✅ `.gitignore` ben configurato
-
----
-
-## 🛠️ 7. Tooling & Development Experience
-
-### 7.1 Code Formatting
-**Rating**: ⭐⭐☆☆☆ (2/5)
-
-**Problema**: Nessun formatter configurato, stili inconsistenti.
-
-**Raccomandazione:**
-```bash
-# Installa black + ruff
-pip install black ruff
-
-# Formatta tutto
-black generator/ tools/ judge/ qa/
-
-# Linting
-ruff check generator/ --fix
-```
-
-Aggiungere `.pre-commit-config.yaml`:
-```yaml
-repos:
-  - repo: https://github.com/psf/black
-    rev: 23.7.0
-    hooks:
-      - id: black
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.285
-    hooks:
-      - id: ruff
-        args: [--fix]
-```
-
-### 7.2 Debuggability
-**Rating**: ⭐⭐⭐☆☆ (3/5)
-
-✅ **Bene**: Visualizer HTML per ispezionare output  
-✅ Metadata `_meta` nei dialogues per tracciabilità
-
-**Miglioramento Suggerito:**
-```python
-# Aggiungere logging dettagliato in modalità debug
-import logging
-
-if os.getenv("DEBUG") == "1":
-    logging.basicConfig(level=logging.DEBUG)
-    
-logger.debug("Rendering intent %s with context: %s", intent, context)
-```
-
----
-
-## 📋 8. Roadmap Prioritizzata
-
-### 🔴 Fase 1: Fondamenta (1-2 settimane)
-1. **Creare `pyproject.toml`** con dipendenze
-2. **Aggiungere Test Suite Minima** (5-10 test critici)
-3. **Fix Bare Except** (tutte le 9 occorrenze)
-4. **Setup CI/CD** (GitHub Actions)
-
-### 🟡 Fase 2: Code Quality (2-3 settimane)
-5. **Refactoring `dialogue.py`** (split in moduli)
-6. **Aggiungere Type Hints** (starter: `generator/`)
-7. **Logging Strutturato** (sostituire `print()`)
-8. **Config Management** (ENV vars support)
-
-### 🟢 Fase 3: Performance & DX (2-3 settimane)
-9. **Async LLM Batching**
-10. **Template Caching**
-11. **Code Formatting** (Black + Ruff)
-12. **API Documentation** (Sphinx)
-
----
-
-## 🎯 Quick Wins (1-2 giorni)
-
-### 1. Creare `requirements.txt` Base
-```txt
-jinja2>=3.1.0
-fastapi>=0.100.0
-uvicorn>=0.23.0
-```
-
-### 2. Fix Top 3 Bare Excepts
-Focus su `hydrator.py:105`, `mock_api.py:64`, `validate_dataset.py:133`
-
-### 3. Aggiungere `.editorconfig`
-```ini
-[*]
-end_of_line = lf
-insert_final_newline = true
-charset = utf-8
-indent_style = space
-indent_size = 4
-
-[*.{json,yml,yaml}]
-indent_size = 2
-```
-
-### 4. First Test
-Creare `tests/test_mock_api.py` con test deterministico (vedi sezione 3.1)
-
----
-
-## 📊 Metriche di Successo
-
-| Metrica | Attuale | Target (3 mesi) |
-|---------|---------|-----------------|
-| Test Coverage | 0% | ≥60% |
-| Type Hints | ~15% | ≥70% |
-| Bare Excepts | 9 | 0 |
-| mypy Passing | N/A | 100% |
-| CI/CD | ❌ | ✅ |
-| Doc Coverage | ~40% | ≥80% |
-
----
-
-## 💡 Conclusioni
-
-### Verdetto Complessivo: **⭐⭐⭐☆☆ (3.2/5)**
-
-**DeterministicWalkers** è un progetto **ben architetturato** con un'idea innovativa e documentazione eccellente. Tuttavia, la **mancanza di testing**, **error handling debole** e **dependency management assente** sono rischi significativi per la manutenibilità a lungo termine.
-
-### Prossimi Passi Consigliati
-1. **Implementare testing** (blocca refactoring future senza regression)
-2. **Dependency management** (evita "works on my machine")
-3. **Refactoring graduale** (iniziare da `dialogue.py`)
-
-Con questi miglioramenti, il progetto può passare da **"buono"** a **"production-ready"** in 2-3 mesi di sforzo sostenuto.
+## 4. Documentazione e Test
+
+*   **Documentazione**: Buona la leggibilità del codice e la presenza di docstrings. Manca tuttavia una documentazione architetturale di alto livello (es. Diagrammi di Sequenza) che spieghi il flusso dei dati tra i componenti.
+*   **Stato dei Test**:
+    *   **Unit Test**: Presenti e coprono la logica isolata degli step.
+    *   **Integration Test**: **Critici e mancanti**.
+
+### Raccomandazione Prioritaria
+Creare immediatamente uno **ScenarioTest** integrato che, senza utilizzare mock per gli step interni, esegua un flusso completo (es. Search -> Select -> Purchase) verificando:
+1.  Il corretto passaggio del `Context` tra gli step.
+2.  La coerenza del formato XML generato alla fine del flusso.

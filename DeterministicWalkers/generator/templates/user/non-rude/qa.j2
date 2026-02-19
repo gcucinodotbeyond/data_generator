@@ -6,11 +6,14 @@
 {% if verbose == 'concise' %}
 {{ to_json({"text": p ~ "?", "variables": {"topic": "pets"}}) }}
 {{ to_json({"text": "Posto " ~ p ~ "?", "variables": {"topic": "pets"}}) }}
+{{ to_json({"text": "Cani ammessi?", "variables": {"topic": "pets"}}) }}
 {% elif verbose == 'verbose' %}
     {% if rudeness == 'polite' %}
 {{ to_json({"text": "Mi scusi per il disturbo, saprebbe per caso dirmi se il mio piccolo " ~ p ~ " può viaggiare con me sul vagoni?", "variables": {"topic": "pets"}}) }}
+{{ to_json({"text": "Vorrei gentilmente sapere se ci sono limitazioni per il trasporto di " ~ p ~ " a bordo.", "variables": {"topic": "pets"}}) }}
     {% else %}
 {{ to_json({"text": "Volevo chiederti un'informazione sugli animali: è possibile portare il mio " ~ p ~ " a bordo del treno che ho selezionato?", "variables": {"topic": "pets"}}) }}
+{{ to_json({"text": "Dimmi se posso salire col " ~ p ~ " o se fanno storie.", "variables": {"topic": "pets"}}) }}
     {% endif %}
 {% else %} {# standard #}
     {% if rudeness == 'polite' %}
@@ -19,6 +22,7 @@
     {% else %} {# neutral #}
 {{ to_json({"text": "Posso portare il mio " ~ p ~ "?", "variables": {"topic": "pets"}}) }}
 {{ to_json({"text": "Si paga per il " ~ p ~ "?", "variables": {"topic": "pets"}}) }}
+{{ to_json({"text": "Il " ~ p ~ " sale gratis?", "variables": {"topic": "pets"}}) }}
     {% endif %}
 {% endif %}
 {% endif %}
@@ -29,11 +33,14 @@
 {% if verbose == 'concise' %}
 {{ to_json({"text": "Spazio " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
 {{ to_json({"text": "Posto " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
+{{ to_json({"text": "Bagagli?", "variables": {"topic": "luggage"}}) }}
 {% elif verbose == 'verbose' %}
     {% if rudeness == 'polite' %}
 {{ to_json({"text": "Mi scusi, avrei bisogno di un'indicazione: saprebbe dirmi se c'è un'area riservata per posare " ~ l ~ " ingombranti?", "variables": {"topic": "luggage"}}) }}
+{{ to_json({"text": "Per favore, mi conferma se c'è abbastanza spazio nelle cappelliere per il mio " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
     {% else %}
 {{ to_json({"text": "Stavo cercando di capire se c'è abbastanza spazio per il mio " ~ l ~ " o se devo stare attento a dove lo metto.", "variables": {"topic": "luggage"}}) }}
+{{ to_json({"text": "Non vorrei avere problemi con il " ~ l ~ ", c'è posto o no?", "variables": {"topic": "luggage"}}) }}
     {% endif %}
 {% else %} {# standard #}
     {% if rudeness == 'polite' %}
@@ -42,6 +49,7 @@
     {% else %} {# neutral #}
 {{ to_json({"text": "Dove metto " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
 {{ to_json({"text": "C'è spazio per " ~ l ~ "?", "variables": {"topic": "luggage"}}) }}
+{{ to_json({"text": "Il " ~ l ~ " dove va?", "variables": {"topic": "luggage"}}) }}
     {% endif %}
 {% endif %}
 {% endif %}
@@ -52,18 +60,23 @@
 {% if verbose == 'concise' %}
 {{ to_json({"text": s ~ "?", "variables": {"topic": "services"}}) }}
 {{ to_json({"text": "Funziona " ~ s ~ "?", "variables": {"topic": "services"}}) }}
+{{ to_json({"text": "C'è " ~ s ~ "?", "variables": {"topic": "services"}}) }}
 {% elif verbose == 'verbose' %}
     {% if rudeness == 'polite' %}
 {{ to_json({"text": "Mi perdoni, saprebbe dirmi se su questo treno è prevista la connessione " ~ s ~ " per i passeggeri?", "variables": {"topic": "services"}}) }}
+{{ to_json({"text": "Sarei interessato a sapere se il servizio " ~ s ~ " è attivo durante il viaggio.", "variables": {"topic": "services"}}) }}
     {% else %}
 {{ to_json({"text": "Volevo assicurarmi che ci fosse il " ~ s ~ " a bordo, sai com'è, mi serve per lavorare durante il viaggio.", "variables": {"topic": "services"}}) }}
+{{ to_json({"text": "Dimmi se funziona il " ~ s ~ " perché mi serve assolutamente.", "variables": {"topic": "services"}}) }}
     {% endif %}
 {% else %} {# standard #}
     {% if rudeness == 'polite' %}
 {{ to_json({"text": "Sarebbe così gentile da dirmi se è presente il " ~ s ~ "?", "variables": {"topic": "services"}}) }}
+{{ to_json({"text": "Scusi, c'è " ~ s ~ " a bordo?", "variables": {"topic": "services"}}) }}
     {% else %} {# neutral #}
 {{ to_json({"text": "C'è il " ~ s ~ " a bordo?", "variables": {"topic": "services"}}) }}
 {{ to_json({"text": "Il treno ha " ~ s ~ "?", "variables": {"topic": "services"}}) }}
+{{ to_json({"text": "Funziona il " ~ s ~ "?", "variables": {"topic": "services"}}) }}
     {% endif %}
 {% endif %}
 {% endif %}
@@ -72,15 +85,19 @@
 {% if topic == 'refunds' %}
     {% if verbose == 'concise' %}
 {{ to_json({"text": "Rimborsi?", "variables": {"topic": "refunds"}}) }}
+{{ to_json({"text": "Se annullo?", "variables": {"topic": "refunds"}}) }}
     {% elif verbose == 'verbose' %}
 {{ to_json({"text": "Dato che i piani sono cambiati, mi servirebbe sapere con precisione come fare per avere indietro i miei soldi.", "variables": {"topic": "refunds"}}) }}
+{{ to_json({"text": "Nel caso dovessi cancellare il viaggio, quali sono le procedure per ottenere un rimborso?", "variables": {"topic": "refunds"}}) }}
     {% else %}
 {{ to_json({"text": "Qual è la politica rimborsi?", "variables": {"topic": "refunds"}}) }}
+{{ to_json({"text": "Come chiedo il rimborso?", "variables": {"topic": "refunds"}}) }}
     {% endif %}
 {% endif %}
 
 {% if topic == 'delay' or topic == 'delays' %}
 {{ to_json({"text": "Se il treno è in ritardo?", "variables": {"topic": "delays"}}) }}
+{{ to_json({"text": "E per i ritardi?", "variables": {"topic": "delays"}}) }}
     {% if verbose == 'verbose' %}
 {{ to_json({"text": "Vorrei sapere cosa succede se il treno dovesse fare ritardo, ci sono delle tutele per noi viaggiatori?", "variables": {"topic": "delays"}}) }}
     {% endif %}
@@ -88,6 +105,7 @@
 
 {% if topic == 'strike' or topic == 'strikes' %}
 {{ to_json({"text": "Cosa succede in caso di sciopero?", "variables": {"topic": "strikes"}}) }}
+{{ to_json({"text": "Se scioperano?", "variables": {"topic": "strikes"}}) }}
     {% if verbose == 'verbose' %}
 {{ to_json({"text": "Dato che si sente parlare di agitazioni, volevo capire meglio come comportarmi se ci fosse uno sciopero dei treni proprio quel giorno.", "variables": {"topic": "strikes"}}) }}
     {% endif %}

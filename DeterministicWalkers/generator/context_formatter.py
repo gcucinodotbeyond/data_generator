@@ -35,7 +35,10 @@ class ContextFormatter:
     @staticmethod
     def format_context(params: dict) -> str:
         """Main entry point: determines UI state and routes to appropriate formatter"""
-        ui = json.loads(params.get("ui_state", '{"state": "idle"}')) if params.get("ui_state") else {"state": "idle"}
+        try:
+            ui = json.loads(params.get("ui_state", '{"state": "idle"}')) if params.get("ui_state") else {"state": "idle"}
+        except (json.JSONDecodeError, TypeError):
+            ui = {"state": "idle"}
         state = ui.get("state", "idle")
         formatters = {
             "idle": ContextFormatter._format_search,
@@ -217,13 +220,13 @@ class ContextFormatter:
         
         # Price finding
         class_list = t.get("classes", [])
-        price = "null"
+        price = None  # Changed from "null" string to None
         for cl in class_list:
             if cls.upper() in cl.get("class_denomination", "").upper():
-                price = cl.get("price", "null")
+                price = cl.get("price", None)
                 break
-        if price == "null" and class_list:
-            price = class_list[0].get("price", "null")
+        if price is None and class_list:
+            price = class_list[0].get("price", None)
 
         train_info = {
             "id": t_id,
@@ -232,7 +235,7 @@ class ContextFormatter:
             "dep": t.get("dep", "00:00"),
             "arr": t.get("arr", "00:00"),
             "route": f"{p.get('origin')}→{p.get('destination')}",
-            "unit": price
+            "unit": price if price is not None else "0.00"  # Use "0.00" as fallback
         }
         
         xml += ContextFormatter._booking(p, "pending", "seat", train_info=train_info)
@@ -272,6 +275,9 @@ class ContextFormatter:
         # Basic price retrieval
         class_list = t.get("classes", [])
         price = class_list[0].get("price", "0.00") if class_list else "0.00"
+        # Ensure price is not None or "null" string
+        if price is None or price == "null":
+            price = "0.00"
 
         train_info = {
             "id": t_id,

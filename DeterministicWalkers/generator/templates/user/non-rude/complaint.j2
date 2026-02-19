@@ -5,7 +5,10 @@
     "Ma perché è così difficile? Non capisco",
     "Ancora problemi? È incredibile",
     "Si è bloccato tutto di nuovo...",
-    "Non riesco a fare il biglietto, che noia"
+    "Non riesco a fare il biglietto, che noia",
+    "Non va niente qui",
+    "Sempre la stessa storia",
+    "Che servizio lento"
 ] -%}
 
 {%- set polite_phrases = [
@@ -13,55 +16,67 @@
     "Scusa, ma sto riscontrando qualche difficoltà",
     "Temo ci sia un problemino tecnico",
     "Non sono sicuro di come procedere, sembra bloccato",
-    "Mi scusi, ma forse la macchina ha un guasto?"
+    "Mi scusi, ma forse la macchina ha un guasto?",
+    "C'è qualcosa che non va, credo",
+    "Potrebbe esserci un errore nel sistema"
 ] -%}
 
 {%- set neutral_service = [
     "C'è sempre sciopero, non se ne può più",
     "Un altro ritardo? Devo arrivare puntuale",
-    "I treni oggi sono un disastro"
+    "I treni oggi sono un disastro",
+    "Mai una volta che siate in orario"
 ] -%}
 
 {%- set polite_service = [
     "Purtroppo vedo che ci sono molti ritardi oggi",
     "Mi spiace, ma lo sciopero mi sta creando problemi",
-    "Speravo che oggi non ci fossero ritardi"
+    "Speravo che oggi non ci fossero ritardi",
+    "È un peccato che ci siano questi disagi"
 ] -%}
 
 {%- set neutral_price = [
     "Il biglietto costa troppo, non è giusto",
     "Prezzi assurdi per questo viaggio",
-    "Caspita, è aumentato tutto così tanto?"
+    "Caspita, è aumentato tutto così tanto?",
+    "Ma siete pazzi? Costa tantissimo"
 ] -%}
 
 {%- set polite_price = [
     "Il costo è un po' più alto di quanto mi aspettassi",
     "Non pensavo costasse così tanto viaggiare",
-    "Esistono soluzioni un po' più economiche?"
+    "Esistono soluzioni un po' più economiche?",
+    "Mi sembra un po' caro, onestamente"
 ] -%}
 
 {%- set neutral_ui = [
     "È complicatissimo usare questo sistema",
     "Non riesco a trovare il tasto giusto, uff",
-    "Questo schermo non risponde bene"
+    "Questo schermo non risponde bene",
+    "Interfaccia fatta male"
 ] -%}
 
 {%- set polite_ui = [
     "Mi trovo un po' in difficoltà con questa schermata",
     "Non sono molto pratico con queste macchinette",
-    "Forse sto sbagliando io, ma non riesco a selezionare"
+    "Forse sto sbagliando io, ma non riesco a selezionare",
+    "È un po' difficile da usare per me"
 ] -%}
 
 {% if verbose == 'concise' %}
 {{ to_json({"text": "Problemi.", "variables": {"topic": "complaint"}}) }}
 {{ to_json({"text": "Non va.", "variables": {"topic": "complaint"}}) }}
+{{ to_json({"text": "Rotto.", "variables": {"topic": "complaint"}}) }}
+{{ to_json({"text": "Male.", "variables": {"topic": "complaint"}}) }}
 {% elif verbose == 'verbose' %}
     {%- if rudeness == 'polite' %}
 {{ to_json({"text": "Mi scusi se mi lamento, ma sto riscontrando diverse difficoltà con l'interfaccia e temo che ci sia un problema tecnico che mi impedisce di procedere.", "variables": {"topic": "complaint"}}) }}
 {{ to_json({"text": "Purtroppo mi trovo costretto a segnalare che il servizio oggi non mi sembra all'altezza delle aspettative, soprattutto per quanto riguarda i costi.", "variables": {"topic": "complaint"}}) }}
+{{ to_json({"text": "Sarebbe bello se tutto funzionasse meglio, perché così stiamo perdendo un sacco di tempo inutilmente, mi dispiace dirlo.", "variables": {"topic": "complaint"}}) }}
     {%- else %}
 {{ to_json({"text": "Devo dire che sono un po' deluso, sto cercando di fare il biglietto da dieci minuti ma continua a bloccarsi tutto senza motivo.", "variables": {"topic": "complaint"}}) }}
 {{ to_json({"text": "Non è possibile che ci siano sempre tutti questi problemi tecnici, rende l'acquisto dei biglietti un'esperienza davvero frustrante per chiunque.", "variables": {"topic": "complaint"}}) }}
+{{ to_json({"text": "Ma chi l'ha programmato questo affare? Non si capisce niente e continuo a sbagliare tasto.", "variables": {"topic": "complaint"}}) }}
     {%- endif %}
 {% else %} {# standard #}
     {% if rudeness == 'polite' %}

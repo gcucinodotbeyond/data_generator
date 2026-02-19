@@ -12,10 +12,11 @@ class DataSetHydrator:
     Decoupled from specific prompt formats; uses placeholder replacement.
     """
     
-    def __init__(self, template_path: Path, tools_path: Optional[Path] = None, remove_meta: bool = False):
+    def __init__(self, template_path: Path, tools_path: Optional[Path] = None, remove_meta: bool = False, remove_contexts: bool = False):
         self.template_path = template_path
         self.tools_path = tools_path
         self.remove_meta = remove_meta
+        self.remove_contexts = remove_contexts
         self.template_content = self._load_template()
         self.tools_content = self._load_tools()
 
@@ -91,7 +92,11 @@ class DataSetHydrator:
                 except Exception as e:
                     print(f"Error rendering template: {e}")
 
-        # 3. Remove Meta if requested
+        # 3. Remove contexts from _meta if requested
+        if self.remove_contexts and "_meta" in data:
+            data["_meta"].pop("contexts", None)
+
+        # 4. Remove Meta if requested
         if self.remove_meta:
             data.pop("_meta", None)
 
